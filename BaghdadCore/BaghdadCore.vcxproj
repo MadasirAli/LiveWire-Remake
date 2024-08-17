@@ -139,6 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BaghdadError.h" />
+    <ClInclude Include="D3D11.h" />
+    <ClInclude Include="DXGIFactory.h" />
+    <ClInclude Include="GraphicsException.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
@@ -148,9 +152,12 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
+    <ClInclude Include="Win32.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaghdadCore.cpp" />
+    <ClCompile Include="BaghdadError.cpp" />
+    <ClCompile Include="DXGIFactory.cpp" />
+    <ClCompile Include="GraphicsException.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />

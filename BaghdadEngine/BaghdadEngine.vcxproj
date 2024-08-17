@@ -131,12 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BaghdadEngine.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\BaghdadCore\BaghdadCore.vcxproj">
       <Project>{cc4b1265-ae63-474d-81ca-205234517743}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
