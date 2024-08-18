@@ -26,7 +26,7 @@ namespace BaghdadCore
 		DXGIInfoQueue& operator= (DXGIInfoQueue&& old) noexcept = delete;
 
 
-		DXGIInfoQueue& GetInstance() const;
+		static DXGIInfoQueue& GetInstance();
 
 	private:
 		Microsoft::WRL::ComPtr<IDXGIInfoQueue> _pQueue;

@@ -19,8 +19,8 @@ THROW_BERROR(std::string(pBuffer.get()));									    \
 
 #define WIN32_CALL(func)														\
 {																				\
-	const auto result = func;													\
-	if (result != S_OK)															\
+	const auto __result = func;													\
+	if (__result != S_OK)														\
 	{																			\
 		THROW_LAST_WIN32_BERROR();												\
 	}																			\

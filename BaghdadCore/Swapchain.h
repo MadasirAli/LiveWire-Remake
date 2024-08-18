@@ -10,6 +10,7 @@ namespace BaghdadCore
 	class Swapchain
 	{
 	public:
+		void Present(unsigned int syncInverval, unsigned int flags);
 		Swapchain(Microsoft::WRL::ComPtr<IDXGISwapChain>&& pOther);
 
 	private:

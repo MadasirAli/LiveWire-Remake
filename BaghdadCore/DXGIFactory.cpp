@@ -12,6 +12,7 @@ Swapchain DXGIFactory::CreateSwapchain(const Device& device, const Window& windo
 	desc.BufferCount = 1;
 	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	desc.OutputWindow = window.GetHwnd();
 	desc.Windowed = true;
 

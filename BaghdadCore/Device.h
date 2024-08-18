@@ -11,6 +11,7 @@ namespace BaghdadCore
 	class Device
 	{
 	public:
+		const DeviceContext& GetDeviceContext() const noexcept;
 		Microsoft::WRL::ComPtr<ID3D11Device> GetNativePointer() const noexcept;
 		Device(const GraphicsCard& card);
 

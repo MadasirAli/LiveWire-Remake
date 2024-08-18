@@ -3,24 +3,38 @@
 #include <string>
 
 #include "Windows.h"
+#include "DXGIInfoQueue.h"
 
-#define THROW_GERROR(msg)						\
-{												\
-	throw GraphicsError(msg);					\
-}												\
+#define THROW_GERROR(msg)																\
+{																						\
+	throw GraphicsError(																\
+			msg + "\n\nFile: " + __FILE__ + "\nLine: " + std::to_string(__LINE__));	\
+}																						\
 
 #ifdef _DEBUG
 
-#define D3D_CALL(func)																	\
+#define D3D_CALL(__func)																\
 {																						\
-	auto& queue = DXGIInfoQueue.GetInstance();											\
-    queue.SetInfoQueue();																\																					\
-	const auto result = func;															\
-	std::string msg;																	\
-	if (result != S_OK || queue.Check())												\
+	auto& __queue = DXGIInfoQueue::GetInstance();										\
+    __queue.SetInfoQueue();																\																					\
+	const auto __result = __func;														\
+	std::string __msg;																	\
+	if (__result != S_OK || __queue.Check())											\
 	{																					\
-		msg += queue.GetMessages();														\
+		__msg += __queue.GetMessages();													\
 		THROW_GERROR(msg);																\
+	}																					\
+}																						\
+
+#define D3D_CHECK_CALL(__func)															\
+{																						\
+	auto& __queue = DXGIInfoQueue::GetInstance();										\
+	__queue.SetInfoQueue();																\
+	__func;																				\
+	if (__queue.Check())																\
+	{																					\
+		std::string __msg = __queue.GetMessages();										\
+		THROW_GERROR(__msg);															\
 	}																					\
 }																						\
 
@@ -28,13 +42,19 @@
 
 #define D3D_CALL(func)																	\
 {																						\																				\
-	const auto result = func;															\
-	std::string msg;																	\
-	if (result != S_OK)																	\
+	const auto __result = func;															\
+	std::string __msg;																	\
+	if (__result != S_OK)																\
 	{																					\													\
-		THROW_GERROR(msg);																\
+		THROW_GERROR(__msg);															\
 	}																					\
 }																						\
+
+#define D3D_CHECL_CALL(func)					\
+{												\
+	func;										\
+}												\
+																					
 
 #endif
 

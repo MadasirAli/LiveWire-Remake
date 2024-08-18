@@ -5,6 +5,11 @@
 
 using namespace BaghdadCore;
 
+const DeviceContext& Device::GetDeviceContext() const noexcept
+{
+	return *_pContext;
+}
+
 Microsoft::WRL::ComPtr<ID3D11Device> Device::GetNativePointer() const noexcept
 {
 	return _ptr;

@@ -53,7 +53,7 @@ std::string DXGIInfoQueue::GetMessages()
 }
 
 
-DXGIInfoQueue& DXGIInfoQueue::GetInstance() const
+DXGIInfoQueue& DXGIInfoQueue::GetInstance()
 {
 	static auto instance = DXGIInfoQueue();
 	return instance;
