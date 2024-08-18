@@ -33,5 +33,6 @@ namespace BaghdadCore
 	{
 	public:
 		BaghdadError(std::string msg);
+		virtual ~BaghdadError() noexcept override = default;
 	};
 }

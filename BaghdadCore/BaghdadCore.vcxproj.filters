@@ -54,7 +54,10 @@
     <ClInclude Include="BaghdadError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsException.h">
+    <ClInclude Include="GraphicsError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DXGIInfoQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,7 +92,10 @@
     <ClCompile Include="BaghdadError.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsException.cpp">
+    <ClCompile Include="GraphicsError.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DXGIInfoQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
