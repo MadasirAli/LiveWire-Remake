@@ -1,5 +1,9 @@
 #include "DXGIInfoQueue.h"
 
+#include <memory>
+#include <sstream>
+#include "BaghdadError.h"
+
 using namespace BaghdadCore;
 
 bool DXGIInfoQueue::Check() const

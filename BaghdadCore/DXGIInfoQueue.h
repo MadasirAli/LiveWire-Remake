@@ -2,11 +2,8 @@
 
 #include <string>
 #include <wrl/client.h>
-#include <memory>
-#include <sstream>
 
 #include "D3D11.h"
-#include "BaghdadError.h"
 
 namespace BaghdadCore
 {
