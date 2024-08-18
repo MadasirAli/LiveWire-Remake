@@ -143,6 +143,7 @@
     <ClInclude Include="D3D11.h" />
     <ClInclude Include="DXGIFactory.h" />
     <ClInclude Include="DXGIInfoQueue.h" />
+    <ClInclude Include="GraphicsCard.h" />
     <ClInclude Include="GraphicsError.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="BaghdadError.cpp" />
     <ClCompile Include="DXGIFactory.cpp" />
     <ClCompile Include="DXGIInfoQueue.cpp" />
+    <ClCompile Include="GraphicsCard.cpp" />
     <ClCompile Include="GraphicsError.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
