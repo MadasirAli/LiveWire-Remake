@@ -7,7 +7,7 @@
 
 namespace BaghdadCore
 {
-	class Swapchain
+	class Swapchain final
 	{
 	public:
 		void Present(unsigned int syncInverval, unsigned int flags);

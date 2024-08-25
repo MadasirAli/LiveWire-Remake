@@ -8,7 +8,7 @@
 
 namespace BaghdadCore
 {
-	class Device
+	class Device final
 	{
 	public:
 		const DeviceContext& GetDeviceContext() const noexcept;

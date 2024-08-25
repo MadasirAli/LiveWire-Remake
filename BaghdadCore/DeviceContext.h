@@ -6,7 +6,7 @@
 
 namespace BaghdadCore
 {
-	class DeviceContext
+	class DeviceContext final
 	{
 	public:
 		DeviceContext(Microsoft::WRL::ComPtr<ID3D11DeviceContext>&& pOther);

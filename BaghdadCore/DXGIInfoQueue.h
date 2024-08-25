@@ -7,7 +7,7 @@
 
 namespace BaghdadCore
 {
-	class DXGIInfoQueue
+	class DXGIInfoQueue final
 	{
 	private:
 		unsigned long GetMessageCount() const;

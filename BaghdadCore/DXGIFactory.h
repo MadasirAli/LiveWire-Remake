@@ -11,7 +11,8 @@
 
 namespace BaghdadCore
 {
-	class DXGIFactory {
+	class DXGIFactory final
+	{
 	public:
 		Swapchain CreateSwapchain(const Device& device, const Window& window) const;
 		std::vector<GraphicsCard> EnumGraphicCards() const;
