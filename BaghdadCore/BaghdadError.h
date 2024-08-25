@@ -4,10 +4,10 @@
 #include <string>
 #include <memory>
 
-#include "Windows.h"
+#include "Win32.h"
 
 #define THROW_BERROR(msg) {														\
-throw BaghdadError(msg + "\n\nFile: " + __FILE__ + "\nLine: " + std::to_string(__LINE__));		\
+throw BaghdadError(std::string(msg) + std::string("\n\nFile: ") + std::string(__FILE__) + std::string("\nLine: ") + std::to_string(__LINE__));		\
 }																				\
 
 #define THROW_LAST_WIN32_BERROR() {												\

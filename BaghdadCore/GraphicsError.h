@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Windows.h"
+#include "Win32.h"
 #include "DXGIInfoQueue.h"
 
 #define THROW_GERROR(msg)																\
