@@ -2,7 +2,7 @@
 
 namespace BaghdadEditor
 {
-	class App
+	class App final
 	{
 	public:
 		int Run();
