@@ -4,5 +4,5 @@
 using namespace BaghdadCore;
 
 GraphicsError::GraphicsError(std::string msg) :
-	GraphicsError(msg)
+	BaghdadError(msg)
 {}

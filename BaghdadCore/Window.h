@@ -11,9 +11,10 @@ namespace BaghdadCore
 	private:
 		class Class final
 		{
+
 		public:
 
-			static const Class& Initialize();
+			static const Class& Get();
 			~Class() noexcept;
 
 		private:
@@ -27,7 +28,7 @@ namespace BaghdadCore
 			const std::string Name = "BaghdadWindow";
 		};
 	public:
-		bool PeekAndDispatchMessage(MSG* pMsg) const noexcept;
+		bool PeekAndDispatchMessage(MSG* const pMsg) const noexcept;
 		HWND GetHwnd() const noexcept;
 
 		Window();

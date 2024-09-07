@@ -4,6 +4,7 @@
 
 #include "Win32.h"
 #include "DXGIInfoQueue.h"
+#include "BaghdadError.h"
 
 #define THROW_GERROR(msg)																\
 {																						\
@@ -60,7 +61,7 @@
 
 namespace BaghdadCore
 {
-	class GraphicsError : public GraphicsError
+	class GraphicsError : public BaghdadError
 	{
 	public:
 		GraphicsError(std::string msg);

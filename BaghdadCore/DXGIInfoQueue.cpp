@@ -19,7 +19,7 @@ void DXGIInfoQueue::SetInfoQueue()
 unsigned long DXGIInfoQueue::GetMessageCount() const
 {
 	const auto count = _pQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
-	return count;
+	return (unsigned long)count;
 }
 
 std::string DXGIInfoQueue::GetMessages()
@@ -55,7 +55,7 @@ std::string DXGIInfoQueue::GetMessages()
 
 DXGIInfoQueue& DXGIInfoQueue::GetInstance()
 {
-	static auto instance = DXGIInfoQueue();
+	static DXGIInfoQueue instance{};
 	return instance;
 }
 
@@ -76,6 +76,7 @@ DXGIInfoQueue::DXGIInfoQueue()
 
 	WIN32_CALL(
 	funPtr(__uuidof(IDXGIInfoQueue), (void**)_pQueue.ReleaseAndGetAddressOf()));
+	_messageIndex = 0;
 }
 
 DXGIInfoQueue::~DXGIInfoQueue() noexcept

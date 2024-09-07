@@ -29,7 +29,7 @@ namespace BaghdadCore
 		static DXGIInfoQueue& GetInstance();
 
 	private:
-		Microsoft::WRL::ComPtr<IDXGIInfoQueue> _pQueue;
+		Microsoft::WRL::ComPtr<IDXGIInfoQueue> _pQueue = nullptr;
 		HMODULE _libHandle;
 		unsigned long _messageIndex;
 	};

@@ -12,9 +12,9 @@ throw BaghdadError(std::string(msg) + std::string("\n\nFile: ") + std::string(__
 
 #define THROW_LAST_WIN32_BERROR() {												\
 const auto errorCode = GetLastError();											\
-const auto pBuffer = std::make_unique<char>(513);								\
+const auto pBuffer = std::make_unique<TCHAR[]>(512);							\
 FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, errorCode, 0, (LPSTR)pBuffer.get(), 512, nullptr);	\
-THROW_BERROR(std::string(pBuffer.get()));									    \
+THROW_BERROR(std::string((char*)pBuffer.get()));									    \
 }																				\
 
 #define WIN32_CALL(func)														\
