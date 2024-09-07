@@ -83,22 +83,12 @@ Window::Window() :
 	InternalCreate(windowName, {0, 0, 800, 600});
 }
 
-bool Window::PeekAndDispatchMessage(MSG* const pMsg) const noexcept
+void Window::ForwardMessage(const MSG msg) const noexcept
 {
 	assert(_hwnd != nullptr);
 
-	bool result = false;
-	result = PeekMessageW(pMsg, nullptr, 0, 0, PM_REMOVE);
-
-	if (pMsg->message == WM_QUIT)
-	{
-		return result;
-	}
-
-	TranslateMessage(pMsg);
-	DispatchMessageW(pMsg);
-
-	return result;
+	TranslateMessage(&msg);
+	DispatchMessageW(&msg);
 }
 
 Window::Class::Class()

@@ -22,10 +22,15 @@ int App::Run()
 			if (quit)
 				break;
 
-			while (window.PeekAndDispatchMessage(&msg))
+			while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
 			{
 				if (msg.message == WM_QUIT)
+				{
 					quit = true;
+					continue;
+				}
+
+				window.ForwardMessage(msg);
 			}
 		}
 

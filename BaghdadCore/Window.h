@@ -28,7 +28,7 @@ namespace BaghdadCore
 			const std::string Name = "BaghdadWindow";
 		};
 	public:
-		bool PeekAndDispatchMessage(MSG* const pMsg) const noexcept;
+		void ForwardMessage(const MSG msg) const noexcept;
 		HWND GetHwnd() const noexcept;
 
 		Window();
