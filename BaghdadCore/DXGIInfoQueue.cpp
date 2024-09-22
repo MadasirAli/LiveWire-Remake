@@ -40,7 +40,7 @@ std::string DXGIInfoQueue::GetMessages()
 		_pQueue->GetMessage(DXGI_DEBUG_ALL,
 			i, nullptr, &bufferSize);
 
-		const auto pBuffer = std::make_unique<char>(bufferSize);
+		const auto pBuffer = std::make_unique<char[]>(bufferSize);
 
 		_pQueue->GetMessage(DXGI_DEBUG_ALL,
 			i, (DXGI_INFO_QUEUE_MESSAGE*)pBuffer.get(), &bufferSize);

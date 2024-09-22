@@ -149,6 +149,7 @@
     <ClInclude Include="DeviceContext.h" />
     <ClInclude Include="DXGIFactory.h" />
     <ClInclude Include="DXGIInfoQueue.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="GraphicsCard.h" />
     <ClInclude Include="GraphicsError.h" />
     <ClInclude Include="imconfig.h" />
@@ -162,10 +163,12 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="StartupFlags.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture2D.h" />
@@ -184,6 +187,7 @@
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="DXGIFactory.cpp" />
     <ClCompile Include="DXGIInfoQueue.cpp" />
+    <ClCompile Include="Globals.cpp" />
     <ClCompile Include="GraphicsCard.cpp" />
     <ClCompile Include="GraphicsError.cpp" />
     <ClCompile Include="imgui.cpp" />
@@ -196,10 +200,12 @@
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="StartupFlags.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture2D.cpp" />

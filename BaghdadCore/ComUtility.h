@@ -6,7 +6,7 @@
 
 namespace BaghdadCore
 {
-	static class ComUtility
+	class ComUtility final
 	{
 	public:
 		template<typename T1, typename T2>
@@ -19,6 +19,9 @@ namespace BaghdadCore
 
 			return target;
 		}
+
+	private:
+		ComUtility() = default;
 	};
 }
 

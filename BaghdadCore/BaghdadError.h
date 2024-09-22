@@ -32,7 +32,12 @@ namespace BaghdadCore
 		public std::runtime_error
 	{
 	public:
+		void Show() const noexcept;
+
 		BaghdadError(std::string msg);
 		virtual ~BaghdadError() noexcept override = default;
+
+	private:
+		std::string _msg;
 	};
 }
