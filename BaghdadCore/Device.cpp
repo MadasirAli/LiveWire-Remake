@@ -10,7 +10,7 @@ const DeviceContext& Device::GetDeviceContext() const noexcept
 	return *_pContext;
 }
 
-Microsoft::WRL::ComPtr<ID3D11Device> Device::GetNativePointer() const noexcept
+const Microsoft::WRL::ComPtr<ID3D11Device>& Device::GetComPtr() const noexcept
 {
 	return _ptr;
 }
@@ -27,7 +27,7 @@ Device::Device(const GraphicsCard& card)
 
 	WIN32_CALL(
 	D3D11CreateDevice(
-		card.GetNativePointer().Get(),
+		card.GetComPtr().Get(),
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
 		flags,

@@ -12,8 +12,12 @@ namespace BaghdadCore
 	{
 	public:
 		const DeviceContext& GetDeviceContext() const noexcept;
-		Microsoft::WRL::ComPtr<ID3D11Device> GetNativePointer() const noexcept;
+		const Microsoft::WRL::ComPtr<ID3D11Device>& GetComPtr() const noexcept;
 		Device(const GraphicsCard& card);
+
+		Device(Device&& device) noexcept = delete;
+
+		Device& operator=(const Device& device) = delete;
 
 	private:
 		std::unique_ptr<DeviceContext> _pContext;

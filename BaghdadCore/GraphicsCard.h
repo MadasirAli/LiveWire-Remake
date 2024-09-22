@@ -9,7 +9,7 @@ namespace BaghdadCore
 	class GraphicsCard final
 	{
 	public:
-		Microsoft::WRL::ComPtr<IDXGIAdapter> GetNativePointer() const noexcept;
+		const Microsoft::WRL::ComPtr<IDXGIAdapter>& GetComPtr() const noexcept;
 		GraphicsCard(Microsoft::WRL::ComPtr<IDXGIAdapter>&& pOther);
 
 	private:

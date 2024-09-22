@@ -4,7 +4,7 @@
 
 using namespace BaghdadCore;
 
-Microsoft::WRL::ComPtr<IDXGIAdapter> GraphicsCard::GetNativePointer() const noexcept
+const Microsoft::WRL::ComPtr<IDXGIAdapter>& GraphicsCard::GetComPtr() const noexcept
 {
 	return _ptr;
 }

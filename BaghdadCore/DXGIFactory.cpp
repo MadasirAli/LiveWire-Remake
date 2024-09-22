@@ -18,7 +18,7 @@ Swapchain DXGIFactory::CreateSwapchain(const Device& device, const Window& windo
 
 	WIN32_CALL(
 	_ptr->CreateSwapChain(
-		device.GetNativePointer().Get(),
+		device.GetComPtr().Get(),
 		&desc,
 		pSwapchain.ReleaseAndGetAddressOf()
 	));

@@ -141,8 +141,11 @@
   <ItemGroup>
     <ClInclude Include="BaghdadError.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="ComUtility.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="D3D11.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="DeviceChild.h" />
     <ClInclude Include="DeviceContext.h" />
     <ClInclude Include="DXGIFactory.h" />
     <ClInclude Include="DXGIInfoQueue.h" />
@@ -157,20 +160,27 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Win32.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaghdadError.cpp" />
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="ComUtility.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="Device.cpp" />
+    <ClCompile Include="DeviceChild.cpp" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="DXGIFactory.cpp" />
     <ClCompile Include="DXGIInfoQueue.cpp" />
@@ -184,13 +194,17 @@
     <ClCompile Include="imgui_stdlib.cpp" />
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture2D.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
