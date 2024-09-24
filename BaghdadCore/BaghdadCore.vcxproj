@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BaghdadError.h" />
+    <ClInclude Include="Blob.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="ComUtility.h" />
     <ClInclude Include="ConstantBuffer.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderModule.h" />
     <ClInclude Include="StartupFlags.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Texture.h" />
@@ -179,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaghdadError.cpp" />
+    <ClCompile Include="Blob.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="ComUtility.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
@@ -205,6 +208,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderModule.cpp" />
     <ClCompile Include="StartupFlags.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Texture.cpp" />
