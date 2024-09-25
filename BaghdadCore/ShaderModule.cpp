@@ -10,8 +10,7 @@ using namespace BaghdadCore;
 
 const Blob& ShaderModule::Compile()
 {
-    assert(_compiled == false,
-        "Shader is already compiled.");
+    assert(_compiled == false);
 
     using namespace Microsoft::WRL;
 
@@ -45,6 +44,12 @@ const Blob& ShaderModule::Compile()
             compileErrors.push_back(((char*)pMsg)[count]);
         }
 
+        _logger.LogError(
+            "Shader Module Compilation Failed: " + _nName +
+            "\nFeature Level: " + _targetFeatureLevel +
+            "\nEntry Point: " + _entryPoint +
+            "\n\n Compilation Errors: " + compileErrors);
+
         THROW_BERROR(
             "Failed to compile shader.\nFile Name: " + _nName +
             "\n\n Compile Errors:\n" + 
@@ -54,6 +59,13 @@ const Blob& ShaderModule::Compile()
     _pBlob = std::make_unique<Blob>(std::move(codeBlob));
 
     _compiled = true;
+
+    _logger.WriteLine(
+        "Shader Module Compiled: " + _nName +
+        "\nFeature Level: "        + _targetFeatureLevel + 
+        "\nEntry Point: "          + _entryPoint);
+
+    return *_pBlob;
 }
 
 ShaderModule& BaghdadCore::ShaderModule::EntryPoint(std::string& entryName)
@@ -61,6 +73,8 @@ ShaderModule& BaghdadCore::ShaderModule::EntryPoint(std::string& entryName)
     assert(_compiled == false);
 
     _entryPoint = std::string(entryName);
+
+    return *this;
 }
 
 ShaderModule& ShaderModule::TagetFeatureLevel(D3D_FEATURE_LEVEL featureLevel) noexcept
@@ -68,12 +82,13 @@ ShaderModule& ShaderModule::TagetFeatureLevel(D3D_FEATURE_LEVEL featureLevel) no
     assert(_compiled == false);
 
     _targetFeatureLevel = featureLevel;
+
+    return *this;
 }
 
 const Blob& ShaderModule::GetBlob() const noexcept
 {
-    assert(_compiled,
-        "Shader is not compiled yet.");
+    assert(_compiled);
 
     return *_pBlob;
 }
@@ -84,7 +99,8 @@ bool ShaderModule::IsCompiled() const noexcept
 }
 
 ShaderModule::ShaderModule(std::string& name) :
-    _compiled(false)
+    _compiled(false),
+    _logger(Globals::GetLogger())
 {   
     // to wide str
     const auto wideLength = name.length() * sizeof(wchar_t);
@@ -99,4 +115,6 @@ ShaderModule::ShaderModule(std::string& name) :
     pWStr.release();
 
     _nName = std::string(name);
+
+    _logger.WriteLine("Shader Module Created: " + _nName);
 }

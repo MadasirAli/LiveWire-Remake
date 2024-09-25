@@ -8,12 +8,15 @@ namespace BaghdadCore
 	class Globals final
 	{
 	public:
-		const Logger& GetLogger() const noexcept;
-		const StartupFlags& GetStartupFlags() const noexcept;
+		static const Logger& GetLogger() noexcept;
+		static const StartupFlags& GetStartupFlags() noexcept;
 
 	private:
-		StartupFlags _startupFlags;
-		Logger _logger;
+		Globals() = default;
+
+	private:
+		static StartupFlags _startupFlags;
+		static Logger _logger;
 	};
 }
 

@@ -2,12 +2,12 @@
 
 using namespace BaghdadCore;
 
-const Logger& BaghdadCore::Globals::GetLogger() const noexcept
+const Logger& BaghdadCore::Globals::GetLogger() noexcept
 {
     return _logger;
 }
 
-const StartupFlags& Globals::GetStartupFlags() const noexcept
+const StartupFlags& Globals::GetStartupFlags() noexcept
 {
     return _startupFlags;
 }

@@ -4,6 +4,8 @@
 #include <memory>
 
 #include "Blob.h"
+#include "Logger.h"
+#include "Globals.h"
 
 namespace BaghdadCore
 {
@@ -36,5 +38,7 @@ namespace BaghdadCore
 		std::string _nName;
 		std::wstring _name;
 		std::unique_ptr<Blob> _pBlob;
+
+		const Logger& _logger;
 	};
 }

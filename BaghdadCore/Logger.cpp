@@ -14,3 +14,8 @@ void Logger::WriteLine(const std::string& message) const noexcept
 {
 	std::cout << message << std::endl;
 }
+
+void Logger::LogError(const std::string& message) const noexcept
+{
+	std::cout << message << std::endl;
+}
