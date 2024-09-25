@@ -8,6 +8,8 @@
 
 using namespace BaghdadCore;
 
+#define _MODULE_DUMP std::string("\nName: " + _nName + "\nFeature Level: " + _targetFeatureLevel + "\nEntry Point: " + _entryPoint + "\n")
+
 const Blob& ShaderModule::Compile()
 {
     assert(_compiled == false);
@@ -23,6 +25,7 @@ const Blob& ShaderModule::Compile()
     flags |= D3DCOMPILE_DEBUG;
 #endif
 
+    // compiling
     auto result = D3DCompileFromFile(
         _name.c_str(),
         nullptr,
@@ -34,6 +37,7 @@ const Blob& ShaderModule::Compile()
         codeBlob.ReleaseAndGetAddressOf(),
         errorBlob.ReleaseAndGetAddressOf());
 
+    // failture handling
     if (result != S_OK || errorBlob.Get() != nullptr)
     {
         auto count = errorBlob->GetBufferSize();
@@ -45,27 +49,42 @@ const Blob& ShaderModule::Compile()
         }
 
         _logger.LogError(
-            "Shader Module Compilation Failed: " + _nName +
-            "\nFeature Level: " + _targetFeatureLevel +
-            "\nEntry Point: " + _entryPoint +
-            "\n\n Compilation Errors: " + compileErrors);
+            "Shader Module Compilation Failed." +
+            _MODULE_DUMP +
+            "\nCompilation Errors: " + compileErrors);
 
         THROW_BERROR(
-            "Failed to compile shader.\nFile Name: " + _nName +
+            "Failed to compile shader." +
+            _MODULE_DUMP +
             "\n\n Compile Errors:\n" + 
              compileErrors);
+    }
+
+    // obtaining reflection interface
+    result = D3DReflect(codeBlob->GetBufferPointer(), codeBlob->GetBufferSize(),
+        IID_ID3D11ShaderReflection, (void**)_pReflection.ReleaseAndGetAddressOf());
+
+    if (result != S_OK)
+    {
+        _logger.LogError("Shader Module Acuiring Reflection Interface Failed." + _MODULE_DUMP);
+
+        THROW_BERROR("Shader Module Acuiring Reflection Interface Failed." + _MODULE_DUMP);
     }
 
     _pBlob = std::make_unique<Blob>(std::move(codeBlob));
 
     _compiled = true;
 
-    _logger.WriteLine(
-        "Shader Module Compiled: " + _nName +
-        "\nFeature Level: "        + _targetFeatureLevel + 
-        "\nEntry Point: "          + _entryPoint);
+    _logger.WriteLine("Shader Module Compiled. " + _MODULE_DUMP);
 
     return *_pBlob;
+}
+
+const Microsoft::WRL::ComPtr<ID3D11ShaderReflection>& ShaderModule::GetComReflectionPointer() const noexcept
+{
+    assert(_compiled);
+
+    return _pReflection;
 }
 
 ShaderModule& BaghdadCore::ShaderModule::EntryPoint(std::string& entryName)

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <wrl/client.h>
 
 #include "Blob.h"
 #include "Logger.h"
@@ -12,6 +13,7 @@ namespace BaghdadCore
 	class ShaderModule final
 	{
 	public:
+		const Microsoft::WRL::ComPtr<ID3D11ShaderReflection>& GetComReflectionPointer() const noexcept;
 		ShaderModule& EntryPoint(std::string& entryName);
 		ShaderModule& TagetFeatureLevel(D3D_FEATURE_LEVEL featureLevel) noexcept;
 
@@ -24,7 +26,7 @@ namespace BaghdadCore
 		/// Compiles the shader.
 		/// </summary>
 		/// <returns>Compiled shader blob.</returns>
-		/// <exception cref="BaghdadError">On compilation failed.</exception>
+		/// <exception cref="BaghdadError">On compilation failed or failing to acuire reflection interface.</exception>
 		const Blob& Compile();
 
 		ShaderModule(const ShaderModule& shaderModule) = delete;
@@ -38,6 +40,8 @@ namespace BaghdadCore
 		std::string _nName;
 		std::wstring _name;
 		std::unique_ptr<Blob> _pBlob;
+
+		Microsoft::WRL::ComPtr<ID3D11ShaderReflection> _pReflection;
 
 		const Logger& _logger;
 	};
