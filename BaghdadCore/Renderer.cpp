@@ -1,14 +1,23 @@
 #include "Renderer.h"
 
 #include "BaghdadError.h"
+#include "GraphicsError.h"
 
 using namespace BaghdadCore;
 
 void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const
 {
-	// TODO: BIND MESH
+	const auto& context = _pDevice->GetDeviceContext();
+
+	// TODO: BIND MESH		
+	mesh.Bind(*_pDevice, context);
 	// TODO: BIND MATERIAL
+	material.Bind(*_pDevice, context);
 	// TODO: ISSUE DRAW CALL
+
+	D3D_CHECK_CALL(
+		context.GetComPtr()->Draw(mesh._vertexCount, 0u);
+	);
 }
 
 Renderer::Renderer()
@@ -23,4 +32,5 @@ Renderer::Renderer()
 	_pDevice = std::make_unique<Device>(*_pCard);
 	_pMaterialBuilder = std::make_unique<MaterialBuilder>(*_pDevice);
 	_pMeshLoader = std::make_unique<MeshLoader>(*_pDevice);
+	_pTextureBuilder = std::make_unique<TextureBuilder>(*_pDevice);
 }

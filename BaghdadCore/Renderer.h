@@ -8,6 +8,7 @@
 #include "Swapchain.h"
 #include "MaterialBuilder.h"
 #include "MeshLoader.h"
+#include "TextureBuilder.h"
 #include "Mesh.h"
 #include "Material.h"
 
@@ -36,5 +37,6 @@ namespace BaghdadCore
 
 		std::unique_ptr<MaterialBuilder> _pMaterialBuilder;
 		std::unique_ptr<MeshLoader> _pMeshLoader;
+		std::unique_ptr<TextureBuilder> _pTextureBuilder;
 	};
 }

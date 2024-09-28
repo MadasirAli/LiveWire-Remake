@@ -3,25 +3,34 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
+#include "Device.h"
+#include "DeviceContext.h"
+
 namespace BaghdadCore
 {
 	class Mesh final
 	{
-		class MeshLoader;
 		friend class MeshLoader;
 
-		class Renderer;
 		friend class Renderer;
 
 	public:
 		bool IsReadWrite() const noexcept;
-		Mesh(VertexBuffer&& vertexBuffer, IndexBuffer&& indexBuffer, bool readWrite);
+
+	private:
+		void Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG);
+
+		Mesh(VertexBuffer&& vertexBuffer,
+			IndexBuffer&& indexBuffer,
+			unsigned int vertexCount,
+			unsigned int indexCount);
 
 	public:
 		VertexBuffer _vertexBuffer;
 		IndexBuffer _indexBuffer;
 
-		bool _readWrite;
+		unsigned int _vertexCount = 0u;
+		unsigned int _indexCount = 0u;
 	};
 }
 

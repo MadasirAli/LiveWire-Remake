@@ -4,6 +4,7 @@
 
 #include "Mesh.h"
 #include "Device.h"	
+#include "Logger.h"
 
 namespace BaghdadCore
 {
@@ -22,6 +23,8 @@ namespace BaghdadCore
 
 		std::string _name;
 		bool _readWrite;
+
+		Logger _logger;
 	};
 }
 

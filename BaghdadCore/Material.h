@@ -7,17 +7,19 @@
 #include "ShaderReflectionDB.h"
 #include "ShaderModule.h"
 
+#include "Device.h"
+#include "DeviceContext.h"
+
 namespace BaghdadCore
 {
 	class Material final
 	{
-		class MaterialBuilder;
 		friend class MaterialBuilder;
-
-		class Renderer;
 		friend class Renderer;
 		
 	private:
+		void Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG);
+
 		Material(VertexShader&& vertexShader, PixelShader&& pixelShader, 
 			ShaderModule&& vertexModule,
 			ShaderReflectionDB&& vertexReflectionDB, ShaderReflectionDB&& pixelReflectionDB);

@@ -1,5 +1,7 @@
 #include "MeshLoader.h"
 
+#include "Globals.h"
+
 using namespace BaghdadCore;
 
 Mesh MeshLoader::Create()
@@ -26,5 +28,6 @@ MeshLoader& MeshLoader::Load(const std::string& name) noexcept
 
 MeshLoader::MeshLoader(const Device& device) :
 	_device(device),
-	_readWrite(false)
+	_readWrite(false),
+	_logger(Globals::GetLogger())
 {}
