@@ -20,6 +20,21 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const
 	);
 }
 
+TextureBuilder& Renderer::GetTextureBuilder() const noexcept
+{
+	return *_pTextureBuilder;
+}
+
+MaterialBuilder& Renderer::GetMaterialBuilder() const noexcept
+{
+	return *_pMaterialBuilder;
+}
+
+MeshLoader& Renderer::GetMeshLoader() const noexcept
+{
+	return *_pMeshLoader;
+}
+
 Renderer::Renderer()
 {
 	auto cards = _factory.EnumGraphicCards();

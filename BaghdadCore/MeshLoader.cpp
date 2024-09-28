@@ -4,7 +4,7 @@
 
 using namespace BaghdadCore;
 
-Mesh MeshLoader::Create()
+Mesh MeshLoader::Load()
 {
 	// TODO: LOAD THE MESH
 	// TODO: Create Vertex And Index Buffers

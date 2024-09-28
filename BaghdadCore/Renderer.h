@@ -19,6 +19,11 @@ namespace BaghdadCore
 	public:
 		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(_DEBUG);
 
+		TextureBuilder& GetTextureBuilder() const noexcept;
+		MaterialBuilder& GetMaterialBuilder() const noexcept;
+		MeshLoader& GetMeshLoader() const noexcept;
+
+
 		/// <summary>
 		/// Creates device on primary display adapter (graphics card).
 		/// </summary>

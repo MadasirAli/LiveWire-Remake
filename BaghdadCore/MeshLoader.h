@@ -11,7 +11,7 @@ namespace BaghdadCore
 	class MeshLoader final
 	{
 	public:
-		Mesh Create();
+		Mesh Load();
 
 		MeshLoader& AllowReadWrite() noexcept;
 		MeshLoader& Load(const std::string& name) noexcept;
