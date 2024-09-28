@@ -17,13 +17,13 @@
 #define D3D_CALL(__func)																\
 {																						\
 	auto& __queue = DXGIInfoQueue::GetInstance();										\
-    __queue.SetInfoQueue();																\																					\
+    __queue.SetInfoQueue();																\
 	const auto __result = __func;														\
 	std::string __msg;																	\
 	if (__result != S_OK || __queue.Check())											\
 	{																					\
 		__msg += __queue.GetMessages();													\
-		THROW_GERROR(msg);																\
+		THROW_GERROR(__msg);															\
 	}																					\
 }																						\
 
@@ -42,11 +42,11 @@
 #else
 
 #define D3D_CALL(func)																	\
-{																						\																				\
+{																						\
 	const auto __result = func;															\
 	std::string __msg;																	\
 	if (__result != S_OK)																\
-	{																					\													\
+	{																					\
 		THROW_GERROR(__msg);															\
 	}																					\
 }																						\

@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Win32.h"
+#include "Globals.h"
 
 using namespace BaghdadCore;
 
@@ -15,4 +16,6 @@ BaghdadError::BaghdadError(std::string msg) :
 	runtime_error(msg) 
 {
 	_msg = std::move(msg);
+
+	Globals::GetLogger().LogError(_msg);
 }

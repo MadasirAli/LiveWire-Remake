@@ -6,6 +6,7 @@
 #include "GraphicsCard.h"
 #include "Device.h"
 #include "Swapchain.h"
+#include "MaterialBuilder.h"
 
 namespace BaghdadCore
 {
@@ -23,6 +24,7 @@ namespace BaghdadCore
 		std::unique_ptr<GraphicsCard> _pCard;
 		std::unique_ptr<Device> _pDevice;
 		std::unique_ptr<Swapchain> _pSwapchain;
+
+		std::unique_ptr<MaterialBuilder> _pMaterialBuilder;
 	};
 }
-

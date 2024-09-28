@@ -20,7 +20,7 @@ namespace BaghdadCore
 		const Blob& GetBlob() const noexcept;
 		bool IsCompiled() const noexcept;
 
-		ShaderModule(std::string& name);
+		ShaderModule(const std::string& name);
 
 		/// <summary>
 		/// Compiles the shader.

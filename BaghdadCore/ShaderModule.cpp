@@ -117,7 +117,7 @@ bool ShaderModule::IsCompiled() const noexcept
     return _compiled;
 }
 
-ShaderModule::ShaderModule(std::string& name) :
+ShaderModule::ShaderModule(const std::string& name) :
     _compiled(false),
     _logger(Globals::GetLogger())
 {   

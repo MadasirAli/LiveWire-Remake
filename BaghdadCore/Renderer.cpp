@@ -14,4 +14,5 @@ Renderer::Renderer()
 
 	_pCard = std::make_unique<GraphicsCard>(std::move(cards[0]));
 	_pDevice = std::make_unique<Device>(*_pCard);
+	_pMaterialBuilder = std::make_unique<MaterialBuilder>(*_pDevice);
 }
