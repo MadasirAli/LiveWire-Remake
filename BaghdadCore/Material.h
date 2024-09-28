@@ -11,11 +11,12 @@ namespace BaghdadCore
 {
 	class Material final
 	{
+		class MaterialBuilder;
 		friend class MaterialBuilder;
 
-	public:
-		void Bind() const;
-
+		class Renderer;
+		friend class Renderer;
+		
 	private:
 		Material(VertexShader&& vertexShader, PixelShader&& pixelShader, 
 			ShaderModule&& vertexModule,

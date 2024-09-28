@@ -12,6 +12,11 @@ namespace BaghdadCore
 	class MaterialBuilder final
 	{
 	public:
+		/// <summary>
+		/// Creates the specified material.
+		/// </summary>
+		/// <returns>The created material</returns>
+		/// <exception cref="Baghdad Error">On Shaders compilation failed.</exception>
 		Material Build();
 
 		MaterialBuilder& VS(const std::string& name) noexcept;
