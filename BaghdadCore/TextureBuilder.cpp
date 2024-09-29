@@ -2,18 +2,86 @@
 
 #include <vector>
 #include <fstream>
+#include <wrl/client.h>
 
 #include "Globals.h"
 #include "BaghdadError.h"
+#include "GraphicsError.h"
+#include "ComUtility.h"
 
 using namespace BaghdadCore;
 
-Texture BaghdadCore::TextureBuilder::Build()
+Texture2D BaghdadCore::TextureBuilder::Build()
 {
-	// TODO: TEXTURE LOADING
-	// TODO: TEXTURE CREATION
+	using namespace Microsoft::WRL;
 
-	return Texture();
+	// loading texture or file
+	const auto file = _ppmLoader.Load(_name);
+	const auto header = file.GetHeader();
+
+	// creating texture
+	D3D11_TEXTURE2D_DESC desc = { 0 };
+	desc.Format = header.depth == 1 ?
+		DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT :
+		DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UINT;
+	desc.BindFlags = _renderTexture ? 
+		D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET :
+		D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags = _readWrite ?
+		D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE : 0u;
+	desc.Usage = _readWrite ?
+		D3D11_USAGE::D3D11_USAGE_DYNAMIC : D3D11_USAGE_IMMUTABLE;
+	desc.ArraySize = 1u;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+
+	D3D11_SUBRESOURCE_DATA data = { 0 };
+	data.pSysMem = file.GetBufferpPtr().get();
+	data.SysMemPitch = (header.depth == 1? UCHAR_MAX : USHRT_MAX) * 3;
+
+	ComPtr<ID3D11Texture2D> pTexture{};
+	const auto result = _device.GetComPtr()->CreateTexture2D(
+		&desc, &data, pTexture.ReleaseAndGetAddressOf());
+
+	if (result != S_OK)
+	{
+		_logger.LogError("Failed to create Texture: " + _name +
+			"\nWidth: " + std::to_string(header.width) +
+			"\nHeight: " + std::to_string(header.height));
+
+		THROW_GERROR("Failed to create Texture: " + _name +
+			"\nWidth: " + std::to_string(header.width) +
+			"\nHeight: " + std::to_string(header.height));
+	}
+
+	_logger.WriteLine("Texture Created: " + _name +
+		"\nWidth: " + std::to_string(header.width) +
+		"\nHeight: " + std::to_string(header.height));
+
+	return Texture2D(std::move(pTexture));
+}
+
+TextureBuilder& TextureBuilder::Clear() noexcept
+{
+	_name = "";
+	_readWrite = false;
+	_renderTexture = false;
+
+	return *this;
+}
+
+TextureBuilder& TextureBuilder::ReadWrite() noexcept
+{
+	_readWrite = true;
+
+	return *this;
+}
+
+TextureBuilder& TextureBuilder::RenderTexture() noexcept
+{
+	_renderTexture = true;
+
+	return *this;
 }
 
 TextureBuilder& TextureBuilder::FromFile(const std::string& name) noexcept

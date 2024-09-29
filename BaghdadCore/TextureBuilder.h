@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Device.h"
-#include "Texture.h"
+#include "Texture2D.h"
 #include "Logger.h"
 
 namespace BaghdadCore
@@ -28,9 +28,13 @@ namespace BaghdadCore
 				const Header& GetHeader() const noexcept;
 				const std::unique_ptr<char[]>& GetBufferpPtr() const noexcept;
 
+				PPMFile() = default;
 				PPMFile(
 					const Header& header, std::unique_ptr<char[]>&& pFile,
 					const unsigned int pixelOffset);
+
+				PPMFile(const PPMFile& ppmFile) = delete;
+				PPMFile& operator=(const PPMFile& ppmFile) = delete;
 
 			private:
 				Header _header;
@@ -48,7 +52,16 @@ namespace BaghdadCore
 		};
 
 	public:
-		Texture Build();
+		/// <summary>
+		/// Creates the specified texture.
+		/// </summary>
+		/// <returns>The created texture.</returns>
+		/// <exception cref="BaghdadError">On Failture</exception>
+		Texture2D Build();
+
+		TextureBuilder& Clear() noexcept;
+		TextureBuilder& ReadWrite() noexcept;
+		TextureBuilder& RenderTexture() noexcept;
 		TextureBuilder& FromFile(const std::string& name) noexcept;
 
 		TextureBuilder(const Device& device);
@@ -57,6 +70,10 @@ namespace BaghdadCore
 		const Device& _device;
 
 		std::string _name;
+		bool _readWrite;
+		bool _renderTexture;
+
+		PPMLoader _ppmLoader;
 		const Logger& _logger;
 	};
 }
