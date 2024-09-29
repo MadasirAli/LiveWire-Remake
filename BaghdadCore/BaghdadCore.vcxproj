@@ -142,6 +142,7 @@
     <ClInclude Include="BaghdadError.h" />
     <ClInclude Include="Blob.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="BufferBuilder.h" />
     <ClInclude Include="ComUtility.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="D3D11.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="BaghdadError.cpp" />
     <ClCompile Include="Blob.cpp" />
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="BufferBuilder.cpp" />
     <ClCompile Include="ComUtility.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="Device.cpp" />

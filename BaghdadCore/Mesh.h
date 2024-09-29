@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
@@ -11,26 +13,26 @@ namespace BaghdadCore
 	class Mesh final
 	{
 		friend class MeshLoader;
-
 		friend class Renderer;
 
 	public:
-		bool IsReadWrite() const noexcept;
+		struct vertex final
+		{
+			DirectX::XMVECTOR position;
+			DirectX::XMVECTOR normal;
+			DirectX::XMVECTOR uv;
+		};
 
 	private:
 		void Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG);
 
 		Mesh(VertexBuffer&& vertexBuffer,
-			IndexBuffer&& indexBuffer,
-			unsigned int vertexCount,
-			unsigned int indexCount);
+			unsigned int vertexCount);
 
 	public:
 		VertexBuffer _vertexBuffer;
-		IndexBuffer _indexBuffer;
 
 		unsigned int _vertexCount = 0u;
-		unsigned int _indexCount = 0u;
 	};
 }
 

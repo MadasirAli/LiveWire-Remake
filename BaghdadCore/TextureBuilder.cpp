@@ -101,9 +101,8 @@ TextureBuilder::PPMLoader::Load(const std::string& name) const
 {
 	std::ifstream stream{ name, std::ios::binary};
 
-	if (stream.good() == false)
+	if (stream.is_open() == false)
 	{
-		stream.close();
 		THROW_BERROR("Failed to Open File.\n\n" + name)
 	}
 
@@ -118,11 +117,6 @@ TextureBuilder::PPMLoader::Load(const std::string& name) const
 		pFile = std::make_unique<char[]>(size);
 	}
 	catch(...)
-	{
-		THROW_BERROR("Failed to allocate memory");
-	}
-
-	if (pFile == nullptr)
 	{
 		stream.close();
 		THROW_BERROR("Failed to allocate memory");
