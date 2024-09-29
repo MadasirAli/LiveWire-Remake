@@ -28,6 +28,9 @@ Mesh MeshLoader::Load()
 	_device.GetComPtr()->CreateBuffer(
 		&desc, &data, pBuffer.ReleaseAndGetAddressOf()));
 
+	_logger.WriteLine("Buffer Created." + 
+		std::string("\nWidth: ") + std::to_string(desc.ByteWidth));
+
 	return Mesh(
 		std::move(VertexBuffer(
 			std::move(Buffer(

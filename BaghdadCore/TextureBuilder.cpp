@@ -41,19 +41,9 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		sizeof(char) * 3 : sizeof(wchar_t) * 3;
 
 	ComPtr<ID3D11Texture2D> pTexture{};
-	const auto result = _device.GetComPtr()->CreateTexture2D(
-		&desc, &data, pTexture.ReleaseAndGetAddressOf());
-
-	if (result != S_OK)
-	{
-		_logger.LogError("Failed to create Texture: " + _name +
-			"\nWidth: " + std::to_string(header.width) +
-			"\nHeight: " + std::to_string(header.height));
-
-		THROW_GERROR("Failed to create Texture: " + _name +
-			"\nWidth: " + std::to_string(header.width) +
-			"\nHeight: " + std::to_string(header.height));
-	}
+	D3D_CALL(
+	_device.GetComPtr()->CreateTexture2D(
+		&desc, &data, pTexture.ReleaseAndGetAddressOf()));
 
 	_logger.WriteLine("Texture Created: " + _name +
 		"\nWidth: " + std::to_string(header.width) +
