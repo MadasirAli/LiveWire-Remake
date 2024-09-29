@@ -24,9 +24,6 @@ namespace BaghdadCore
 
 		MaterialBuilder(const Device& device);
 
-		MaterialBuilder(const MaterialBuilder& materialBuilder) = delete;
-		MaterialBuilder& operator= (MaterialBuilder&& materialBuilder) noexcept = delete;
-
 	private:
 		ShaderReflectionDB _CreateReflectionDB(const ShaderModule& shaderModule) const noexcept;
 	private:

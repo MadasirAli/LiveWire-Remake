@@ -33,9 +33,6 @@ namespace BaghdadCore
 					const Header& header, std::unique_ptr<char[]>&& pFile,
 					const unsigned int pixelOffset);
 
-				PPMFile(const PPMFile& ppmFile) = delete;
-				PPMFile& operator=(const PPMFile& ppmFile) = delete;
-
 			private:
 				Header _header;
 				std::unique_ptr<char[]> _pFile;
@@ -60,6 +57,9 @@ namespace BaghdadCore
 		Texture2D Build();
 
 		TextureBuilder& Clear() noexcept;
+		TextureBuilder& Size(const unsigned int width, const unsigned int height) noexcept;
+		TextureBuilder& InitialData(const char* const pData);
+		TextureBuilder& Format(const DXGI_FORMAT format);
 		TextureBuilder& ReadWrite() noexcept;
 		TextureBuilder& RenderTexture() noexcept;
 		TextureBuilder& FromFile(const std::string& name) noexcept;
@@ -70,8 +70,16 @@ namespace BaghdadCore
 		const Device& _device;
 
 		std::string _name;
-		bool _readWrite;
-		bool _renderTexture;
+
+		bool _fromFile = false;
+		bool _readWrite = false;
+		bool _renderTexture = false;
+
+		unsigned int _width = 0u;
+		unsigned int _height = 0u;
+
+		const char* _pData = nullptr;
+		DXGI_FORMAT _format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 
 		PPMLoader _ppmLoader;
 		const Logger& _logger;

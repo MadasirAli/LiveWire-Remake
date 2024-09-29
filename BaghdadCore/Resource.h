@@ -8,9 +8,10 @@ namespace BaghdadCore
 {
 	class Resource : protected DeviceChild
 	{
-	protected:
+	public:
 		const Microsoft::WRL::ComPtr<ID3D11Resource>& GetComResourcePtr() const noexcept;
 
+	protected:
 		Resource(Microsoft::WRL::ComPtr<ID3D11Resource>&& pResource);
 
 		virtual ~Resource() noexcept override = default;

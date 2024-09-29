@@ -29,9 +29,6 @@ namespace BaghdadCore
 		/// <exception cref="BaghdadError">On compilation failed or failing to acuire reflection interface.</exception>
 		const Blob& Compile();
 
-		ShaderModule(const ShaderModule& shaderModule) = delete;
-		ShaderModule& operator= (const ShaderModule& shaderModule) = delete;
-
 	private:
 		std::string _entryPoint = "main";
 		std::string _targetFeatureLevel = "cs_5_0";

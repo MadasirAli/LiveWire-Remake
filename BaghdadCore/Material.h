@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <wrl/client.h>
 
 #include "PixelShader.h"
 #include "VertexShader.h"
@@ -22,7 +23,8 @@ namespace BaghdadCore
 
 		Material(VertexShader&& vertexShader, PixelShader&& pixelShader, 
 			ShaderModule&& vertexModule,
-			ShaderReflectionDB&& vertexReflectionDB, ShaderReflectionDB&& pixelReflectionDB);
+			ShaderReflectionDB&& vertexReflectionDB, ShaderReflectionDB&& pixelReflectionDB,
+			Microsoft::WRL::ComPtr<ID3D11InputLayout>&& pInputLayout);
 
 	private:
 		VertexShader _vertexShader;
@@ -30,6 +32,8 @@ namespace BaghdadCore
 		ShaderModule _vertexModule;
 		ShaderReflectionDB _pixelReflectionDB;
 		ShaderReflectionDB _vertexReflectionDB;
+
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> _pInputLayout;
 	};
 }
 

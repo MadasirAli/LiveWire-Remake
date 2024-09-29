@@ -9,15 +9,34 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const
 {
 	const auto& context = _pDevice->GetDeviceContext();
 
-	// TODO: BIND MESH		
+	/// binding mesh	
 	mesh.Bind(*_pDevice, context);
-	// TODO: BIND MATERIAL
+	// binding material
 	material.Bind(*_pDevice, context);
-	// TODO: ISSUE DRAW CALL
 
+	// issuing draw call
 	D3D_CHECK_CALL(
 		context.GetComPtr()->Draw(mesh._vertexCount, 0u);
 	);
+}
+
+void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const noexcept(_DEBUG)
+{
+	D3D_CHECK_CALL(
+	_pDevice->GetDeviceContext()
+		.GetComPtr()->CopyResource(
+			source.GetComResourcePtr().Get(), destination.GetComResourcePtr().Get());
+	);
+}
+
+void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture) noexcept
+{
+	_pRenderTexture = std::move(pRenderTexture);
+}
+
+Texture2D& Renderer::GetRenderTexture() const noexcept
+{
+	return *_pRenderTexture;
 }
 
 TextureBuilder& Renderer::GetTextureBuilder() const noexcept
@@ -35,6 +54,11 @@ MeshLoader& Renderer::GetMeshLoader() const noexcept
 	return *_pMeshLoader;
 }
 
+BufferBuilder& Renderer::GetBufferBuilder() const noexcept
+{
+	return *_pBufferBuilder;
+}
+
 Renderer::Renderer()
 {
 	auto cards = _factory.EnumGraphicCards();
@@ -48,4 +72,5 @@ Renderer::Renderer()
 	_pMaterialBuilder = std::make_unique<MaterialBuilder>(*_pDevice);
 	_pMeshLoader = std::make_unique<MeshLoader>(*_pDevice);
 	_pTextureBuilder = std::make_unique<TextureBuilder>(*_pDevice);
+	_pBufferBuilder = std::make_unique<BufferBuilder>(*_pDevice);
 }

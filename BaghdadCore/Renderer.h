@@ -11,6 +11,7 @@
 #include "TextureBuilder.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "BufferBuilder.h"
 
 namespace BaghdadCore
 {
@@ -18,21 +19,21 @@ namespace BaghdadCore
 	{
 	public:
 		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(_DEBUG);
+		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(_DEBUG);
+
+		void SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture) noexcept;
+		Texture2D& GetRenderTexture() const noexcept;
 
 		TextureBuilder& GetTextureBuilder() const noexcept;
 		MaterialBuilder& GetMaterialBuilder() const noexcept;
 		MeshLoader& GetMeshLoader() const noexcept;
-
+		BufferBuilder& GetBufferBuilder() const noexcept;
 
 		/// <summary>
 		/// Creates device on primary display adapter (graphics card).
 		/// </summary>
 		/// <exception cref="BaghdadError">If no Graphics capable adapter found.</exception>
 		Renderer();
-
-		Renderer(const Renderer& renderer) = delete;
-
-		Renderer& operator= (const Renderer& renderer) = delete;
 
 	private:
 		DXGIFactory _factory;
@@ -43,5 +44,8 @@ namespace BaghdadCore
 		std::unique_ptr<MaterialBuilder> _pMaterialBuilder;
 		std::unique_ptr<MeshLoader> _pMeshLoader;
 		std::unique_ptr<TextureBuilder> _pTextureBuilder;
+		std::unique_ptr<BufferBuilder> _pBufferBuilder;
+
+		std::unique_ptr<Texture2D> _pRenderTexture;
 	};
 }

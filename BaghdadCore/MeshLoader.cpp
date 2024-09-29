@@ -93,24 +93,18 @@ MeshLoader::STLLoader::Load(const std::string& name) const
 		const auto* const pData = ((float*)(pFile.get() + count));
 
 		// reading current face normal
-		DirectX::XMVECTOR normal{};
-		normal.m128_f32[0] = pData[0];
-		normal.m128_f32[1] = pData[1];
-		normal.m128_f32[2] = pData[2];
-		normal.m128_f32[3] = 0;
+		DirectX::XMFLOAT3 normal = 
+			DirectX::XMFLOAT3(pData[0], pData[1], pData[2]);
 
 		count += sizeof(float) * 3;
 
 		// reading face vertices
 		for (auto v = 0; v < 3; v++)
 		{
-			Mesh::vertex vertex = { 0 };
+			Mesh::vertex vertex{};
 			vertex.normal = normal;
-
-			vertex.position.m128_f32[0] = pData[0];
-			vertex.position.m128_f32[1] = pData[1];
-			vertex.position.m128_f32[2] = pData[2];
-			vertex.position.m128_f32[3] = 0;
+			vertex.position = DirectX::XMFLOAT3(
+				pData[0], pData[1], pData[2]);
 
 			count += sizeof(float) * 3;
 

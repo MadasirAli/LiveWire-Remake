@@ -18,9 +18,9 @@ namespace BaghdadCore
 	public:
 		struct vertex final
 		{
-			DirectX::XMVECTOR position;
-			DirectX::XMVECTOR normal;
-			DirectX::XMVECTOR uv;
+			DirectX::XMFLOAT3 position;
+			DirectX::XMFLOAT3 normal;
+			DirectX::XMFLOAT2 uv;
 		};
 
 	private:

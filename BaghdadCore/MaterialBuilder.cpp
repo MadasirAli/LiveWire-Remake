@@ -53,12 +53,23 @@ Material BaghdadCore::MaterialBuilder::Build()
 
 	_logger.WriteLine("Material Created.");
 
+	// creating input layout
+	ComPtr<ID3D11InputLayout> pInputLayout{};
+	D3D_CALL(
+		_device.GetComPtr()->CreateInputLayout(vertexReflectionDB.InputDescs.data(),
+			vertexReflectionDB.InputDescs.size(),
+			vertexBlob.GetComPtr()->GetBufferPointer(),
+			vertexBlob.GetComPtr()->GetBufferSize(),
+			&pInputLayout)
+	);
+
 	return Material(
 		std::move(VertexShader(std::move(pVertexShader))),
 		std::move(PixelShader(std::move(pPixelShader))),
 		std::move(vertexModule),
 		std::move(vertexReflectionDB),
-		std::move(pixelReflectionDB));
+		std::move(pixelReflectionDB),
+		std::move(pInputLayout));
 }
 
 ShaderReflectionDB MaterialBuilder::_CreateReflectionDB(const ShaderModule& shaderModule) const noexcept

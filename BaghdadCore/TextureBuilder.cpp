@@ -15,15 +15,30 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 {
 	using namespace Microsoft::WRL;
 
-	// loading texture or file
-	const auto file = _ppmLoader.Load(_name);
-	const auto header = file.GetHeader();
+	unsigned int width = _width;
+	unsigned int height = _height;
+	DXGI_FORMAT format = _format;
+
+	const char* pData = _pData;
+
+	if (_fromFile)
+	{
+		const auto file = _ppmLoader.Load(_name);
+		const auto header = file.GetHeader();
+
+		format = header.depth == 1 ?
+			DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT :
+			DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UINT;
+
+		width = header.width;
+		height = header.height;
+	}
+
+	unsigned int sliceSize = DirectXUtil::BitsPerPixel(format) / 8;
 
 	// creating texture
 	D3D11_TEXTURE2D_DESC desc = { 0 };
-	desc.Format = header.depth == 1 ?
-		DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT :
-		DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UINT;
+	desc.Format = format;
 	desc.BindFlags = _renderTexture ? 
 		D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET :
 		D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
@@ -34,11 +49,12 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	desc.ArraySize = 1u;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
+	desc.Width = width;
+	desc.Height = height;
 
 	D3D11_SUBRESOURCE_DATA data = { 0 };
-	data.pSysMem = file.GetBufferpPtr().get();
-	data.SysMemPitch = header.depth == 1? 
-		sizeof(char) * 3 : sizeof(wchar_t) * 3;
+	data.pSysMem = pData;
+	data.SysMemPitch = sliceSize;
 
 	ComPtr<ID3D11Texture2D> pTexture{};
 	D3D_CALL(
@@ -46,8 +62,8 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		&desc, &data, pTexture.ReleaseAndGetAddressOf()));
 
 	_logger.WriteLine("Texture Created: " + _name +
-		"\nWidth: " + std::to_string(header.width) +
-		"\nHeight: " + std::to_string(header.height));
+		"\nWidth: " + std::to_string(width) +
+		"\nHeight: " + std::to_string(height));
 
 	return Texture2D(std::move(pTexture));
 }
@@ -57,6 +73,33 @@ TextureBuilder& TextureBuilder::Clear() noexcept
 	_name = "";
 	_readWrite = false;
 	_renderTexture = false;
+	_fromFile = false;
+	_width = 0u;
+	_height = 0u;
+	_pData = nullptr;
+	_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+
+	return *this;
+}
+
+TextureBuilder& TextureBuilder::Size(const unsigned int width, const unsigned int height) noexcept
+{
+	_width = width;
+	_height = height;
+
+	return *this;
+}
+
+TextureBuilder& TextureBuilder::InitialData(const char* const pData)
+{
+	_pData = pData;
+
+	return *this;
+}
+
+TextureBuilder& TextureBuilder::Format(const DXGI_FORMAT format)
+{
+	_format = format;
 
 	return *this;
 }
@@ -78,6 +121,7 @@ TextureBuilder& TextureBuilder::RenderTexture() noexcept
 TextureBuilder& TextureBuilder::FromFile(const std::string& name) noexcept
 {
 	_name = std::string(name);
+	_fromFile = true;
 
 	return *this;
 }
