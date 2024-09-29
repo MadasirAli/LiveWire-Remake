@@ -37,7 +37,8 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 
 	D3D11_SUBRESOURCE_DATA data = { 0 };
 	data.pSysMem = file.GetBufferpPtr().get();
-	data.SysMemPitch = (header.depth == 1? UCHAR_MAX : USHRT_MAX) * 3;
+	data.SysMemPitch = header.depth == 1? 
+		sizeof(char) * 3 : sizeof(wchar_t) * 3;
 
 	ComPtr<ID3D11Texture2D> pTexture{};
 	const auto result = _device.GetComPtr()->CreateTexture2D(
