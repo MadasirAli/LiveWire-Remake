@@ -44,7 +44,7 @@ BufferBuilder& BufferBuilder::Clear() noexcept
 	return *this;
 }
 
-BufferBuilder& BufferBuilder::InitialData(const char* pData, const unsigned int size)
+BufferBuilder& BufferBuilder::InitialData(const char* pData, const unsigned int size) noexcept
 {
 	_pData = pData;
 	_size = size;

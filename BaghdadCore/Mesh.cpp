@@ -6,7 +6,7 @@
 
 using namespace BaghdadCore;
 
-void Mesh::Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG)
+void Mesh::Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG)
 {
 	// binding vertex buffer
 	const auto& pContext = context.GetComPtr();

@@ -4,7 +4,7 @@
 
 using namespace BaghdadCore;
 
-void Material::Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG)
+void Material::Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG)
 {
 	const auto& pContext = context.GetComPtr();
 

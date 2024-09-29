@@ -34,7 +34,7 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		height = header.height;
 	}
 
-	unsigned int sliceSize = DirectXUtil::BitsPerPixel(format) / 8;
+	unsigned int sliceSize = (unsigned int)DirectXUtil::BitsPerPixel(format) / 8;
 
 	// creating texture
 	D3D11_TEXTURE2D_DESC desc = { 0 };

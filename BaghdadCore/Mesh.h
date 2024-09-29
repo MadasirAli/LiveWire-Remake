@@ -24,7 +24,7 @@ namespace BaghdadCore
 		};
 
 	private:
-		void Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG);
+		void Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG);
 
 		Mesh(VertexBuffer&& vertexBuffer,
 			unsigned int vertexCount);

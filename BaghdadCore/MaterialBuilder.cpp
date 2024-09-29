@@ -57,7 +57,7 @@ Material BaghdadCore::MaterialBuilder::Build()
 	ComPtr<ID3D11InputLayout> pInputLayout{};
 	D3D_CALL(
 		_device.GetComPtr()->CreateInputLayout(vertexReflectionDB.InputDescs.data(),
-			vertexReflectionDB.InputDescs.size(),
+			(UINT)vertexReflectionDB.InputDescs.size(),
 			vertexBlob.GetComPtr()->GetBufferPointer(),
 			vertexBlob.GetComPtr()->GetBufferSize(),
 			&pInputLayout)
@@ -82,7 +82,7 @@ ShaderReflectionDB MaterialBuilder::_CreateReflectionDB(const ShaderModule& shad
 	reflector->GetDesc(&desc);
 
 	// reflecting bindable resources
-	for (auto i = 0; i < desc.BoundResources; ++i)
+	for (auto i = 0u; i < desc.BoundResources; ++i)
 	{
 		D3D11_SHADER_INPUT_BIND_DESC inputDesc = { 0 };
 		reflector->GetResourceBindingDesc(i, &inputDesc);
@@ -108,7 +108,7 @@ ShaderReflectionDB MaterialBuilder::_CreateReflectionDB(const ShaderModule& shad
 	}
 
 	// reflecting input layout or input params
-	for (auto i = 0; i < desc.InputParameters; ++i)
+	for (auto i = 0u; i < desc.InputParameters; ++i)
 	{
 		D3D11_SIGNATURE_PARAMETER_DESC paramDesc = { 0 };
 		reflector->GetInputParameterDesc(i, &paramDesc);
@@ -157,14 +157,14 @@ ShaderReflectionDB MaterialBuilder::_CreateReflectionDB(const ShaderModule& shad
 	return db;
 }
 
-MaterialBuilder& BaghdadCore::MaterialBuilder::VS(const std::string& name)
+MaterialBuilder& BaghdadCore::MaterialBuilder::VS(const std::string& name) noexcept
 {
 	_vertexShaderName = std::string(name);
 
 	return *this;
 }
 
-MaterialBuilder& MaterialBuilder::PS(const std::string& name)
+MaterialBuilder& MaterialBuilder::PS(const std::string& name) noexcept
 {
 	_pixelShaderName = std::string(name);
 

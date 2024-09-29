@@ -19,7 +19,7 @@ namespace BaghdadCore
 		friend class Renderer;
 		
 	private:
-		void Bind(const Device& device, const DeviceContext& context) const noexcept(_DEBUG);
+		void Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG);
 
 		Material(VertexShader&& vertexShader, PixelShader&& pixelShader, 
 			ShaderModule&& vertexModule,

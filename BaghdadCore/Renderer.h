@@ -18,8 +18,8 @@ namespace BaghdadCore
 	class Renderer final
 	{
 	public:
-		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(_DEBUG);
-		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(_DEBUG);
+		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG);
+		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG);
 
 		void SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture) noexcept;
 		Texture2D& GetRenderTexture() const noexcept;

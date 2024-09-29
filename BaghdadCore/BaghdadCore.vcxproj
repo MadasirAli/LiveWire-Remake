@@ -193,6 +193,7 @@
     <ClCompile Include="BufferBuilder.cpp" />
     <ClCompile Include="ComUtility.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="D3D11.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DeviceChild.cpp" />
     <ClCompile Include="DeviceContext.cpp" />

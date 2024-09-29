@@ -14,7 +14,7 @@ Mesh MeshLoader::Load()
 	const auto mesh = _stlLoader.Load(_name);
 	
 	D3D11_BUFFER_DESC desc = { 0 };
-	desc.ByteWidth = sizeof(Mesh::vertex) * mesh.size();
+	desc.ByteWidth = sizeof(Mesh::vertex) * (UINT)mesh.size();
 	desc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = 0u;
@@ -34,7 +34,7 @@ Mesh MeshLoader::Load()
 	return Mesh(
 		std::move(VertexBuffer(
 			std::move(Buffer(
-				std::move(pBuffer))))), mesh.size());
+				std::move(pBuffer))))), (unsigned int)mesh.size());
 }
 
 MeshLoader& MeshLoader::Load(const std::string& name) noexcept
@@ -88,7 +88,7 @@ MeshLoader::STLLoader::Load(const std::string& name) const
 	auto vertices = std::vector<Mesh::vertex>(length);
 
 	// opening facets
-	for (auto i = 0; i < length; ++i)
+	for (auto i = 0u; i < length; ++i)
 	{
 		const auto* const pData = ((float*)(pFile.get() + count));
 

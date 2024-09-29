@@ -5,7 +5,7 @@
 
 using namespace BaghdadCore;
 
-void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const
+void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG)
 {
 	const auto& context = _pDevice->GetDeviceContext();
 
@@ -20,7 +20,7 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const
 	);
 }
 
-void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const noexcept(_DEBUG)
+void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG)
 {
 	D3D_CHECK_CALL(
 	_pDevice->GetDeviceContext()
