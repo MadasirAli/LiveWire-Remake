@@ -68,8 +68,8 @@ void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture)
 		.Build();
 
 	D3D11_VIEWPORT viewport = { 0 };
-	viewport.Width = desc.Width;
-	viewport.Height = desc.Height;
+	viewport.Width = (float)desc.Width;
+	viewport.Height = (float)desc.Height;
 	viewport.MaxDepth = 1.0f;
 
 	_viewport = std::move(viewport);
@@ -158,7 +158,7 @@ Renderer::Renderer()
 			pDevice->CreateDepthStencilState(&desc, pDepthState.ReleaseAndGetAddressOf())
 		);
 
-		_pBlendState = std::move(pDepthState);
+		_pDepthState = std::move(pDepthState);
 	}
 
 	// creating blend state

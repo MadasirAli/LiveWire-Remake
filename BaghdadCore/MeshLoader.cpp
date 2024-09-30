@@ -34,7 +34,7 @@ Mesh MeshLoader::Load()
 	return Mesh(
 		std::move(VertexBuffer(
 			std::move(Buffer(
-				std::move(pBuffer))))), (unsigned int)mesh.size());
+				std::move(pBuffer), Resource::View())))), (unsigned int)mesh.size());
 }
 
 MeshLoader& MeshLoader::Load(const std::string& name) noexcept

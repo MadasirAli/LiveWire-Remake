@@ -160,6 +160,8 @@ TextureBuilder& TextureBuilder::Clear() noexcept
 TextureBuilder& TextureBuilder::ViewFlag(Resource::View::Type viewFlag) noexcept
 {
 	_viewFlags |= (unsigned int)viewFlag;
+
+	return *this;
 }
 
 TextureBuilder& TextureBuilder::Size(const unsigned int width, const unsigned int height) noexcept
