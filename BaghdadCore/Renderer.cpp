@@ -42,9 +42,6 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexce
 		pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
 	);
 
-	// clearing output targets
-	ClearRenderTexture(blendFactor);
-
 	// issuing draw call
 	D3D_CHECK_CALL(
 		context.GetComPtr()->Draw(mesh._vertexCount, 0u)
@@ -152,7 +149,28 @@ void Renderer::ImGUI_NewFrame() const noexcept
 
 void Renderer::ImGUI_Render() const noexcept
 {
+	const auto& pContext = _pDevice->GetDeviceContext().GetComPtr();
+
 	ImGui::Render();
+
+	// binding view port
+	D3D_CHECK_CALL(
+		pContext->RSSetViewports(1u, &_viewport)
+	);
+
+	// binding output views
+	D3D_CHECK_CALL(
+		pContext->OMSetRenderTargets(1u,
+			_pRenderTexture->GetView().GetRTVComPtr().GetAddressOf(),
+			_pDepthTexture->GetView().GetDSVComPtr().Get())
+	);
+
+	// binding blend state
+	constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	D3D_CHECK_CALL(
+		pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
+	);
+
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
