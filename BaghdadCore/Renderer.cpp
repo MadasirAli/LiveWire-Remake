@@ -5,6 +5,13 @@
 #include "BaghdadError.h"
 #include "GraphicsError.h"
 
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 using namespace BaghdadCore;
 
 void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG)
@@ -106,6 +113,27 @@ Texture2D& Renderer::GetRenderTexture() const noexcept
 	return *_pRenderTexture;
 }
 
+void Renderer::ImGUI_NewFrame() const noexcept
+{
+	_pUIRenderer->NewFrame();
+}
+
+void Renderer::ImGUI_Render() const noexcept
+{
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+bool Renderer::IMGUI_ForwardMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) const noexcept
+{
+	return _pUIRenderer->ForwardMessage(hwnd, msg, wParam, lParam);
+}
+
+void Renderer::InitializeImGUI(const Window& window) noexcept
+{
+	auto pUIRenderer = std::make_unique<ImGuiRenderer>(window, *_pDevice);
+	_pUIRenderer = std::move(pUIRenderer);
+}
+
 TextureBuilder& Renderer::GetTextureBuilder() const noexcept
 {
 	return *_pTextureBuilder;
@@ -201,4 +229,34 @@ Renderer::Renderer()
 		_pDepthTexture = std::move(std::make_unique<Texture2D>(std::move(depthTexture)));
 		_pRenderTexture = std::move(std::make_unique<Texture2D>(std::move(renderTexture)));
 	}
+}
+
+void Renderer::ImGuiRenderer::NewFrame() const noexcept
+{
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+}
+
+bool Renderer::ImGuiRenderer::ForwardMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) const noexcept
+{
+	return ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
+}
+
+Renderer::ImGuiRenderer::ImGuiRenderer(const Window& window, const Device& device)
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(window.GetHwnd());
+	ImGui_ImplDX11_Init(device.GetComPtr().Get(), device.GetDeviceContext().GetComPtr().Get());
+}
+
+Renderer::ImGuiRenderer::~ImGuiRenderer() noexcept
+{
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }

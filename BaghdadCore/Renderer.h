@@ -12,11 +12,24 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "BufferBuilder.h"
+#include "Window.h"
 
 namespace BaghdadCore
 {
 	class Renderer final
 	{
+	public:
+		class ImGuiRenderer final
+		{
+		public:
+			void NewFrame() const noexcept;
+
+			bool ForwardMessage(HWND hwnd, UINT uint, WPARAM wParam, LPARAM lParam) const noexcept;
+
+			ImGuiRenderer(const Window& window, const Device& device);
+			~ImGuiRenderer() noexcept;
+		};
+
 	public:
 		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG);
 		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG);
@@ -32,6 +45,11 @@ namespace BaghdadCore
 		void RemoveRenderTexture() noexcept;
 
 		Texture2D& GetRenderTexture() const noexcept;
+
+		void ImGUI_NewFrame() const noexcept;
+		void ImGUI_Render() const noexcept;
+		bool IMGUI_ForwardMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) const noexcept;
+		void InitializeImGUI(const Window& window) noexcept;
 
 		TextureBuilder& GetTextureBuilder() const noexcept;
 		MaterialBuilder& GetMaterialBuilder() const noexcept;
@@ -61,5 +79,7 @@ namespace BaghdadCore
 		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState;
 		D3D11_VIEWPORT _viewport = { 0 };
+
+		std::unique_ptr<ImGuiRenderer> _pUIRenderer;
 	};
 }
