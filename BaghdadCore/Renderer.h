@@ -51,6 +51,8 @@ namespace BaghdadCore
 		bool IMGUI_ForwardMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) const noexcept;
 		void InitializeImGUI(const Window& window) noexcept;
 
+		Swapchain CreateSwapchain(const Window& window) const;
+
 		TextureBuilder& GetTextureBuilder() const noexcept;
 		MaterialBuilder& GetMaterialBuilder() const noexcept;
 		MeshLoader& GetMeshLoader() const noexcept;

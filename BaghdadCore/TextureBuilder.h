@@ -63,7 +63,6 @@ namespace BaghdadCore
 		TextureBuilder& InitialData(const char* const pData);
 		TextureBuilder& Format(const DXGI_FORMAT format);
 		TextureBuilder& ReadWrite() noexcept;
-		TextureBuilder& RenderTexture() noexcept;
 		TextureBuilder& FromFile(const std::string& name) noexcept;
 
 		TextureBuilder(const Device& device);
@@ -75,7 +74,6 @@ namespace BaghdadCore
 
 		bool _fromFile = false;
 		bool _readWrite = false;
-		bool _renderTexture = false;
 
 		unsigned int _width = 0u;
 		unsigned int _height = 0u;

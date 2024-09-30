@@ -5,10 +5,30 @@
 
 using namespace BaghdadCore;
 
-void Swapchain::Present(unsigned int syncInverval, unsigned int flags)
+bool Swapchain::Present(unsigned int syncInverval, unsigned int flags) const
 {
-	D3D_CHECK_CALL(
-	_pSwapchain->Present(syncInverval, flags));
+#if _DEBUG
+	DXGIInfoQueue::GetInstance().SetInfoQueue();
+#endif
+
+	const auto result = _pSwapchain->Present(syncInverval, flags);
+
+#if _DEBUG
+	if (result != S_OK && result != DXGI_STATUS_OCCLUDED)
+	{
+		if (DXGIInfoQueue::GetInstance().Check())
+		{
+			THROW_GERROR(DXGIInfoQueue::GetInstance().GetMessages());
+		}
+	}
+#endif
+
+	return result != DXGI_STATUS_OCCLUDED;
+}
+
+const Microsoft::WRL::ComPtr<IDXGISwapChain>& Swapchain::GetComPtr() const noexcept
+{
+	return _pSwapchain;
 }
 
 Swapchain::Swapchain(Microsoft::WRL::ComPtr<IDXGISwapChain>&& pOther) :

@@ -1,6 +1,6 @@
 #include "DXGIFactory.h"
 
-#include "BaghdadError.h"
+#include "GraphicsError.h"
 
 using namespace BaghdadCore;
 
@@ -10,13 +10,14 @@ Swapchain DXGIFactory::CreateSwapchain(const Device& device, const Window& windo
 
 	DXGI_SWAP_CHAIN_DESC desc{};
 	desc.BufferCount = 1;
-	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT;
+	desc.SampleDesc.Count = 1;
+	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	desc.OutputWindow = window.GetHwnd();
 	desc.Windowed = true;
 
-	WIN32_CALL(
+	D3D_CALL(
 	_ptr->CreateSwapChain(
 		device.GetComPtr().Get(),
 		&desc,
@@ -35,6 +36,8 @@ std::vector<GraphicsCard> DXGIFactory::EnumGraphicCards() const
 	Microsoft::WRL::ComPtr<IDXGIAdapter> pCard;
 	while (_ptr->EnumAdapters(i, pCard.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
 	{
+		++i;
+
 		auto graphicsCard = GraphicsCard(std::move(pCard));
 		cards.push_back(std::move(graphicsCard));
 	}

@@ -120,6 +120,7 @@ void Renderer::ImGUI_NewFrame() const noexcept
 
 void Renderer::ImGUI_Render() const noexcept
 {
+	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
@@ -132,6 +133,20 @@ void Renderer::InitializeImGUI(const Window& window) noexcept
 {
 	auto pUIRenderer = std::make_unique<ImGuiRenderer>(window, *_pDevice);
 	_pUIRenderer = std::move(pUIRenderer);
+}
+
+Swapchain Renderer::CreateSwapchain(const Window& window) const
+{
+	// ** can throw ** //
+	auto swapchain = _factory.CreateSwapchain(*_pDevice, window);
+
+	// obtaining back buffer
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer{};
+	D3D_CALL(
+		swapchain.GetComPtr()->GetBuffer(0u, __uuidof(ID3D11Texture2D), (void**)pBackBuffer.ReleaseAndGetAddressOf())
+	);
+
+	return swapchain;
 }
 
 TextureBuilder& Renderer::GetTextureBuilder() const noexcept
@@ -214,7 +229,6 @@ Renderer::Renderer()
 		// ** can throw ** //
 		Texture2D renderTexture = _pTextureBuilder->Clear()
 			.Size(1920u, 1080u)
-			.RenderTexture()
 			.ViewFlag(Resource::View::Type::RTV)
 			.Format(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT)
 			.Build();

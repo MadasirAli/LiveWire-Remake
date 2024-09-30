@@ -22,6 +22,20 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	const char* pData = _pData;
 	const unsigned int viewFlags = _viewFlags;
 
+	unsigned int bindFlags = 0u;
+	if ((viewFlags & (unsigned int)Resource::View::Type::SRV) != 0u)
+	{
+		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
+	}
+	if ((viewFlags & (unsigned int)Resource::View::Type::RTV) != 0u)
+	{
+		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET;
+	}
+	if ((viewFlags & (unsigned int)Resource::View::Type::DSV) != 0u)
+	{
+		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
+	}
+		 
 	if (_fromFile)
 	{
 		const auto file = _ppmLoader.Load(_name);
@@ -40,9 +54,7 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	// creating texture
 	D3D11_TEXTURE2D_DESC desc = { 0 };
 	desc.Format = format;
-	desc.BindFlags = _renderTexture ? 
-		D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET :
-		D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
+	desc.BindFlags = bindFlags;
 	desc.CPUAccessFlags = _readWrite ?
 		D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE : 0u;
 	desc.Usage = _readWrite ?
@@ -146,7 +158,6 @@ TextureBuilder& TextureBuilder::Clear() noexcept
 {
 	_name = "";
 	_readWrite = false;
-	_renderTexture = false;
 	_fromFile = false;
 	_width = 0u;
 	_height = 0u;
@@ -189,13 +200,6 @@ TextureBuilder& TextureBuilder::Format(const DXGI_FORMAT format)
 TextureBuilder& TextureBuilder::ReadWrite() noexcept
 {
 	_readWrite = true;
-
-	return *this;
-}
-
-TextureBuilder& TextureBuilder::RenderTexture() noexcept
-{
-	_renderTexture = true;
 
 	return *this;
 }

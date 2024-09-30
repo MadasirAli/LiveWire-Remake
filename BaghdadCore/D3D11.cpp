@@ -1,8 +1,6 @@
 #include "D3D11.h"
 
-using namespace DirectXUtil;
-
-size_t BitsPerPixel(DXGI_FORMAT fmt)
+size_t DirectXUtil::BitsPerPixel(DXGI_FORMAT fmt)
 {
     switch (static_cast<int>(fmt))
     {

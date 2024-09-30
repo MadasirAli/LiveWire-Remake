@@ -1,7 +1,7 @@
 #include "Device.h"
 
 #include "D3D11.h"
-#include "BaghdadError.h"
+#include "GraphicsError.h"
 
 using namespace BaghdadCore;
 
@@ -25,10 +25,10 @@ Device::Device(const GraphicsCard& card)
 
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
 
-	WIN32_CALL(
+	D3D_CALL(
 	D3D11CreateDevice(
 		card.GetComPtr().Get(),
-		D3D_DRIVER_TYPE_HARDWARE,
+		D3D_DRIVER_TYPE_UNKNOWN,	// unknown for creating from existing adapter
 		nullptr,
 		flags,
 		nullptr,
