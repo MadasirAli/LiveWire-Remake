@@ -7,7 +7,9 @@ namespace  BaghdadCore
 	class Texture2D final : public Texture
 	{
 	public:
-		Texture2D(Microsoft::WRL::ComPtr<ID3D11Texture2D>&& pTexture);
+		const Microsoft::WRL::ComPtr<ID3D11Texture2D>& GetComPtr() const noexcept;
+
+		Texture2D(Microsoft::WRL::ComPtr<ID3D11Texture2D>&& pTexture, View&& view);
 
 		~Texture2D() noexcept override = default;
 

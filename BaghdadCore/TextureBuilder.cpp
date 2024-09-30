@@ -20,6 +20,7 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	DXGI_FORMAT format = _format;
 
 	const char* pData = _pData;
+	const unsigned int viewFlags = _viewFlags;
 
 	if (_fromFile)
 	{
@@ -45,7 +46,8 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	desc.CPUAccessFlags = _readWrite ?
 		D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE : 0u;
 	desc.Usage = _readWrite ?
-		D3D11_USAGE::D3D11_USAGE_DYNAMIC : D3D11_USAGE_IMMUTABLE;
+		D3D11_USAGE::D3D11_USAGE_DYNAMIC : 
+		pData == nullptr? D3D11_USAGE_DEFAULT : D3D11_USAGE_IMMUTABLE;
 	desc.ArraySize = 1u;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
@@ -59,13 +61,85 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	ComPtr<ID3D11Texture2D> pTexture{};
 	D3D_CALL(
 	_device.GetComPtr()->CreateTexture2D(
-		&desc, &data, pTexture.ReleaseAndGetAddressOf()));
+		&desc, pData == nullptr? nullptr : &data, pTexture.ReleaseAndGetAddressOf()));
+
+	// creating views
+	const auto pResource = ComUtility::As<ID3D11Texture2D, ID3D11Resource>(pTexture);
+
+	// shader resource view
+	ComPtr<ID3D11ShaderResourceView> pSRV {};
+	ComPtr<ID3D11SamplerState> pSampler{};
+	if ((viewFlags & (unsigned int)Resource::View::Type::SRV) != 0)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
+		ZeroMemory(&desc, sizeof(desc));
+
+		desc.Format = format;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		desc.Texture2D.MipLevels = -1;
+		desc.Texture2D.MostDetailedMip = -1;
+
+		D3D_CALL(
+		_device.GetComPtr()->CreateShaderResourceView(pResource.Get(),
+			&desc,
+			pSRV.ReleaseAndGetAddressOf())
+		);
+
+		D3D11_SAMPLER_DESC samplerDesc = { };
+		ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+
+		samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_MAXIMUM_ANISOTROPIC;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.MaxAnisotropy = D3D11_MAX_MAXANISOTROPY;
+
+		D3D_CALL(
+			_device.GetComPtr()->CreateSamplerState(&samplerDesc, pSampler.ReleaseAndGetAddressOf())
+		);
+	}
+
+	// render target view
+	ComPtr<ID3D11RenderTargetView> pRTV{};
+	if ((viewFlags & (unsigned int)Resource::View::Type::RTV) != 0)
+	{
+		D3D11_RENDER_TARGET_VIEW_DESC desc = {};
+		ZeroMemory(&desc, sizeof(desc));
+
+		desc.Format = format;
+		desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+
+		D3D_CALL(
+			_device.GetComPtr()->CreateRenderTargetView(pResource.Get(),
+				&desc, pRTV.ReleaseAndGetAddressOf())
+		);
+	}
+
+	/// depth stencil view
+	ComPtr<ID3D11DepthStencilView> pDSV{};
+	if ((viewFlags & (unsigned int)Resource::View::Type::DSV) != 0)
+	{
+		D3D11_DEPTH_STENCIL_VIEW_DESC desc = { };
+		ZeroMemory(&desc, sizeof(desc));
+
+		desc.Format = format;
+		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+		D3D_CALL(
+			_device.GetComPtr()->CreateDepthStencilView(pResource.Get(),
+				&desc, pDSV.ReleaseAndGetAddressOf())
+		);
+	}
+
+	Resource::View view{ _viewFlags,
+	std::move(pSRV), std::move(pRTV), std::move(pDSV),
+	std::move(pSampler)};
 
 	_logger.WriteLine("Texture Created: " + _name +
 		"\nWidth: " + std::to_string(width) +
 		"\nHeight: " + std::to_string(height));
 
-	return Texture2D(std::move(pTexture));
+	return Texture2D(std::move(pTexture), std::move(view));
 }
 
 TextureBuilder& TextureBuilder::Clear() noexcept
@@ -78,8 +152,14 @@ TextureBuilder& TextureBuilder::Clear() noexcept
 	_height = 0u;
 	_pData = nullptr;
 	_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+	_viewFlags = 0u;
 
 	return *this;
+}
+
+TextureBuilder& TextureBuilder::ViewFlag(Resource::View::Type viewFlag) noexcept
+{
+	_viewFlags |= (unsigned int)viewFlag;
 }
 
 TextureBuilder& TextureBuilder::Size(const unsigned int width, const unsigned int height) noexcept
@@ -248,6 +328,6 @@ TextureBuilder::PPMLoader::PPMFile::GetBufferpPtr() const noexcept
 TextureBuilder::PPMLoader::PPMFile::PPMFile(
 	const Header& header, std::unique_ptr<char[]>&& pFile, const unsigned int pixelOffset) :
 	_header(header),
-	_pFile(std::move(pFile)),
-	_pPixels(pFile.get() + pixelOffset)
+	_pPixels(pFile.get() + pixelOffset),
+	_pFile(std::move(pFile))
 {}

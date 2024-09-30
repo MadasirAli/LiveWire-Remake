@@ -21,7 +21,16 @@ namespace BaghdadCore
 		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG);
 		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG);
 
-		void SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture) noexcept;
+		/// <summary>
+		/// Sets the reneder texture on which to output.
+		/// </summary>
+		/// <param name="pRenderTexture">the render texture to set</param>
+		/// <exception cref="GraphicsError">On Failure of creating depth texture</exception>
+		/// <exception cref="BaghdadError">On Failure of creating depth texture</exception>
+		void SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture);
+		void ClearRenderTexture(const float color[4]) const noexcept(!_DEBUG);
+		void RemoveRenderTexture() noexcept;
+
 		Texture2D& GetRenderTexture() const noexcept;
 
 		TextureBuilder& GetTextureBuilder() const noexcept;
@@ -47,5 +56,10 @@ namespace BaghdadCore
 		std::unique_ptr<BufferBuilder> _pBufferBuilder;
 
 		std::unique_ptr<Texture2D> _pRenderTexture;
+		std::unique_ptr<Texture2D> _pDepthTexture;
+
+		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState;
+		D3D11_VIEWPORT _viewport = { 0 };
 	};
 }

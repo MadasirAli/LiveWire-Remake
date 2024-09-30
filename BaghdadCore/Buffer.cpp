@@ -11,8 +11,8 @@ const Microsoft::WRL::ComPtr<ID3D11Buffer>& Buffer::GetComPtr() const noexcept
 	return _ptr;
 }
 
-Buffer::Buffer(Microsoft::WRL::ComPtr<ID3D11Buffer>&& pBuffer) :
-	Resource(std::move(ComUtility::As<ID3D11Buffer, ID3D11Resource>(pBuffer)))
+Buffer::Buffer(Microsoft::WRL::ComPtr<ID3D11Buffer>&& pBuffer, View&& view) :
+	Resource(std::move(ComUtility::As<ID3D11Buffer, ID3D11Resource>(pBuffer)), std::move(view))
 {
 	_ptr = std::move(pBuffer);
 }

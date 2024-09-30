@@ -35,8 +35,8 @@ namespace BaghdadCore
 
 			private:
 				Header _header;
-				std::unique_ptr<char[]> _pFile;
 				std::unique_ptr<char[]> _pPixels;
+				std::unique_ptr<char[]> _pFile;
 			};
 		public:
 			/// <summary>
@@ -54,9 +54,11 @@ namespace BaghdadCore
 		/// </summary>
 		/// <returns>The created texture.</returns>
 		/// <exception cref="BaghdadError">On Failture</exception>
+		/// <exception cref="Graphics Error">On Failture</exception>
 		Texture2D Build();
 
 		TextureBuilder& Clear() noexcept;
+		TextureBuilder& ViewFlag(Resource::View::Type viewFlag) noexcept;
 		TextureBuilder& Size(const unsigned int width, const unsigned int height) noexcept;
 		TextureBuilder& InitialData(const char* const pData);
 		TextureBuilder& Format(const DXGI_FORMAT format);
@@ -80,6 +82,8 @@ namespace BaghdadCore
 
 		const char* _pData = nullptr;
 		DXGI_FORMAT _format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+
+		unsigned int _viewFlags = 0u;
 
 		PPMLoader _ppmLoader;
 		const Logger& _logger;

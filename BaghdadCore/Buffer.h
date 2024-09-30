@@ -9,7 +9,7 @@ namespace BaghdadCore
 	public:
 		const Microsoft::WRL::ComPtr<ID3D11Buffer>& GetComPtr() const noexcept;
 
-		Buffer(Microsoft::WRL::ComPtr<ID3D11Buffer>&& pBuffer);
+		Buffer(Microsoft::WRL::ComPtr<ID3D11Buffer>&& pBuffer, View&& view);
 
 		virtual ~Buffer() noexcept override = default;
 

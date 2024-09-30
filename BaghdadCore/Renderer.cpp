@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <wrl/client.h>
+
 #include "BaghdadError.h"
 #include "GraphicsError.h"
 
@@ -8,15 +10,37 @@ using namespace BaghdadCore;
 void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG)
 {
 	const auto& context = _pDevice->GetDeviceContext();
+	const auto& pContext = context.GetComPtr();
 
 	/// binding mesh	
 	mesh.Bind(*_pDevice, context);
 	// binding material
 	material.Bind(*_pDevice, context);
 
+	// binding view port
+	D3D_CHECK_CALL(
+		pContext->RSSetViewports(1u, &_viewport)
+	);
+
+	// binding output views
+	D3D_CHECK_CALL(
+		pContext->OMSetRenderTargets(1u,
+			_pRenderTexture->GetView().GetRTVComPtr().GetAddressOf(),
+			_pDepthTexture->GetView().GetDSVComPtr().Get())
+	);
+
+	// binding blend state
+	constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	D3D_CHECK_CALL(
+		pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
+	);
+
+	// clearing output targets
+	ClearRenderTexture(blendFactor);
+
 	// issuing draw call
 	D3D_CHECK_CALL(
-		context.GetComPtr()->Draw(mesh._vertexCount, 0u);
+		context.GetComPtr()->Draw(mesh._vertexCount, 0u)
 	);
 }
 
@@ -29,9 +53,52 @@ void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const
 	);
 }
 
-void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture) noexcept
+void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture)
 {
+	// accuring descriptor for width and height
+	D3D11_TEXTURE2D_DESC desc;
+	pRenderTexture->GetComPtr()->GetDesc(&desc);
+
+	// creating new depth texture
+	// ** can throw ** //
+	Texture2D depthTexture = _pTextureBuilder->Clear()
+		.Format(DXGI_FORMAT::DXGI_FORMAT_D16_UNORM)
+		.Size(desc.Width, desc.Height)
+		.ViewFlag(Resource::View::Type::DSV)
+		.Build();
+
+	D3D11_VIEWPORT viewport = { 0 };
+	viewport.Width = desc.Width;
+	viewport.Height = desc.Height;
+	viewport.MaxDepth = 1.0f;
+
+	_viewport = std::move(viewport);
+
+	_pDepthTexture = std::move(std::make_unique<Texture2D>(std::move(depthTexture)));
 	_pRenderTexture = std::move(pRenderTexture);
+}
+
+void Renderer::ClearRenderTexture(const float color[4]) const noexcept(!_DEBUG)
+{
+	const auto& pContext = _pDevice->GetDeviceContext().GetComPtr();
+
+	D3D_CHECK_CALL(
+		pContext->ClearRenderTargetView(
+			_pRenderTexture->GetView().GetRTVComPtr().Get(),
+			color)
+	);
+
+	D3D_CHECK_CALL(
+		pContext->ClearDepthStencilView(_pDepthTexture->GetView().GetDSVComPtr().Get(),
+			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+			0.0f, 0u)
+	);
+}
+
+void Renderer::RemoveRenderTexture() noexcept
+{
+	_pRenderTexture.reset();
+	_pDepthTexture.reset();
 }
 
 Texture2D& Renderer::GetRenderTexture() const noexcept
@@ -73,4 +140,65 @@ Renderer::Renderer()
 	_pMeshLoader = std::make_unique<MeshLoader>(*_pDevice);
 	_pTextureBuilder = std::make_unique<TextureBuilder>(*_pDevice);
 	_pBufferBuilder = std::make_unique<BufferBuilder>(*_pDevice);
+
+	using namespace Microsoft::WRL;
+
+	const auto& pDevice = _pDevice->GetComPtr();
+	const auto& pContext = _pDevice->GetDeviceContext().GetComPtr();
+
+	// creating depth state
+	{
+		D3D11_DEPTH_STENCIL_DESC desc = { 0 };
+		desc.DepthEnable = true;
+		desc.DepthFunc = D3D11_COMPARISON_LESS;
+		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+
+		ComPtr<ID3D11DepthStencilState> pDepthState{ };
+		D3D_CALL(
+			pDevice->CreateDepthStencilState(&desc, pDepthState.ReleaseAndGetAddressOf())
+		);
+
+		_pBlendState = std::move(pDepthState);
+	}
+
+	// creating blend state
+	{
+		D3D11_BLEND_DESC desc = { 0 };
+		desc.RenderTarget[0].BlendEnable = true;
+		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		desc.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
+		desc.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_DEST_COLOR;
+		desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+		desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
+		desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		ComPtr<ID3D11BlendState> pBlendState{};
+		D3D_CALL(
+			pDevice->CreateBlendState(&desc, pBlendState.ReleaseAndGetAddressOf())
+		);
+
+		_pBlendState = std::move(pBlendState);
+	}
+
+	// creating default render and depth texture
+	{
+		// ** can throw ** //
+		Texture2D renderTexture = _pTextureBuilder->Clear()
+			.Size(1920u, 1080u)
+			.RenderTexture()
+			.ViewFlag(Resource::View::Type::RTV)
+			.Format(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT)
+			.Build();
+
+		// ** can throw ** //
+		Texture2D depthTexture = _pTextureBuilder->Clear()
+			.Format(DXGI_FORMAT::DXGI_FORMAT_D16_UNORM)
+			.Size(1920u, 1080u)
+			.ViewFlag(Resource::View::Type::DSV)
+			.Build();
+
+		_pDepthTexture = std::move(std::make_unique<Texture2D>(std::move(depthTexture)));
+		_pRenderTexture = std::move(std::make_unique<Texture2D>(std::move(renderTexture)));
+	}
 }

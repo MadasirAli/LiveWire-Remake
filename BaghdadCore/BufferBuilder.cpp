@@ -32,7 +32,7 @@ ConstantBuffer BaghdadCore::BufferBuilder::BuildCBuffer()
 
 	return ConstantBuffer(
 		std::move(Buffer(
-			std::move(pBuffer))));
+			std::move(pBuffer), Resource::View())));
 }
 
 BufferBuilder& BufferBuilder::Clear() noexcept
