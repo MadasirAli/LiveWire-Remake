@@ -50,7 +50,7 @@ int App::Run()
 		}
 
 		// setting renderer for new frame
-		const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };
 		renderer.ClearRenderTexture(clearColor);
 
 		renderer.ImGUI_NewFrame();
@@ -67,6 +67,7 @@ int App::Run()
 		renderer.ImGUI_Render();
 
 		// presenting
+		renderer.Blit(renderer.GetRenderTexture(), swapchain.GetBackTexture(), 0u);
 		swapchain.Present(0u, 0u);
 	}
 

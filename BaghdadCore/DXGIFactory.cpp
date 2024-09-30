@@ -24,8 +24,7 @@ Swapchain DXGIFactory::CreateSwapchain(const Device& device, const Window& windo
 		pSwapchain.ReleaseAndGetAddressOf()
 	));
 
-	const auto swapchain = Swapchain(std::move(pSwapchain));
-	return swapchain;
+	return Swapchain(std::move(pSwapchain));;
 }
 
 std::vector<GraphicsCard> DXGIFactory::EnumGraphicCards() const

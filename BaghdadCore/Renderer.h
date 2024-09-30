@@ -33,6 +33,7 @@ namespace BaghdadCore
 	public:
 		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG);
 		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG);
+		void Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const noexcept(!_DEBUG);
 
 		/// <summary>
 		/// Sets the reneder texture on which to output.

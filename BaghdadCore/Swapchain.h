@@ -1,9 +1,11 @@
 #pragma once
 
 #include <wrl/client.h>
+#include <memory>
 
 #include "D3D11.h"
 #include "Window.h"
+#include "Texture2D.h"
 
 namespace BaghdadCore
 {
@@ -18,12 +20,14 @@ namespace BaghdadCore
 		/// <returns>False if swapchain occuluded</returns>
 		bool Present(unsigned int syncInverval, unsigned int flags) const noexcept(!_DEBUG);
 
+		Texture2D& GetBackTexture() const noexcept;
 		const Microsoft::WRL::ComPtr<IDXGISwapChain>& GetComPtr() const noexcept;
 
 		Swapchain(Microsoft::WRL::ComPtr<IDXGISwapChain>&& pOther);
 
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain> _pSwapchain;
+		std::unique_ptr<Texture2D> _pBackBuffer;
 	};
 }
 

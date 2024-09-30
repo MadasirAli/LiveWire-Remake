@@ -60,6 +60,38 @@ void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const
 	);
 }
 
+void Renderer::Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const noexcept(!_DEBUG)
+{
+	D3D11_TEXTURE2D_DESC srcDesc = { 0 };
+	D3D11_TEXTURE2D_DESC destDesc = { 0 };
+
+	source.GetComPtr()->GetDesc(&srcDesc);
+	destination.GetComPtr()->GetDesc(&destDesc);
+
+	// calculating sub resource size
+	auto width = srcDesc.Width;
+	auto height = srcDesc.Height;
+	for (auto i = 0u; i < subResourceIndex; ++i)
+	{
+		width /= 2u;
+		height /= 2u;
+	}
+	
+	// region to copy
+	auto box =  D3D11_BOX();
+	box.left = 0;
+	box.top = 0;
+	box.right = width;
+	box.bottom = height;
+	box.back = 1u;
+
+	D3D_CHECK_CALL(
+		_pDevice->GetDeviceContext()
+		.GetComPtr()->CopySubresourceRegion(destination.GetComResourcePtr().Get(), subResourceIndex, 0u, 0u, 0u,
+			source.GetComResourcePtr().Get(), subResourceIndex, &box)
+	);
+}
+
 void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture)
 {
 	// accuring descriptor for width and height
@@ -139,13 +171,6 @@ Swapchain Renderer::CreateSwapchain(const Window& window) const
 {
 	// ** can throw ** //
 	auto swapchain = _factory.CreateSwapchain(*_pDevice, window);
-
-	// obtaining back buffer
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer{};
-	D3D_CALL(
-		swapchain.GetComPtr()->GetBuffer(0u, __uuidof(ID3D11Texture2D), (void**)pBackBuffer.ReleaseAndGetAddressOf())
-	);
-
 	return swapchain;
 }
 
@@ -228,15 +253,15 @@ Renderer::Renderer()
 	{
 		// ** can throw ** //
 		Texture2D renderTexture = _pTextureBuilder->Clear()
-			.Size(1920u, 1080u)
+			.Size(800u, 600u)
 			.ViewFlag(Resource::View::Type::RTV)
-			.Format(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT)
+			.Format(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM)
 			.Build();
 
 		// ** can throw ** //
 		Texture2D depthTexture = _pTextureBuilder->Clear()
 			.Format(DXGI_FORMAT::DXGI_FORMAT_D16_UNORM)
-			.Size(1920u, 1080u)
+			.Size(800u, 600u)
 			.ViewFlag(Resource::View::Type::DSV)
 			.Build();
 
