@@ -23,6 +23,9 @@ namespace LiveWireRemake
 
 		~LiveWire() noexcept override = default;
 
+	protected:
+		virtual LRESULT WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
+
 	private:
 		BaghdadCore::Logger _logger;
 	};

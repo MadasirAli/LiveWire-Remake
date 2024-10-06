@@ -14,7 +14,7 @@ namespace BaghdadCore
 		public:
 			enum class Type
 			{
-				NONE,
+				NONE = 0u,
 				SRV = 1u << 1,
 				RTV = 1u << 2,
 				DSV = 1u << 3

@@ -18,6 +18,21 @@ int App::Run()
 	BaghdadCore::Renderer renderer{};
 	BaghdadCore::Swapchain swapchain = renderer.CreateSwapchain(liveWire);
 
+	// creating render texture
+	{
+		D3D11_TEXTURE2D_DESC desc = { 0 };
+		swapchain.GetBackTexture().GetComPtr()->GetDesc(&desc);
+		auto pRenderTexture = std::make_unique<BaghdadCore::Texture2D>(std::move(
+			renderer.GetTextureBuilder()
+			.Clear()
+			.Format(desc.Format)
+			.Size(desc.Width, desc.Height)
+			.ViewFlag(BaghdadCore::Resource::View::Type::RTV)
+			.Build()));
+
+		renderer.SetRenderTexture(std::move(pRenderTexture));
+	}
+
 	renderer.InitializeImGUI(liveWire);
 
 	// per tick data
@@ -40,9 +55,8 @@ int App::Run()
 					continue;
 				}
 
-				// sending message to imgui to handle
-				if (renderer.IMGUI_ForwardMessage(msg.hwnd, msg.message, msg.wParam, msg.lParam))
-					continue;		// message already handled said by imgui
+				// forwarding to imgui renderer
+				renderer.IMGUI_ForwardMessage(msg.hwnd, msg.message, msg.wParam, msg.lParam);
 
 				// forwarding to game window
 				liveWire.ForwardMessage(msg);
@@ -55,13 +69,15 @@ int App::Run()
 
 		renderer.ImGUI_NewFrame();
 
-		// Now Code and execute here.
-		//			HERE			//
+		//---------------------------//
+		// Now Code and execute here //
+		//---------------------------//
+		//			HERE			 //
 		
 		liveWire.Update(data);
 
-		//			HERE			//
-		//							//
+		//			HERE			 //
+		//---------------------------//
 
 		// rendering ui at end
 		renderer.ImGUI_Render();
@@ -69,6 +85,21 @@ int App::Run()
 		// presenting
 		renderer.Blit(renderer.GetRenderTexture(), swapchain.GetBackTexture(), 0u);
 		swapchain.Present(0u, 0u);
+
+		// resizing render texture
+		swapchain.ResizeBuffers();
+
+		D3D11_TEXTURE2D_DESC desc = { 0 };
+		swapchain.GetBackTexture().GetComPtr()->GetDesc(&desc);
+		auto pRenderTexture = std::make_unique<BaghdadCore::Texture2D>(std::move(
+			renderer.GetTextureBuilder()
+			.Clear()
+			.Format(desc.Format)
+			.Size(desc.Width, desc.Height)
+			.ViewFlag(BaghdadCore::Resource::View::Type::RTV)
+			.Build()));
+
+		renderer.SetRenderTexture(std::move(pRenderTexture));
 	}
 
 	return 0;

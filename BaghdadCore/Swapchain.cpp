@@ -23,7 +23,33 @@ bool Swapchain::Present(unsigned int syncInverval, unsigned int flags) const
 	}
 #endif
 
-	return result != DXGI_STATUS_OCCLUDED;
+	return result == DXGI_STATUS_OCCLUDED;
+}
+
+void Swapchain::ResizeBuffers()
+{
+	_pBackBuffer.reset();
+
+	DXGI_SWAP_CHAIN_DESC desc = { 0 };
+	_pSwapchain->GetDesc(&desc);
+
+	RECT rect = { 0 };
+	GetClientRect(desc.OutputWindow, &rect);
+
+	D3D_CALL(
+		_pSwapchain->ResizeBuffers(desc.BufferCount,
+			rect.right - rect.left, rect.bottom - rect.top,
+			desc.BufferDesc.Format, desc.Flags);
+	);
+
+	// obtaining back buffer
+	Microsoft::WRL::ComPtr<ID3D11Resource> pBuffer{};
+	D3D_CALL(
+		_pSwapchain->GetBuffer(0u, __uuidof(ID3D11Resource), (void**)pBuffer.ReleaseAndGetAddressOf())
+	);
+
+	_pBackBuffer = std::move(std::make_unique<Texture2D>(
+		ComUtility::As<ID3D11Resource, ID3D11Texture2D>(pBuffer), Resource::View()));
 }
 
 Texture2D& Swapchain::GetBackTexture() const noexcept

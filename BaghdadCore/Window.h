@@ -35,7 +35,7 @@ namespace BaghdadCore
 		virtual ~Window() noexcept = default;
 
 	protected:
-		LRESULT WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	private:
 		void InternalCreate(const std::string& name, RECT rect);

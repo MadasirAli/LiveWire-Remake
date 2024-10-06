@@ -19,6 +19,7 @@ namespace BaghdadCore
 		/// <param name="flags"></param>
 		/// <returns>False if swapchain occuluded</returns>
 		bool Present(unsigned int syncInverval, unsigned int flags) const noexcept(!_DEBUG);
+		void ResizeBuffers();
 
 		Texture2D& GetBackTexture() const noexcept;
 		const Microsoft::WRL::ComPtr<IDXGISwapChain>& GetComPtr() const noexcept;
