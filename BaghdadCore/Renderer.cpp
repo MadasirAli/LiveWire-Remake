@@ -24,6 +24,9 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexce
 	// binding material
 	material.Bind(*_pDevice, context);
 
+	// binding topology
+	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	// binding view port
 	D3D_CHECK_CALL(
 		pContext->RSSetViewports(1u, &_viewport)
@@ -36,10 +39,20 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexce
 			_pDepthTexture->GetView().GetDSVComPtr().Get())
 	);
 
+	// binding depth stencil state
+	D3D_CHECK_CALL(
+		pContext->OMSetDepthStencilState(_pDepthState.Get(), 0u)
+	);
+
 	// binding blend state
 	constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	D3D_CHECK_CALL(
 		pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
+	);
+
+	// binding rasterizer
+	D3D_CHECK_CALL(
+		pContext->RSSetState(_pRasterizerState.Get())
 	);
 
 	// issuing draw call
@@ -127,7 +140,7 @@ void Renderer::ClearRenderTexture(const float color[4]) const noexcept(!_DEBUG)
 	D3D_CHECK_CALL(
 		pContext->ClearDepthStencilView(_pDepthTexture->GetView().GetDSVComPtr().Get(),
 			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-			0.0f, 0u)
+			1.0f, 0u)
 	);
 }
 
@@ -265,6 +278,32 @@ Renderer::Renderer()
 		);
 
 		_pBlendState = std::move(pBlendState);
+	}
+
+	// creating rasterizer state
+	{
+		D3D11_RASTERIZER_DESC desc = {};
+		ZeroMemory(&desc, sizeof(desc));
+		
+		desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+		desc.DepthClipEnable = true;
+		
+		ComPtr<ID3D11RasterizerState> pRastState{};
+		D3D_CALL(
+			pDevice->CreateRasterizerState(&desc, pRastState.ReleaseAndGetAddressOf())
+		);
+		_pRasterizerState = std::move(pRastState);
+	}
+
+	// constructing initial viewport
+	{
+		D3D11_VIEWPORT viewport = { 0 };
+		viewport.Width = 800;
+		viewport.Height = 600;
+		viewport.MaxDepth = 1;
+
+		_viewport = std::move(viewport);
 	}
 
 	// creating default render and depth texture

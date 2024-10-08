@@ -30,8 +30,11 @@ namespace BaghdadCore
 		/// <exception cref="BaghdadError">On loading failed</exception>
 		/// <exception cref="GraphicsError">On Creating buffers failed></exception>
 		Mesh Load();
+		MeshLoader& Clear() noexcept;
 
-		MeshLoader& Load(const std::string& name) noexcept;
+		MeshLoader& FromFile(const std::string& name) noexcept;
+		MeshLoader& PrimitiveQuad() noexcept;
+		MeshLoader& PrimitiveTriangle() noexcept;
 
 		MeshLoader(const Device& device);
 
@@ -39,6 +42,8 @@ namespace BaghdadCore
 		const Device& _device;
 
 		std::string _name;
+		bool _primitiveQuad = false;
+		bool _primitiveTriangle = false;
 
 		STLLoader _stlLoader;
 		const Logger& _logger;

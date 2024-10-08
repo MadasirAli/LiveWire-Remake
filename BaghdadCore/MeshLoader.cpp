@@ -11,7 +11,53 @@ Mesh MeshLoader::Load()
 {
 	using namespace Microsoft::WRL;
 
-	const auto mesh = _stlLoader.Load(_name);
+	std::vector<Mesh::vertex> mesh{};
+	if (_primitiveQuad)
+	{
+		auto vertex = Mesh::vertex{};
+
+		vertex.position = DirectX::XMFLOAT3(-1, 1, 0);
+		vertex.normal = DirectX::XMFLOAT3(-1, 0, 0);
+		vertex.uv = DirectX::XMFLOAT2(0, 0);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(1, 1, 0);
+		vertex.uv = DirectX::XMFLOAT2(1, 0);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
+		vertex.uv = DirectX::XMFLOAT2(1, 1);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-1, 1, 0);
+		vertex.uv = DirectX::XMFLOAT2(0, 0);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
+		vertex.uv = DirectX::XMFLOAT2(0, 0);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-1, -1, 0);
+		vertex.uv = DirectX::XMFLOAT2(0, 0);
+		mesh.push_back(vertex);
+	}
+	else if (_primitiveTriangle)
+	{
+		auto vertex = Mesh::vertex{};
+
+		vertex.position = DirectX::XMFLOAT3(-1, -1, 0);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(0, 1, 0);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
+		mesh.push_back(vertex);
+	}
+	else
+	{
+		mesh = _stlLoader.Load(_name);
+	}
 	
 	D3D11_BUFFER_DESC desc = { 0 };
 	desc.ByteWidth = sizeof(Mesh::vertex) * (UINT)mesh.size();
@@ -21,7 +67,7 @@ Mesh MeshLoader::Load()
 	desc.StructureByteStride = sizeof(Mesh::vertex);
 
 	D3D11_SUBRESOURCE_DATA data = { 0 };
-	data.pSysMem = mesh.data();
+	data.pSysMem = (void*)mesh.data();
 
 	ComPtr<ID3D11Buffer> pBuffer{};
 	D3D_CALL(
@@ -37,9 +83,32 @@ Mesh MeshLoader::Load()
 				std::move(pBuffer), Resource::View())))), (unsigned int)mesh.size());
 }
 
-MeshLoader& MeshLoader::Load(const std::string& name) noexcept
+MeshLoader& MeshLoader::Clear() noexcept
+{
+	_name = "";
+	_primitiveQuad = false;
+	_primitiveTriangle = false;
+
+	return *this;
+}
+
+MeshLoader& MeshLoader::FromFile(const std::string& name) noexcept
 {
 	_name = std::string(name);
+
+	return *this;
+}
+
+MeshLoader& MeshLoader::PrimitiveQuad() noexcept
+{
+	_primitiveQuad = true;
+
+	return *this;
+}
+
+MeshLoader& MeshLoader::PrimitiveTriangle() noexcept
+{
+	_primitiveTriangle = true;
 
 	return *this;
 }
@@ -53,7 +122,7 @@ std::vector<Mesh::vertex>
 MeshLoader::STLLoader::Load(const std::string& name) const
 {
 	// loading in memory
-	std::ifstream stream{name};
+	std::ifstream stream{name, std::ios::binary};
 
 	if (stream.is_open() == false)
 	{
@@ -85,7 +154,8 @@ MeshLoader::STLLoader::Load(const std::string& name) const
 	const auto length = ((unsigned long*)(pFile.get() + count))[0];
 	count += sizeof(unsigned long);		// 4
 
-	auto vertices = std::vector<Mesh::vertex>(length);
+	auto vertices = std::vector<Mesh::vertex>();
+	vertices.reserve(length);
 
 	// opening facets
 	for (auto i = 0u; i < length; ++i)
@@ -108,7 +178,7 @@ MeshLoader::STLLoader::Load(const std::string& name) const
 
 			count += sizeof(float) * 3;
 
-			vertices.push_back(std::move(vertex));
+			vertices.emplace_back(std::move(vertex));
 		}
 
 		// padding

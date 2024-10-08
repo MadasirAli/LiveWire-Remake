@@ -15,7 +15,7 @@ namespace BaghdadCore
 	public:
 		const Microsoft::WRL::ComPtr<ID3D11ShaderReflection>& GetComReflectionPointer() const noexcept;
 		ShaderModule& EntryPoint(std::string& entryName);
-		ShaderModule& TagetFeatureLevel(D3D_FEATURE_LEVEL featureLevel) noexcept;
+		ShaderModule& TargetFeatureLevel(const std::string& level) noexcept;
 
 		const Blob& GetBlob() const noexcept;
 		bool IsCompiled() const noexcept;

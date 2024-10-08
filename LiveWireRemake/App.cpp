@@ -84,22 +84,22 @@ int App::Run()
 
 		// presenting
 		renderer.Blit(renderer.GetRenderTexture(), swapchain.GetBackTexture(), 0u);
-		swapchain.Present(0u, 0u);
+		swapchain.Present(1u, 0u);
 
-		// resizing render texture
-		swapchain.ResizeBuffers();
+		//// resizing render texture
+		//swapchain.ResizeBuffers();
 
-		D3D11_TEXTURE2D_DESC desc = { 0 };
-		swapchain.GetBackTexture().GetComPtr()->GetDesc(&desc);
-		auto pRenderTexture = std::make_unique<BaghdadCore::Texture2D>(std::move(
-			renderer.GetTextureBuilder()
-			.Clear()
-			.Format(desc.Format)
-			.Size(desc.Width, desc.Height)
-			.ViewFlag(BaghdadCore::Resource::View::Type::RTV)
-			.Build()));
+		//D3D11_TEXTURE2D_DESC desc = { 0 };
+		//swapchain.GetBackTexture().GetComPtr()->GetDesc(&desc);
+		//auto pRenderTexture = std::make_unique<BaghdadCore::Texture2D>(std::move(
+		//	renderer.GetTextureBuilder()
+		//	.Clear()
+		//	.Format(desc.Format)
+		//	.Size(desc.Width, desc.Height)
+		//	.ViewFlag(BaghdadCore::Resource::View::Type::RTV)
+		//	.Build()));
 
-		renderer.SetRenderTexture(std::move(pRenderTexture));
+		//renderer.SetRenderTexture(std::move(pRenderTexture));
 	}
 
 	return 0;

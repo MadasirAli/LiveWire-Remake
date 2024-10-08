@@ -13,4 +13,6 @@ const Microsoft::WRL::ComPtr<ID3D11VertexShader>& VertexShader::GetComPtr() cons
 
 VertexShader::VertexShader(Microsoft::WRL::ComPtr<ID3D11VertexShader>&& pShader) :
 	Shader(std::move(ComUtility::As<ID3D11VertexShader, ID3D11DeviceChild>(pShader)))
-{}
+{
+	_ptr = std::move(pShader);
+}

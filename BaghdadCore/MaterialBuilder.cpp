@@ -17,7 +17,9 @@ Material BaghdadCore::MaterialBuilder::Build()
 
 	// creating vertex shader
 	ShaderModule vertexModule = ShaderModule(_vertexShaderName);
-	const auto& vertexBlob = vertexModule.Compile();
+	const auto& vertexBlob = vertexModule
+		.TargetFeatureLevel("vs_5_0")
+		.Compile();
 
 	ComPtr<ID3D11VertexShader> pVertexShader{};
 
@@ -32,7 +34,9 @@ Material BaghdadCore::MaterialBuilder::Build()
 
 	// creating pixel shader
 	ShaderModule pixelModule = ShaderModule(_pixelShaderName);
-	const auto& pixelBlob = pixelModule.Compile();
+	const auto& pixelBlob = pixelModule
+		.TargetFeatureLevel("ps_5_0")
+		.Compile();
 
 	ComPtr<ID3D11PixelShader> pPixelShader{};
 
@@ -108,6 +112,11 @@ ShaderReflectionDB MaterialBuilder::_CreateReflectionDB(const ShaderModule& shad
 	}
 
 	// reflecting input layout or input params
+	/// *** KNOWN ISSUE *** ///
+	/// ---------------------------------------------------------------------------------------------------------------------
+	/// Description: db vector relocates if its capacity get filled up, which internally causes the strings ptr to relocate.
+	/// _____________________________________________________________________________________________________________________
+	db.InputSementics.reserve(10);
 	for (auto i = 0u; i < desc.InputParameters; ++i)
 	{
 		D3D11_SIGNATURE_PARAMETER_DESC paramDesc = { 0 };
@@ -140,7 +149,7 @@ ShaderReflectionDB MaterialBuilder::_CreateReflectionDB(const ShaderModule& shad
 			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		}
 
-		db.InputSementics.emplace_back(paramDesc.SemanticName);
+		db.InputSementics.push_back(paramDesc.SemanticName);
 
 		D3D11_INPUT_ELEMENT_DESC inputDesc = { 0 };
 		inputDesc.SemanticName = db.InputSementics.back().c_str();

@@ -45,7 +45,7 @@ const Blob& ShaderModule::Compile()
         std::string compileErrors;
         for (auto i = 0; i < count; i++)
         {
-            compileErrors.push_back(((char*)pMsg)[count]);
+            compileErrors.push_back(((char*)pMsg)[i]);
         }
 
         _logger.LogError(
@@ -96,11 +96,11 @@ ShaderModule& BaghdadCore::ShaderModule::EntryPoint(std::string& entryName)
     return *this;
 }
 
-ShaderModule& ShaderModule::TagetFeatureLevel(D3D_FEATURE_LEVEL featureLevel) noexcept
+ShaderModule& ShaderModule::TargetFeatureLevel(const std::string& level) noexcept
 {
     assert(_compiled == false);
 
-    _targetFeatureLevel = featureLevel;
+    _targetFeatureLevel = level;
 
     return *this;
 }
@@ -122,13 +122,13 @@ ShaderModule::ShaderModule(const std::string& name) :
     _logger(Globals::GetLogger())
 {   
     // to wide str
-    const auto wideLength = name.length() * sizeof(wchar_t);
-    auto pWStr = std::make_unique<wchar_t[]>(wideLength * sizeof(wchar_t));
+    const auto wideLength = name.length();
+    auto pWStr = std::make_unique<wchar_t[]>(wideLength + 1);
     for (auto i = 0; i < wideLength; ++i)
     {
         pWStr[i] = name[i];
     }
-    pWStr[wideLength + sizeof(wchar_t)] = 0;
+    pWStr[wideLength + 1] = 0;
 
     _name = std::wstring(pWStr.get());
     pWStr.release();
