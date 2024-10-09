@@ -1,11 +1,14 @@
 #include "PixelInput.hlsli"
 #include "VertexInput.hlsli"
+#include "CameraCBuffer.hlsli"
+#include "TransformCBuffer.hlsli"
 
 PixelInput main(VertexInput vertex)
 {
     PixelInput output;
     
-    output.position = float4(vertex.position.xyz, 1);
+    output.position = mul(mul(float4(vertex.position.xzy, 1.0f), WorldTransformMatrix), ProjectionMatrix);
+    
     output.normal = vertex.normal;
     output.uv = vertex.uv;
     

@@ -1,0 +1,4 @@
+cbuffer TransformCBuffer
+{
+	matrix WorldTransformMatrix;
+};

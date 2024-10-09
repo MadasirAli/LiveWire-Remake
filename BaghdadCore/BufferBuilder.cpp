@@ -11,12 +11,17 @@ ConstantBuffer BaghdadCore::BufferBuilder::BuildCBuffer()
 {
 	using namespace Microsoft::WRL;
 
+	unsigned int bindFlags = _bindFlags;
+	D3D11_USAGE usage = _write ? D3D11_USAGE::D3D11_USAGE_DYNAMIC : D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	unsigned int cpuFlags = _write ? D3D11_CPU_ACCESS_WRITE : 0u;
+	cpuFlags |= _read ? D3D11_CPU_ACCESS_READ : 0u;
+
 	// creating constant buffer
 	D3D11_BUFFER_DESC desc = { 0 };
 	desc.ByteWidth = _size;
-	desc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
-	desc.CPUAccessFlags = 0u;
+	desc.Usage = usage;
+	desc.BindFlags = bindFlags;
+	desc.CPUAccessFlags = cpuFlags;
 	desc.StructureByteStride = 0u;
 
 	D3D11_SUBRESOURCE_DATA data = { 0 };
@@ -37,7 +42,10 @@ ConstantBuffer BaghdadCore::BufferBuilder::BuildCBuffer()
 
 BufferBuilder& BufferBuilder::Clear() noexcept
 {
-	_write_able = true;
+	_read = false;
+	_write = false;
+	_bindFlags = 0u;
+
 	_pData = nullptr;
 	_size = 0u;
 
@@ -52,9 +60,22 @@ BufferBuilder& BufferBuilder::InitialData(const char* pData, const unsigned int 
 	return *this;
 }
 
-BufferBuilder& BufferBuilder::Writeable() noexcept
+BufferBuilder& BufferBuilder::Read() noexcept
 {
-	_write_able = true;
+	_read = true;
+	return *this;
+}
+
+BufferBuilder& BufferBuilder::Write() noexcept
+{
+	_write = true;
+	return *this;
+}
+
+BufferBuilder& BaghdadCore::BufferBuilder::Bind(D3D11_BIND_FLAG bindFlag) noexcept
+{
+	_bindFlags |= (unsigned int)bindFlag;
+
 	return *this;
 }
 

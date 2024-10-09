@@ -3,6 +3,7 @@
 #include <wrl/client.h>
 
 #include "DeviceChild.h"
+#include "GraphicsError.h"
 
 namespace BaghdadCore
 {
@@ -51,6 +52,9 @@ namespace BaghdadCore
 		};
 
 	public:
+		void* Map(D3D11_MAP type) const NOEXCEPT;
+		void UnMap() const NOEXCEPT;
+
 		const View& GetView() const noexcept;
 		const Microsoft::WRL::ComPtr<ID3D11Resource>& GetComResourcePtr() const noexcept;
 

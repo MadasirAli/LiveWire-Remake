@@ -7,9 +7,9 @@
 #include "Win32.h"
 
 #ifdef _DEBUG
-#define NOEXCEPT noexcept(true)
-#else
 #define NOEXCEPT noexcept(false)
+#else
+#define NOEXCEPT noexcept(true)
 #endif
 
 

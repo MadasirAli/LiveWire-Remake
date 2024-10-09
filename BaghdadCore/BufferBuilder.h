@@ -13,7 +13,9 @@ namespace BaghdadCore
 
 		BufferBuilder& Clear() noexcept;
 		BufferBuilder& InitialData(const char* pData, const unsigned int size) noexcept;
-		BufferBuilder& Writeable() noexcept;
+		BufferBuilder& Read() noexcept;
+		BufferBuilder& Write() noexcept;
+		BufferBuilder& Bind(D3D11_BIND_FLAG bindFlag) noexcept;
 
 		BufferBuilder(const Device& device);
 
@@ -21,7 +23,10 @@ namespace BaghdadCore
 		const Device& _device;
 		const Logger& _logger;
 
-		bool _write_able = true;
+		bool _write = false;
+		bool _read = false;
+		unsigned int _bindFlags = (unsigned int)D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+
 		const char* _pData = nullptr;
 		unsigned int _size = 0u;
 	};

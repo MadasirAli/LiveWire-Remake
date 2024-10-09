@@ -5,19 +5,19 @@ using namespace LiveWireRemake;
 void Entity::ClearPendings(std::weak_ptr<Entity>& pEntity)
 {
 	// clearing dead components
-	for (auto pBegin = _pComponents.begin(); pBegin != _pComponents.end(); ++pBegin)
+	for (auto pBegin = _pComponents.begin(); pBegin != _pComponents.end();)
 	{
 		if (pBegin->second == false)
+		{
+			++pBegin;
 			continue;
+		}
 
 		// raising event
 		pBegin->first->OnDestroy(pEntity);
 
 		// remove component
-		_pComponents.erase(pBegin);
-		// reiterating
-		pBegin = _pComponents.begin();
-		--pBegin;
+		pBegin = _pComponents.erase(pBegin);
 	}
 
 	// adding new components
@@ -33,6 +33,14 @@ void Entity::Update(std::weak_ptr<Entity>& pEntity)
 	for (const auto& pComponent : _pComponents)
 	{
 		pComponent.first->OnUpdate(pEntity);
+	}
+}
+
+void Entity::PreRender(std::weak_ptr<Entity>& pEntity)
+{
+	for (const auto& pComponent : _pComponents)
+	{
+		pComponent.first->OnPreRender(pEntity);
 	}
 }
 

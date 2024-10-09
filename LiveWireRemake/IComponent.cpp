@@ -8,6 +8,9 @@ void IComponent::OnStart(std::weak_ptr<Entity>& pEntity)
 void IComponent::OnUpdate(std::weak_ptr<Entity>& pEntity)
 {}
 
+void IComponent::OnPreRender(std::weak_ptr<Entity>&pEntity)
+{}
+
 void IComponent::OnRender(std::weak_ptr<Entity>& pEntity)
 {}
 

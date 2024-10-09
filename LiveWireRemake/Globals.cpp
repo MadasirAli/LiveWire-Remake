@@ -22,6 +22,21 @@ float Globals::GetDeltaTime() const noexcept
     return _deltaTime;
 }
 
+float LiveWireRemake::Globals::GetScreenWidth() const noexcept
+{
+    return _screenWidth;
+}
+
+float LiveWireRemake::Globals::GetScreenHeight() const noexcept
+{
+    return _screenHeight;
+}
+
+float Globals::GetScreenAspectRatio() const noexcept
+{
+    return _screenHeight / _screenWidth;
+}
+
 BaghdadCore::Logger& Globals::GetLogger() const noexcept
 {
     return *_pLogger;

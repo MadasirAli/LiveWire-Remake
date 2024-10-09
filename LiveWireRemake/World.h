@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
+#include <functional>
 
 #include "Entity.h"
 
@@ -14,6 +15,8 @@ namespace LiveWireRemake
 		friend class WorldManager;
 
 	public:
+		void ForEach(std::function<void(std::weak_ptr<Entity>)> action);
+
 		std::weak_ptr<Entity> CreateEntity() noexcept;
 		void RemoveEntity(std::weak_ptr<Entity>& pEntity) noexcept;
 

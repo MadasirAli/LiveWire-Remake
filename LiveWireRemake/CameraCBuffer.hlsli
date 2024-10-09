@@ -1,0 +1,4 @@
+cbuffer CameraCBuffer
+{
+    matrix ProjectionMatrix;
+};

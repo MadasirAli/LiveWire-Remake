@@ -6,6 +6,35 @@
 
 using namespace BaghdadCore;
 
+void* Resource::Map(D3D11_MAP type) const NOEXCEPT
+{
+	Microsoft::WRL::ComPtr<ID3D11Device> pDevice{};
+	_ptr->GetDevice(pDevice.ReleaseAndGetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext{};
+	pDevice->GetImmediateContext(pContext.ReleaseAndGetAddressOf());
+
+	D3D11_MAPPED_SUBRESOURCE map = { 0 };
+	D3D_CALL(
+		pContext->Map(_ptr.Get(), 0u, type, 0u, &map)
+	);
+
+	return map.pData;
+}
+
+void Resource::UnMap() const NOEXCEPT
+{
+	Microsoft::WRL::ComPtr<ID3D11Device> pDevice{};
+	_ptr->GetDevice(pDevice.ReleaseAndGetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext{};
+	pDevice->GetImmediateContext(pContext.ReleaseAndGetAddressOf());
+
+	D3D_CHECK_CALL(
+		pContext->Unmap(_ptr.Get(), 0u)
+	);
+}
+
 const Resource::View& Resource::GetView() const noexcept
 {
 	return _view;

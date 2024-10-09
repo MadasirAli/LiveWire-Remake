@@ -16,6 +16,11 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCE
 	const auto& context = _pDevice->GetDeviceContext();
 	const auto& pContext = context.GetComPtr();
 
+	// clearing context
+	D3D_CHECK_CALL(
+		pContext->ClearState()
+	);
+
 	/// binding mesh	
 	mesh.Bind(*_pDevice, context);
 	// binding material

@@ -15,6 +15,7 @@ namespace LiveWireRemake
 	private:
 		void ClearPendings(std::weak_ptr<Entity>& pEntity);
 		void Update(std::weak_ptr<Entity>& pEntity);
+		void PreRender(std::weak_ptr<Entity>& pEntity);
 		void Render(std::weak_ptr<Entity>& pEntity);
 
 		void RaiseActiveEvents(std::weak_ptr<Entity>& pEntity);
@@ -23,16 +24,16 @@ namespace LiveWireRemake
 		bool SetActive(bool value);
 
 		template<typename T>
-		bool TryGetComponent(std::weak_ptr<T>& pTarget)
+		bool TryGetComponent(std::weak_ptr<T>& pComponent)
 		{
-			for (const auto& pComponent : _pComponents)
+			for (const auto& pPair : _pComponents)
 			{
-				T* pTarget = dynamic_cast<T*>(pComponent.first.get());
+				T* pTarget = dynamic_cast<T*>(pPair.first.get());
 				if (pTarget == nullptr)
 					continue;
 
-				auto ptr = std::static_pointer_cast<T, IComponent>(std::shared_ptr<IComponent>(pComponent.first));
-				pTarget = ptr;
+				auto ptr = std::static_pointer_cast<T, IComponent>(std::shared_ptr<IComponent>(pPair.first));
+				pComponent = ptr;
 
 				return true;
 			}
@@ -67,9 +68,10 @@ namespace LiveWireRemake
 		}
 
 		template<typename T>
-		void AddComponent()
+		std::weak_ptr<T> AddComponent()
 		{
 			_toAdd_pComponents.emplace_back(std::static_pointer_cast<IComponent, T>(std::make_shared<T>()));
+			return std::static_pointer_cast<T, IComponent>(_toAdd_pComponents.back());
 		}
 
 		Entity(unsigned int id);

@@ -36,6 +36,7 @@ void LiveWireRemake::World::Update()
 	}
 
 	// removing unactive entities
+	std::vector<unsigned int> toRemoveEntities{};
 	for (auto pBegin = _pEntities.begin(); pBegin != _pEntities.end(); ++pBegin)
 	{
 		// id: pair(pEntity, bool dead)
@@ -49,18 +50,23 @@ void LiveWireRemake::World::Update()
 
 		// id: pair(pEntity, bool dead)
 		_unactive_pEntities.push_back(pBegin->second.first);
-		_pEntities.erase(pBegin);
-
-		// reiterating
-		pBegin = _pEntities.begin();
-		--pBegin;
+		toRemoveEntities.push_back(pBegin->first);
 	}
+	// removing marked ones
+	for (const auto id : toRemoveEntities)
+	{
+		_pEntities.erase(id);
+	}
+	toRemoveEntities.clear();
 
 	// starting re active entities
-	for (auto pBegin = _unactive_pEntities.begin(); pBegin != _unactive_pEntities.end(); ++pBegin)
+	for (auto pBegin = _unactive_pEntities.begin(); pBegin != _unactive_pEntities.end();)
 	{
 		if ((*pBegin)->_active == false)
+		{
+			++pBegin;
 			continue;
+		}
 
 		// raising event
 		std::weak_ptr<Entity> ptr = *pBegin;
@@ -69,11 +75,7 @@ void LiveWireRemake::World::Update()
 		_pEntities.insert(
 			std::pair<unsigned int, std::pair<std::shared_ptr<Entity>, bool>>(
 				(*pBegin)->_id, std::pair<std::shared_ptr<Entity>, bool>(*pBegin, false)));
-		_unactive_pEntities.erase(pBegin);
-
-		// reiterating
-		pBegin = _unactive_pEntities.begin();
-		--pBegin;
+		pBegin = _unactive_pEntities.erase(pBegin);
 	}
 
 	// updating
@@ -82,6 +84,14 @@ void LiveWireRemake::World::Update()
 		// id: pair(pEntity, bool dead)
 		std::weak_ptr<Entity> ptr = pEntity.second.first;
 		pEntity.second.first->Update(ptr);
+	}
+
+	// pre render
+	for (auto& pEntity : _pEntities)
+	{
+		// id: pair(pEntity, bool dead)
+		std::weak_ptr<Entity> ptr = pEntity.second.first;
+		pEntity.second.first->PreRender(ptr);
 	}
 
 	// rendering
@@ -98,6 +108,15 @@ unsigned int World::GenerateId() noexcept
 	static unsigned int lastAssignedId = 0u;
 	++lastAssignedId;
 	return lastAssignedId;
+}
+
+void World::ForEach(std::function<void(std::weak_ptr<Entity>)> action)
+{
+	for (auto& pair : _pEntities)
+	{
+		// id: (entity, bool dead)
+		action(std::weak_ptr<Entity>(pair.second.first));
+	}
 }
 
 std::weak_ptr<Entity> World::CreateEntity() noexcept
