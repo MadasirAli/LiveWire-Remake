@@ -80,6 +80,6 @@ bool Entity::SetActive(bool value)
 	return lastState;
 }
 
-Entity::Entity(UUID id) :
+Entity::Entity(unsigned int id) :
 	_id(id)
 {}

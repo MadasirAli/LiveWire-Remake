@@ -5,9 +5,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include <rpc.h>
-#include <rpcdce.h>
-
 #include "Entity.h"
 
 namespace LiveWireRemake
@@ -23,10 +20,10 @@ namespace LiveWireRemake
 	private:
 		void Update();
 
-		World() = default;
+		static unsigned int GenerateId() noexcept;
 
 	private:
-		std::unordered_map<UUID, std::pair<std::shared_ptr<Entity>, bool>> _pEntities;
+		std::unordered_map<unsigned int, std::pair<std::shared_ptr<Entity>, bool>> _pEntities;
 
 		std::vector<std::shared_ptr<Entity>> _toAdd_pEntities;
 		std::vector<std::shared_ptr<Entity>> _unactive_pEntities;

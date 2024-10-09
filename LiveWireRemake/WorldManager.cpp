@@ -9,11 +9,8 @@ void WorldManager::Update()
 
 World& WorldManager::CreateWorld(const std::string& name) noexcept
 {
-    auto ptr = std::make_unique<World>();
-
-    _worlds.insert(std::pair<std::string, std::unique_ptr<World>>(name, std::move(ptr)));
-
-    return *ptr;
+    _worlds.insert(std::pair<std::string, std::unique_ptr<World>>(name, std::move(std::make_unique<World>())));
+    return *_worlds.at(name);
 }
 
 World& WorldManager::GetWorld(const std::string& name) noexcept

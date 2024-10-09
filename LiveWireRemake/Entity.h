@@ -4,8 +4,6 @@
 #include <utility>
 #include <assert.h>
 
-#include <rpc.h>
-
 #include "IComponent.h"
 
 namespace LiveWireRemake
@@ -74,8 +72,7 @@ namespace LiveWireRemake
 			_toAdd_pComponents.emplace_back(std::static_pointer_cast<IComponent, T>(std::make_shared<T>()));
 		}
 
-	private:
-		Entity(UUID id);
+		Entity(unsigned int id);
 
 	private:
 		std::vector<std::pair<std::shared_ptr<IComponent>, bool>> _pComponents;
@@ -84,6 +81,6 @@ namespace LiveWireRemake
 		bool _lastActiveState = false;
 		bool _active = false;
 
-		UUID _id;
+		unsigned int _id;
 	};
 }

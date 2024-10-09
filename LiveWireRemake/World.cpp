@@ -21,11 +21,9 @@ void LiveWireRemake::World::Update()
 	// adding new entities
 	for (const auto& pEntity : _toAdd_pEntities)
 	{
-		UUID id = { 0 };
-		UuidCreate(&id);
 		_pEntities.insert(
-			std::pair<UUID, std::pair<std::shared_ptr<Entity>, bool>>(
-				id, std::pair<std::shared_ptr<Entity>, bool>(pEntity, false)));
+			std::pair<unsigned int, std::pair<std::shared_ptr<Entity>, bool>>(
+				GenerateId(), std::pair<std::shared_ptr<Entity>, bool>(pEntity, false)));
 	}
 	_toAdd_pEntities.clear();
 
@@ -69,7 +67,7 @@ void LiveWireRemake::World::Update()
 		(*pBegin)->RaiseActiveEvents(ptr);
 
 		_pEntities.insert(
-			std::pair<UUID, std::pair<std::shared_ptr<Entity>, bool>>(
+			std::pair<unsigned int, std::pair<std::shared_ptr<Entity>, bool>>(
 				(*pBegin)->_id, std::pair<std::shared_ptr<Entity>, bool>(*pBegin, false)));
 		_unactive_pEntities.erase(pBegin);
 
@@ -95,12 +93,16 @@ void LiveWireRemake::World::Update()
 	}
 }
 
+unsigned int World::GenerateId() noexcept
+{
+	static unsigned int lastAssignedId = 0u;
+	++lastAssignedId;
+	return lastAssignedId;
+}
+
 std::weak_ptr<Entity> World::CreateEntity() noexcept
 {
-	UUID id = { 0 };
-	UuidCreate(&id);
-
-	_toAdd_pEntities.emplace_back(std::move(std::make_shared<Entity>(id)));
+	_toAdd_pEntities.emplace_back(std::move(std::make_shared<Entity>(GenerateId())));
 
 	return _toAdd_pEntities.back();
 }
