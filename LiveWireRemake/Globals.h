@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaghdadCore/Renderer.h"
+#include "BaghdadCore/Logger.h"
 #include "InputManager.h"
 #include "WorldManager.h"
 
@@ -11,9 +12,12 @@ namespace LiveWireRemake
 		friend class App;
 
 	public:
-		BaghdadCore::Renderer& GetRenderer() noexcept;
-		WorldManager& GetWorldManager() noexcept;
-		InputManager& GetInputManager() noexcept;
+		BaghdadCore::Renderer& GetRenderer() const noexcept;
+		WorldManager& GetWorldManager() const noexcept;
+		InputManager& GetInputManager() const noexcept;
+		float GetDeltaTime() const noexcept;
+
+		BaghdadCore::Logger& GetLogger() const noexcept;
 
 		static Globals& GetInstance() noexcept;
 
@@ -21,6 +25,9 @@ namespace LiveWireRemake
 		BaghdadCore::Renderer* _pRenderer;
 		WorldManager* _pWorldManager;
 		InputManager* _pInputManager;
+
+		float _deltaTime;
+		BaghdadCore::Logger* _pLogger;
 	};
 }
 

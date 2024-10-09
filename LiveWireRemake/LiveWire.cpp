@@ -1,30 +1,27 @@
 #include "LiveWire.h"
 
 #include "BaghdadCore/imgui.h"
+#include "Globals.h"
 
 using namespace LiveWireRemake;
 
-void LiveWire::Update(PerTickData& data)
+void LiveWire::Update()
 {
+	auto& globals = Globals::GetInstance();
+	auto& renderer = globals.GetRenderer();
+	const auto& input = globals.GetInputManager();
+	auto& worldManager = globals.GetWorldManager();
+
 	ImGui::ShowDemoWindow();
 
-	const auto mesh = data.Renderer.GetMeshLoader()
+	const auto mesh = renderer.GetMeshLoader()
 		.Clear()
 		.PrimitiveTriangle()
 		.Load();
-	const auto material = data.Renderer.GetMaterialBuilder()
+	const auto material = renderer.GetMaterialBuilder()
 		.VS("Raw.vert")
 		.PS("Raw.pix")
 		.Build();
 
-	data.Renderer.DrawMesh(mesh, material);
+	renderer.DrawMesh(mesh, material);
 }
-
-LRESULT LiveWire::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	return Window::WndProc(hwnd, msg, wParam, lParam);
-}
-
-LiveWire::PerTickData::PerTickData(BaghdadCore::Renderer& renderer) :
-	Renderer(renderer)
-{}

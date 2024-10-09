@@ -7,6 +7,7 @@
 
 #include "Device.h"
 #include "DeviceContext.h"
+#include "GraphicsError.h"
 
 namespace BaghdadCore
 {
@@ -24,7 +25,7 @@ namespace BaghdadCore
 		};
 
 	private:
-		void Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG);
+		void Bind(const Device& device, const DeviceContext& context) const NOEXCEPT;
 
 		Mesh(VertexBuffer&& vertexBuffer,
 			unsigned int vertexCount);

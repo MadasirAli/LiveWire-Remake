@@ -25,7 +25,6 @@ namespace BaghdadCore
 		DXGIInfoQueue& operator= (const DXGIInfoQueue& other) = delete;
 		DXGIInfoQueue& operator= (DXGIInfoQueue&& old) noexcept = delete;
 
-
 		static DXGIInfoQueue& GetInstance();
 
 	private:

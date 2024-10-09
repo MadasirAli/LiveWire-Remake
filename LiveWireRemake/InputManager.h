@@ -318,7 +318,7 @@ namespace LiveWireRemake
 		bool GetKeyUp(Key key) const noexcept;
 
 		void Push(const MSG& msg) noexcept;
-		void Flush(const MSG& msg) noexcept;
+		void Flush() noexcept;
 
 
 	private:

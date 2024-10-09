@@ -2,9 +2,6 @@
 
 #include <wrl/client.h>
 
-#include "BaghdadError.h"
-#include "GraphicsError.h"
-
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
@@ -14,7 +11,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 using namespace BaghdadCore;
 
-void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG)
+void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCEPT
 {
 	const auto& context = _pDevice->GetDeviceContext();
 	const auto& pContext = context.GetComPtr();
@@ -61,7 +58,7 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const noexce
 	);
 }
 
-void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG)
+void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const NOEXCEPT
 {
 	D3D_CHECK_CALL(
 	_pDevice->GetDeviceContext()
@@ -70,7 +67,7 @@ void Renderer::Blit(const Texture2D& source, const Texture2D& destination) const
 	);
 }
 
-void Renderer::Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const noexcept(!_DEBUG)
+void Renderer::Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const NOEXCEPT
 {
 	D3D11_TEXTURE2D_DESC srcDesc = { 0 };
 	D3D11_TEXTURE2D_DESC destDesc = { 0 };
@@ -127,7 +124,7 @@ void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture)
 	_pRenderTexture = std::move(pRenderTexture);
 }
 
-void Renderer::ClearRenderTexture(const float color[4]) const noexcept(!_DEBUG)
+void Renderer::ClearRenderTexture(const float color[4]) const NOEXCEPT
 {
 	const auto& pContext = _pDevice->GetDeviceContext().GetComPtr();
 

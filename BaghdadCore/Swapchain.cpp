@@ -1,6 +1,5 @@
 #include "Swapchain.h"
 
-#include "GraphicsError.h"
 #include "ComUtility.h"
 
 using namespace BaghdadCore;

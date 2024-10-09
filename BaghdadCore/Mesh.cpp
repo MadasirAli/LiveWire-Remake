@@ -2,11 +2,9 @@
 
 #include <memory>
 
-#include "GraphicsError.h"
-
 using namespace BaghdadCore;
 
-void Mesh::Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG)
+void Mesh::Bind(const Device& device, const DeviceContext& context) const NOEXCEPT
 {
 	// binding vertex buffer
 	const auto& pContext = context.GetComPtr();

@@ -22,7 +22,7 @@ void InputManager::Push(const MSG& msg) noexcept
     _keyboard.Push(msg);
 }
 
-void InputManager::Flush(const MSG& msg) noexcept
+void InputManager::Flush() noexcept
 {
     _keyboard.Flush();
 }

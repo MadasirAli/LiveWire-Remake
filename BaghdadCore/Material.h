@@ -10,6 +10,7 @@
 #include "ShaderModule.h"
 #include "Texture2D.h"
 #include "ConstantBuffer.h"
+#include "GraphicsError.h"
 
 #include "Device.h"
 #include "DeviceContext.h"
@@ -51,7 +52,7 @@ namespace BaghdadCore
 		void SetPSCBuffer(const std::string& name, const ConstantBuffer buffer);
 		
 	private:
-		void Bind(const Device& device, const DeviceContext& context) const noexcept(!_DEBUG);
+		void Bind(const Device& device, const DeviceContext& context) const NOEXCEPT;
 
 		Material(VertexShader&& vertexShader, PixelShader&& pixelShader, 
 			ShaderModule&& vertexModule,

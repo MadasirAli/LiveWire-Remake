@@ -10,9 +10,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 
-#ifdef _DEBUG
 #include <dxgidebug.h>
-#endif
 
 namespace DirectXUtil
 {

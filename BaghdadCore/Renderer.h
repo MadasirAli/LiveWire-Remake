@@ -13,6 +13,7 @@
 #include "Material.h"
 #include "BufferBuilder.h"
 #include "Window.h"
+#include "GraphicsError.h"
 
 namespace BaghdadCore
 {
@@ -31,9 +32,9 @@ namespace BaghdadCore
 		};
 
 	public:
-		void DrawMesh(const Mesh& mesh, const Material& material) const noexcept(!_DEBUG);
-		void Blit(const Texture2D& source, const Texture2D& destination) const noexcept(!_DEBUG);
-		void Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const noexcept(!_DEBUG);
+		void DrawMesh(const Mesh& mesh, const Material& material) const NOEXCEPT;
+		void Blit(const Texture2D& source, const Texture2D& destination) const NOEXCEPT;
+		void Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const NOEXCEPT;
 
 		/// <summary>
 		/// Sets the reneder texture on which to output.
@@ -42,7 +43,7 @@ namespace BaghdadCore
 		/// <exception cref="GraphicsError">On Failure of creating depth texture</exception>
 		/// <exception cref="BaghdadError">On Failure of creating depth texture</exception>
 		void SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture);
-		void ClearRenderTexture(const float color[4]) const noexcept(!_DEBUG);
+		void ClearRenderTexture(const float color[4]) const NOEXCEPT;
 		void RemoveRenderTexture() noexcept;
 
 		Texture2D& GetRenderTexture() const noexcept;

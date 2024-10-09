@@ -51,7 +51,7 @@
 	}																					\
 }																						\
 
-#define D3D_CHECL_CALL(func)					\
+#define D3D_CHECK_CALL(func)					\
 {												\
 	func;										\
 }												\

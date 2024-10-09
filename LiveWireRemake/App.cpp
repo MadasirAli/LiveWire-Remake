@@ -1,15 +1,20 @@
 #include "App.h"
 
+#include <chrono>
+
 #include "BaghdadCore/Window.h"
 #include "BaghdadCore/Renderer.h"
 #include "BaghdadCore/imgui.h"
 
 #include "LiveWire.h"
+#include "Globals.h"
 
 using namespace LiveWireRemake;
 
 int App::Run()
 {
+	// ________________ GETTINGS THINGS READY __________________ //
+
 	// creating game window
 	LiveWire liveWire{};
 	ShowWindow(liveWire.GetHwnd(), SW_SHOW);
@@ -35,14 +40,31 @@ int App::Run()
 
 	renderer.InitializeImGUI(liveWire);
 
-	// per tick data
-	LiveWire::PerTickData data{ renderer };
+	// creating world manager
+	WorldManager worldManager{};
+
+	// creating input manager
+	InputManager inputManager{};
+
+	// creating logger
+	BaghdadCore::Logger logger{};
+
+	// setting up globals
+	auto& globals = Globals::GetInstance();
+	globals._pRenderer = &renderer;
+	globals._pWorldManager = &worldManager;
+	globals._pInputManager = &inputManager;
+	globals._pLogger = &logger;
+	// _________________________________________________________ //
 
 	// main loop
 	MSG msg = { 0 };
 	bool quit = false;
 	while (true)
 	{
+		// taking start time stamp
+		const auto startTimeStamp = std::chrono::high_resolution_clock::now();
+
 		{
 			if (quit)
 				break;
@@ -54,6 +76,9 @@ int App::Run()
 					quit = true;
 					continue;
 				}
+
+				// feeding to input manager
+				inputManager.Push(msg);
 
 				// forwarding to imgui renderer
 				renderer.IMGUI_ForwardMessage(msg.hwnd, msg.message, msg.wParam, msg.lParam);
@@ -74,8 +99,8 @@ int App::Run()
 		//---------------------------//
 		//			HERE			 //
 		
-		liveWire.Update(data);
-
+		liveWire.Update();
+		inputManager.Flush();
 		//			HERE			 //
 		//---------------------------//
 
@@ -84,7 +109,7 @@ int App::Run()
 
 		// presenting
 		renderer.Blit(renderer.GetRenderTexture(), swapchain.GetBackTexture(), 0u);
-		swapchain.Present(1u, 0u);
+		swapchain.Present(0u, 0u);
 
 		//// resizing render texture
 		//swapchain.ResizeBuffers();
@@ -100,6 +125,12 @@ int App::Run()
 		//	.Build()));
 
 		//renderer.SetRenderTexture(std::move(pRenderTexture));
+
+		const auto endTimeStamp = std::chrono::high_resolution_clock::now();
+		float deltaTime = (std::chrono::duration_cast<std::chrono::microseconds>(endTimeStamp - startTimeStamp).count() / 1000.0f);
+		globals._deltaTime = deltaTime;
+
+		logger.WriteLine("Delta Time: " + std::to_string(deltaTime));
 	}
 
 	return 0;

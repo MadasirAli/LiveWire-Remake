@@ -6,6 +6,13 @@
 
 #include "Win32.h"
 
+#ifdef _DEBUG
+#define NOEXCEPT noexcept(true)
+#else
+#define NOEXCEPT noexcept(false)
+#endif
+
+
 #define THROW_BERROR(msg) {														\
 throw BaghdadError(std::string(msg) + std::string("\n\nFile: ") + std::string(__FILE__) + std::string("\nLine: ") + std::to_string(__LINE__));		\
 }																				\

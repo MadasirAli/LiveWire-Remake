@@ -6,6 +6,7 @@
 #include "D3D11.h"
 #include "Window.h"
 #include "Texture2D.h"
+#include "GraphicsError.h"
 
 namespace BaghdadCore
 {
@@ -18,7 +19,7 @@ namespace BaghdadCore
 		/// <param name="syncInverval"></param>
 		/// <param name="flags"></param>
 		/// <returns>False if swapchain occuluded</returns>
-		bool Present(unsigned int syncInverval, unsigned int flags) const noexcept(!_DEBUG);
+		bool Present(unsigned int syncInverval, unsigned int flags) const NOEXCEPT;
 		void ResizeBuffers();
 
 		Texture2D& GetBackTexture() const noexcept;
