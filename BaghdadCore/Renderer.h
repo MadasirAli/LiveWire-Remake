@@ -48,7 +48,7 @@ namespace BaghdadCore
 		Texture2D& GetRenderTexture() const noexcept;
 
 		void ImGUI_NewFrame() const noexcept;
-		void ImGUI_Render() const noexcept;
+		void ImGUI_Render() const;
 		bool IMGUI_ForwardMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) const noexcept;
 		void InitializeImGUI(const Window& window) noexcept;
 

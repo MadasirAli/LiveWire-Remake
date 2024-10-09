@@ -160,11 +160,13 @@ void Renderer::ImGUI_NewFrame() const noexcept
 	_pUIRenderer->NewFrame();
 }
 
-void Renderer::ImGUI_Render() const noexcept
+void Renderer::ImGUI_Render() const
 {
 	const auto& pContext = _pDevice->GetDeviceContext().GetComPtr();
 
 	ImGui::Render();
+
+	pContext->ClearState();
 
 	// binding view port
 	D3D_CHECK_CALL(
@@ -175,7 +177,7 @@ void Renderer::ImGUI_Render() const noexcept
 	D3D_CHECK_CALL(
 		pContext->OMSetRenderTargets(1u,
 			_pRenderTexture->GetView().GetRTVComPtr().GetAddressOf(),
-			_pDepthTexture->GetView().GetDSVComPtr().Get())
+			nullptr)
 	);
 
 	// binding blend state
