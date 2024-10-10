@@ -12,9 +12,23 @@ void Camera::OnPreRender(std::weak_ptr<Entity>& pEntity)
 {
 	using namespace DirectX;
 
+	auto& transform = pEntity.lock()->GetTransform();
+
+	auto quaternion = XMQuaternionRotationRollPitchYawFromVector(transform.rotation);
+
+	auto forward = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), quaternion);
+	auto up = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), quaternion);
+
+	auto viewMatrix = XMMatrixLookToLH(transform.position, forward, up);
+	viewMatrix = XMMatrixTranspose(viewMatrix);
+
+	auto projectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), Globals::GetInstance().GetScreenAspectRatio(), nearPlane, farPlane);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+
 	// updating camera c buffer
 	CameraCBuffer data = {};
-	data.ProjectionMatrix = XMMatrixPerspectiveFovLH(fov, Globals::GetInstance().GetScreenAspectRatio(), nearPlane, farPlane);
+	data.ViewMatrix = viewMatrix;
+	data.ProjectionMatrix = projectionMatrix;
 
 	const auto ptr = (CameraCBuffer*)_pBuffer->Map(D3D11_MAP_WRITE_DISCARD);
 	ptr[0] = data;

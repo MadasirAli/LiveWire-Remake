@@ -38,7 +38,8 @@ void LiveWire::Update()
 		// adding components
 		auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
 		auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
-		pTriangleEntity.lock()->AddComponent<Movement>();
+
+		pCameraEntity.lock()->AddComponent<Movement>();
 	}
 
 	// -------------------------------------------- //

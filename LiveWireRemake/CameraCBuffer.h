@@ -6,6 +6,7 @@ namespace LiveWireRemake
 {
 	struct CameraCBuffer
 	{
+		DirectX::XMMATRIX ViewMatrix;
 		DirectX::XMMATRIX ProjectionMatrix;
 	};
 }

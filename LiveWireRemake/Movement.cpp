@@ -16,14 +16,14 @@ void Movement::OnUpdate(std::weak_ptr<Entity>& pEntity)
 
 	auto& transform = pEntity.lock()->GetTransform();
 
-	const auto delta = 3.0f * deltaTime;
+	const auto delta = 10.0f * deltaTime;
 
 	const auto rightKey = InputManager::Key::RightArrow;
 	const auto leftKey = InputManager::Key::LeftArrow;
 	const auto upKey = InputManager::Key::UpArrow;
 	const auto downKey = InputManager::Key::DownArrow;
 	const auto forwardKey = InputManager::Key::Space;
-	const auto backwardKey = InputManager::Key::RightShift;
+	const auto backwardKey = InputManager::Key::N;
 
 	const auto xRotPKey = InputManager::Key::W;
 	const auto yRotPKey = InputManager::Key::S;

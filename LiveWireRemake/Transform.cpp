@@ -13,8 +13,11 @@ void Transform::OnPreRender(std::weak_ptr<Entity>& pEntity)
 
 	// updating transform c buffer
 
+	auto quaternion = XMQuaternionRotationRollPitchYawFromVector(rotation);
+
 	TransformCBuffer data = {};
-	data.WorldMatrix = XMMatrixTransformation(XMVectorZero(), XMQuaternionIdentity(), scale, XMVectorZero(), rotation, position);
+	data.WorldMatrix = XMMatrixTransformation(XMVectorZero(), XMVectorSet(1, 1, 1, 1), scale, XMVectorZero(), quaternion, position);
+	data.WorldMatrix = XMMatrixTranspose(data.WorldMatrix);
 
 	const auto ptr = (TransformCBuffer*)_pBuffer->Map(D3D11_MAP_WRITE_DISCARD);
 	ptr[0] = data;

@@ -129,10 +129,8 @@ int App::Run()
 		// updating globals
 
 		const auto endTimeStamp = std::chrono::high_resolution_clock::now();
-		float deltaTime = (std::chrono::duration_cast<std::chrono::microseconds>(endTimeStamp - startTimeStamp).count() / 1000.0f);
+		float deltaTime = (std::chrono::duration_cast<std::chrono::microseconds>(endTimeStamp - startTimeStamp).count() / 1000.0f) / 1000.0f;
 		globals._deltaTime = deltaTime;
-
-		logger.WriteLine("Delta Time: " + std::to_string(deltaTime));
 
 		{
 			RECT rect = { 0 };
