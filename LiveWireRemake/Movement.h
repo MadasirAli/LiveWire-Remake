@@ -8,6 +8,7 @@ namespace LiveWireRemake
 	{
 	private:
 		void OnUpdate(std::weak_ptr<Entity>& pEntity) override;
+		void OnRender(std::weak_ptr<Entity>& pEntity) override;
 
 	public:
 		~Movement() noexcept override = default;

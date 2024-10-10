@@ -1,7 +1,10 @@
 #include "Movement.h"
 
+#include <sstream>
+
 #include "Entity.h"
 #include "Globals.h"
+#include "BaghdadCore/imgui.h"
 
 using namespace LiveWireRemake;
 
@@ -90,4 +93,41 @@ void Movement::OnUpdate(std::weak_ptr<Entity>& pEntity)
 
 	transform.position = position;
 	transform.rotation = rotation;
+}
+
+void Movement::OnRender(std::weak_ptr<Entity>& pEntity)
+{
+	auto& transform = pEntity.lock()->GetTransform();
+
+	std::stringstream ss{};
+	ss << "Position: " << std::to_string(transform.position.m128_f32[0]);
+	ss << "  " << std::to_string(transform.position.m128_f32[1]);
+	ss << "  " << std::to_string(transform.position.m128_f32[2]) << std::endl;
+
+	ss << "Rotation: " << std::to_string(transform.rotation.m128_f32[0]);
+	ss << "  " << std::to_string(transform.rotation.m128_f32[1]);
+	ss << "  " << std::to_string(transform.rotation.m128_f32[2]) << std::endl;
+
+	ss << "Scale: " << std::to_string(transform.scale.m128_f32[0]);
+	ss << "  " << std::to_string(transform.scale.m128_f32[1]);
+	ss << "  " << std::to_string(transform.scale.m128_f32[2]) << std::endl;
+
+	// imgui 
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_Alpha, 0.3f);
+		ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowRounding, 15);
+		ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_TabBorderSize, 0);
+
+		ImGui::Begin("Debug:", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar);
+		ImGui::SetWindowPos(ImVec2(15, 15));
+		ImGui::SetWindowSize(ImVec2(330, 60));
+
+		ImGui::PopStyleVar(3);
+
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, IM_COL32(0, 255, 0, 255));
+		ImGui::Text(ss.str().c_str());
+		ImGui::PopStyleColor();
+
+		ImGui::End();
+	}
 }
