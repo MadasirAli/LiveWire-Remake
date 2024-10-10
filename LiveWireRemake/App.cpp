@@ -91,7 +91,7 @@ int App::Run()
 		}
 
 		// setting renderer for new frame
-		const float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };
+		const float clearColor[4] = { 0.0f, 0, 0.0f, 1.0f };
 		renderer.ClearRenderTexture(clearColor);
 
 		renderer.ImGUI_NewFrame();

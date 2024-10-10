@@ -69,7 +69,7 @@ MeshRenderer::MeshRenderer()
 	// creating mesh and material
 	auto mesh = renderer.GetMeshLoader()
 		.Clear()
-		.PrimitiveTriangle()
+		.PrimitiveQuad()
 		.Load();
 	auto material = renderer.GetMaterialBuilder()
 		.VS("Basic_goroud.vert")

@@ -34,7 +34,7 @@ float LiveWireRemake::Globals::GetScreenHeight() const noexcept
 
 float Globals::GetScreenAspectRatio() const noexcept
 {
-    return _screenHeight / _screenWidth;
+    return _screenWidth / _screenHeight;
 }
 
 BaghdadCore::Logger& Globals::GetLogger() const noexcept

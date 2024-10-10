@@ -41,5 +41,7 @@ void LiveWire::Start()
 	auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
 	pLightEntity.lock()->AddComponent<Light>();
 
-	pCameraEntity.lock()->AddComponent<Movement>();
+	pCameraEntity.lock()->GetTransform().position = DirectX::XMVectorSet(0, 0, -200, 0);
+
+	pTriangleEntity.lock()->AddComponent<Movement>();
 }
