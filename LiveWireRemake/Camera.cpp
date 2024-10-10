@@ -36,14 +36,14 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 			std::weak_ptr<Transform> pTransform{};
 			bool result = pEntity.lock()->TryGetComponent<Transform>(pTransform);
 
-			if (result == false)
+			if (false == result)
 				return;
 
 			// getting mesh renderer
 			std::weak_ptr<MeshRenderer> pMeshRenderer{};
 			result = pEntity.lock()->TryGetComponent<MeshRenderer>(pMeshRenderer);
 			
-			if (result = false)
+			if (false == result)
 				return;
 
 			// obtaining mesh and material and buffers
@@ -70,7 +70,6 @@ Camera::Camera()
 		.GetBufferBuilder()
 		.Clear()
 		.Write()
-		.Bind(D3D11_BIND_VERTEX_BUFFER)
 		.InitialData((char*)&pData, sizeof(pData))
 		.BuildCBuffer()
 	));

@@ -17,36 +17,30 @@ void LiveWire::Update()
 
 	// --------------- START HERE ---------------- //
 
-	// creating world
-	auto& world = worldManager.CreateWorld("Test");
-	worldManager.SetActiveWorld("Test");
+	static bool init = false;
 
-	// creating entities
-	auto pCameraEntity = world.CreateEntity();
-	auto pTriangleEntity = world.CreateEntity();
+	if (init == false)
+	{
+		init = true;
 
-	pCameraEntity.lock()->SetActive(true);
-	pTriangleEntity.lock()->SetActive(true);
+		// creating world
+		auto& world = worldManager.CreateWorld("Test");
+		worldManager.SetActiveWorld("Test");
 
-	// adding components
-	pCameraEntity.lock()->AddComponent<Transform>();
-	auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
-	
-	pTriangleEntity.lock()->AddComponent<Transform>();
-	auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
+		// creating entities
+		auto pCameraEntity = world.CreateEntity();
+		auto pTriangleEntity = world.CreateEntity();
 
-	// creating mesh and material
-	auto mesh = renderer.GetMeshLoader()
-		.Clear()
-		.PrimitiveTriangle()
-		.Load();
-	auto material = renderer.GetMaterialBuilder()
-		.VS("Raw.vert")
-		.PS("Raw.pix")
-		.Build();
+		pCameraEntity.lock()->SetActive(true);
+		pTriangleEntity.lock()->SetActive(true);
 
-	pMeshRenderer.lock()->SetMaterial(std::move(material));
-	pMeshRenderer.lock()->SetMesh(std::move(mesh));
+		// adding components
+		pCameraEntity.lock()->AddComponent<Transform>();
+		auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
+
+		pTriangleEntity.lock()->AddComponent<Transform>();
+		auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
+	}
 
 	// -------------------------------------------- //
 

@@ -11,7 +11,7 @@ ConstantBuffer BaghdadCore::BufferBuilder::BuildCBuffer()
 {
 	using namespace Microsoft::WRL;
 
-	unsigned int bindFlags = _bindFlags;
+	unsigned int bindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	D3D11_USAGE usage = _write ? D3D11_USAGE::D3D11_USAGE_DYNAMIC : D3D11_USAGE::D3D11_USAGE_DEFAULT;
 	unsigned int cpuFlags = _write ? D3D11_CPU_ACCESS_WRITE : 0u;
 	cpuFlags |= _read ? D3D11_CPU_ACCESS_READ : 0u;
@@ -44,7 +44,6 @@ BufferBuilder& BufferBuilder::Clear() noexcept
 {
 	_read = false;
 	_write = false;
-	_bindFlags = 0u;
 
 	_pData = nullptr;
 	_size = 0u;
@@ -69,13 +68,6 @@ BufferBuilder& BufferBuilder::Read() noexcept
 BufferBuilder& BufferBuilder::Write() noexcept
 {
 	_write = true;
-	return *this;
-}
-
-BufferBuilder& BaghdadCore::BufferBuilder::Bind(D3D11_BIND_FLAG bindFlag) noexcept
-{
-	_bindFlags |= (unsigned int)bindFlag;
-
 	return *this;
 }
 

@@ -40,7 +40,6 @@ Transform::Transform() :
 		.GetBufferBuilder()
 		.Clear()
 		.Write()
-		.Bind(D3D11_BIND_VERTEX_BUFFER)
 		.InitialData((char*)&pData, sizeof(pData))
 		.BuildCBuffer()
 	));

@@ -11,21 +11,33 @@ void Material::Bind(const Device& device, const DeviceContext& context) const NO
 	// binding resources
 	for (const auto& texture : _vertexBindedTextures)
 	{
-		pContext->VSSetShaderResources(texture.first, 1u, texture.second.GetView().GetSRVComPtr().GetAddressOf());
-		pContext->VSSetSamplers(texture.first, 1u, texture.second.GetView().GetSamplerComPtr().GetAddressOf());
+		D3D_CHECK_CALL(
+			pContext->VSSetShaderResources(texture.first, 1u, texture.second.GetView().GetSRVComPtr().GetAddressOf())
+		);
+		D3D_CHECK_CALL(
+			pContext->VSSetSamplers(texture.first, 1u, texture.second.GetView().GetSamplerComPtr().GetAddressOf())
+		);
 	}
 	for (const auto& texture : _pixelBindedTextures)
 	{
-		pContext->PSSetShaderResources(texture.first, 1u, texture.second.GetView().GetSRVComPtr().GetAddressOf());
-		pContext->PSSetSamplers(texture.first, 1u, texture.second.GetView().GetSamplerComPtr().GetAddressOf());
+		D3D_CHECK_CALL(
+			pContext->PSSetShaderResources(texture.first, 1u, texture.second.GetView().GetSRVComPtr().GetAddressOf())
+		);
+		D3D_CHECK_CALL(
+			pContext->PSSetSamplers(texture.first, 1u, texture.second.GetView().GetSamplerComPtr().GetAddressOf())
+		);
 	}
 	for (const auto& buffer : _vertexBindedCBuffers)
 	{
-		pContext->VSSetConstantBuffers(buffer.first, 1u, buffer.second.GetComPtr().GetAddressOf());
+		D3D_CHECK_CALL(
+			pContext->VSSetConstantBuffers(buffer.first, 1u, buffer.second.GetComPtr().GetAddressOf())
+		);
 	}
 	for (const auto& buffer : _pixelBindedCBuffers)
 	{
-		pContext->PSSetConstantBuffers(buffer.first, 1u, buffer.second.GetComPtr().GetAddressOf());
+		D3D_CHECK_CALL(
+			pContext->PSSetConstantBuffers(buffer.first, 1u, buffer.second.GetComPtr().GetAddressOf())
+		);
 	}
 
 	// binding input layout

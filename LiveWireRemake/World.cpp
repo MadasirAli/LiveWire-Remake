@@ -40,7 +40,7 @@ void LiveWireRemake::World::Update()
 	for (auto pBegin = _pEntities.begin(); pBegin != _pEntities.end(); ++pBegin)
 	{
 		// id: pair(pEntity, bool dead)
-		if (pBegin->second.second)
+		if (pBegin->second.first->_active)
 			continue;
 
 		// raising event

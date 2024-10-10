@@ -17,6 +17,7 @@ namespace LiveWireRemake
 		BaghdadCore::Material& GetMaterial() noexcept;
 		BaghdadCore::Mesh& GetMesh() noexcept;
 
+		MeshRenderer();
 		~MeshRenderer() noexcept override = default;
 
 		private:
