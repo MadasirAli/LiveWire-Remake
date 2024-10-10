@@ -5,6 +5,9 @@
 #include "Globals.h"
 #include "GraphicsError.h"
 
+#define STLLOADER_IMPLEMENTATION
+#include "stlloader.h"
+
 using namespace BaghdadCore;
 
 Mesh MeshLoader::Load()
@@ -49,6 +52,87 @@ Mesh MeshLoader::Load()
 		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
 		mesh.push_back(vertex);
 	}
+	else if (_primitiveCube)
+	{
+        auto vertex = Mesh::vertex{};
+
+        vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f);
+        mesh.push_back(vertex);
+
+        vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f);
+        mesh.push_back(vertex);
+
+        vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f);
+        mesh.push_back(vertex);
+
+        vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f);
+        mesh.push_back(vertex);
+
+
+        vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f);
+        mesh.push_back(vertex);
+
+        vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+        mesh.push_back(vertex);
+
+        vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f);
+        mesh.push_back(vertex);
+
+        vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f);
+        mesh.push_back(vertex);
+
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		mesh.push_back(vertex);
+
+
+		vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+
+		vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f);
+		mesh.push_back(vertex);
+
+		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f);
+		mesh.push_back(vertex);
+	}
 	else
 	{
 		mesh = _stlLoader.Load(_name);
@@ -83,6 +167,7 @@ MeshLoader& MeshLoader::Clear() noexcept
 	_name = "";
 	_primitiveQuad = false;
 	_primitiveTriangle = false;
+	_primitiveCube = false;
 
 	return *this;
 }
@@ -108,6 +193,13 @@ MeshLoader& MeshLoader::PrimitiveTriangle() noexcept
 	return *this;
 }
 
+MeshLoader& MeshLoader::PrimitiveCube() noexcept
+{
+	_primitiveCube = true;
+
+	return *this;
+}
+
 MeshLoader::MeshLoader(const Device& device) :
 	_device(device),
 	_logger(Globals::GetLogger())
@@ -116,68 +208,90 @@ MeshLoader::MeshLoader(const Device& device) :
 std::vector<Mesh::vertex> 
 MeshLoader::STLLoader::Load(const std::string& name) const
 {
-	// loading in memory
-	std::ifstream stream{name, std::ios::binary};
+	// ** OLD IMPLEMENTATION ** //
+	//// loading in memory
+	//std::ifstream stream{name, std::ios::binary};
 
-	if (stream.is_open() == false)
-	{
-		THROW_BERROR("Failed to open file: " + name);
-	}
+	//if (stream.is_open() == false)
+	//{
+	//	THROW_BERROR("Failed to open file: " + name);
+	//}
 
-	stream.seekg(0, std::ios::end);
-	const auto size = stream.tellg();
-	stream.seekg(0, std::ios::beg);
+	//stream.seekg(0, std::ios::end);
+	//const auto size = stream.tellg();
+	//stream.seekg(0, std::ios::beg);
 
-	std::unique_ptr<char[]> pFile{};
-	try
-	{
-		pFile = std::make_unique<char[]>(size);
-	}
-	catch(...)
-	{
-		stream.close();
-		THROW_BERROR("Failed to allocate memory");
-	}
+	//std::unique_ptr<char[]> pFile{};
+	//try
+	//{
+	//	pFile = std::make_unique<char[]>(size);
+	//}
+	//catch(...)
+	//{
+	//	stream.close();
+	//	THROW_BERROR("Failed to allocate memory");
+	//}
 
-	stream.read(pFile.get(), size);
-	stream.close();
+	//stream.read(pFile.get(), size);
+	//stream.close();
 
-	// parsing
-	
-	auto count = 80;					// header offset can be ignored
-	// number of faces or triangles
-	const auto length = ((unsigned long*)(pFile.get() + count))[0];
-	count += sizeof(unsigned long);		// 4
+	//// parsing
+	//
+	//auto count = 80;					// header offset can be ignored
+	//// number of faces or triangles
+	//const auto length = ((unsigned long*)(pFile.get() + count))[0];
+	//count += sizeof(unsigned long);		// 4
+
+	//auto vertices = std::vector<Mesh::vertex>();
+	//vertices.reserve(length);
+
+	//// opening facets
+	//for (auto i = 0u; i < length; ++i)
+	//{
+	//	const auto* const pData = ((float*)(pFile.get() + count));
+
+	//	// reading current face normal
+	//	DirectX::XMFLOAT3 normal = 
+	//		DirectX::XMFLOAT3(pData[0], pData[1], pData[2]);
+
+	//	count += sizeof(float) * 3;
+
+	//	// reading face vertices
+	//	for (auto v = 0; v < 3; v++)
+	//	{
+	//		Mesh::vertex vertex{};
+	//		vertex.normal = normal;
+	//		vertex.position = DirectX::XMFLOAT3(
+	//			pData[0], pData[1], pData[2]);
+
+	//		count += sizeof(float) * 3;
+
+	//		vertices.emplace_back(std::move(vertex));
+	//	}
+
+	//	// padding
+	//	count += sizeof(wchar_t);
+	//}
+
+	// ** ______________ ** //
 
 	auto vertices = std::vector<Mesh::vertex>();
-	vertices.reserve(length);
 
-	// opening facets
-	for (auto i = 0u; i < length; ++i)
+	stlloader::Mesh mesh{};
+	stlloader::parse_file(name.c_str(), mesh);
+
+	for (const auto& facet : mesh.facets)
 	{
-		const auto* const pData = ((float*)(pFile.get() + count));
+		Mesh::vertex vertex{};
 
-		// reading current face normal
-		DirectX::XMFLOAT3 normal = 
-			DirectX::XMFLOAT3(pData[0], pData[1], pData[2]);
+		vertex.normal = DirectX::XMFLOAT3(facet.normal.x, facet.normal.y, facet.normal.z);
 
-		count += sizeof(float) * 3;
-
-		// reading face vertices
-		for (auto v = 0; v < 3; v++)
+		for (auto i = 0; i < 3; i++)
 		{
-			Mesh::vertex vertex{};
-			vertex.normal = normal;
-			vertex.position = DirectX::XMFLOAT3(
-				pData[0], pData[1], pData[2]);
+			vertex.position = DirectX::XMFLOAT3(facet.vertices[i].x, facet.vertices[i].y, facet.vertices[i].z);
 
-			count += sizeof(float) * 3;
-
-			vertices.emplace_back(std::move(vertex));
+			vertices.push_back(vertex);
 		}
-
-		// padding
-		count += sizeof(wchar_t);
 	}
 
 	return vertices;

@@ -19,7 +19,7 @@ namespace LiveWireRemake
 	public:
 		float fov = 60;
 		float nearPlane = 0.03f;
-		float farPlane = 1000;
+		float farPlane = 100000;
 
 	private:
 		std::unique_ptr<BaghdadCore::ConstantBuffer> _pBuffer;

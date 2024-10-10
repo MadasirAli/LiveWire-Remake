@@ -19,7 +19,8 @@ void Movement::OnUpdate(std::weak_ptr<Entity>& pEntity)
 
 	auto& transform = pEntity.lock()->GetTransform();
 
-	const auto delta = 10.0f * deltaTime;
+	const auto delta = _speed * deltaTime;
+	const auto rotDelta = _rotateSpeed * deltaTime;
 
 	const auto rightKey = InputManager::Key::RightArrow;
 	const auto leftKey = InputManager::Key::LeftArrow;
@@ -66,29 +67,29 @@ void Movement::OnUpdate(std::weak_ptr<Entity>& pEntity)
 
 	if (input.GetKey(xRotPKey))
 	{
-		rotation.m128_f32[0] += delta;
+		rotation.m128_f32[0] += rotDelta;
 	}
 	if (input.GetKey(xRotNKey))
 	{
-		rotation.m128_f32[0] -= delta;
+		rotation.m128_f32[0] -= rotDelta;
 	}
 
 	if (input.GetKey(yRotPKey))
 	{
-		rotation.m128_f32[1] += delta;
+		rotation.m128_f32[1] += rotDelta;
 	}
 	if (input.GetKey(yRotNKey))
 	{
-		rotation.m128_f32[1] -= delta;
+		rotation.m128_f32[1] -= rotDelta;
 	}
 
 	if (input.GetKey(zRotPKey))
 	{
-		rotation.m128_f32[2] += delta;
+		rotation.m128_f32[2] += rotDelta;
 	}
 	if (input.GetKey(zRotNKey))
 	{
-		rotation.m128_f32[2] -= delta;
+		rotation.m128_f32[2] -= rotDelta;
 	}
 
 	transform.position = position;
@@ -120,13 +121,24 @@ void Movement::OnRender(std::weak_ptr<Entity>& pEntity)
 
 		ImGui::Begin("Debug:", nullptr, ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar);
 		ImGui::SetWindowPos(ImVec2(15, 15));
-		ImGui::SetWindowSize(ImVec2(330, 60));
+		ImGui::SetWindowSize(ImVec2(630, 130));
 
 		ImGui::PopStyleVar(3);
 
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, IM_COL32(0, 255, 0, 255));
 		ImGui::Text(ss.str().c_str());
 		ImGui::PopStyleColor();
+
+		ImGui::SliderFloat("Speed", &_speed, 1, 1000);
+		ImGui::SliderFloat("Rotation Speed", &_rotateSpeed, 1, 1000);
+
+		ImGui::PushItemWidth(50);
+		ImGui::SliderFloat("Scale: X", &(transform.scale.m128_f32[0]), 0, 1);
+		ImGui::SameLine(200);
+		ImGui::SliderFloat("Scale: Y", &(transform.scale.m128_f32[1]), 0, 1);
+		ImGui::SameLine(400);
+		ImGui::SliderFloat("Scale: Z", &(transform.scale.m128_f32[2]), 0, 1);
+		ImGui::PopItemWidth();
 
 		ImGui::End();
 	}

@@ -170,6 +170,7 @@
     <ClInclude Include="MaterialBuilder.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="OBJ_Loader.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="ShaderModule.h" />
     <ClInclude Include="ShaderReflectionDB.h" />
     <ClInclude Include="StartupFlags.h" />
+    <ClInclude Include="stlloader.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture2D.h" />

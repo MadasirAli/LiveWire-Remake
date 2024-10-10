@@ -12,6 +12,10 @@ namespace LiveWireRemake
 
 	public:
 		~Movement() noexcept override = default;
+
+	private:
+		float _speed = 10;
+		float _rotateSpeed = 1;
 	};
 }
 

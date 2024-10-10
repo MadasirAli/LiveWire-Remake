@@ -34,8 +34,8 @@ PixelInput main(VertexInput vertex)
     
     color += float4(AmbientLightColor * AmbientLightIntensity, 0);
 
-    output.uv = vertex.uv;
     output.color = color;
+    output.uv = vertex.uv;
     
     return output;
 }
