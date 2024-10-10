@@ -57,6 +57,8 @@ int App::Run()
 	globals._pLogger = &logger;
 	// _________________________________________________________ //
 
+	liveWire.Start();
+
 	// main loop
 	MSG msg = { 0 };
 	bool quit = false;

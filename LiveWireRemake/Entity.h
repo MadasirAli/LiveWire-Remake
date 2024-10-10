@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <assert.h>
+#include <string>
 
 #include "IComponent.h"
 #include "Transform.h"
@@ -78,6 +79,10 @@ namespace LiveWireRemake
 		}
 
 		Entity(unsigned int id);
+
+	public:
+		std::string name = "Entity";
+		std::string tag = "None";
 
 	private:
 		std::vector<std::pair<std::shared_ptr<IComponent>, bool>> _pComponents;

@@ -54,19 +54,12 @@ void Entity::Render(std::weak_ptr<Entity>& pEntity)
 
 void Entity::RaiseActiveEvents(std::weak_ptr<Entity>& pEntity)
 {
-	if (_active)
+	for (const auto& pComponent : _pComponents)
 	{
-		for (const auto& pComponent : _pComponents)
-		{
+		if(_active)
 			pComponent.first->OnEnable(pEntity);
-		}
-	}
-	else
-	{
-		for (const auto& pComponent : _pComponents)
-		{
+		else
 			pComponent.first->OnDisable(pEntity);
-		}
 	}
 }
 

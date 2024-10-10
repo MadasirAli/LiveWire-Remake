@@ -56,7 +56,7 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 			// obtaining mesh and material and buffers
 			auto& mesh = pMeshRenderer.lock()->GetMesh();
 			auto& material = pMeshRenderer.lock()->GetMaterial();
-			auto& transformCBuffer = pEntity.lock()->GetTransform().GetTransformCBuffer();
+			auto& transformCBuffer = pMeshRenderer.lock()->GetTransformCBuffer();
 
 			// binding constant buffers
 			material.SetVSCBuffer("TransformCBuffer", transformCBuffer);

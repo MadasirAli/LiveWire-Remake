@@ -9,6 +9,7 @@ namespace LiveWireRemake
 	class LiveWire final : public BaghdadCore::Window
 	{
 	public:
+		void Start();
 		void Update();
 
 		~LiveWire() noexcept override = default;

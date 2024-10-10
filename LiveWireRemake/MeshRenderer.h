@@ -5,12 +5,14 @@
 #include "IComponent.h"
 #include "BaghdadCore/Material.h"
 #include "BaghdadCore/Mesh.h"
+#include "BaghdadCore/ConstantBuffer.h"
 
 namespace LiveWireRemake
 {
 	class MeshRenderer final : public IComponent
 	{
 	public:
+		BaghdadCore::ConstantBuffer& GetTransformCBuffer() noexcept;
 		void SetMaterial(BaghdadCore::Material&& material) noexcept;
 		void SetMesh(BaghdadCore::Mesh&& mesh) noexcept;
 
@@ -20,9 +22,13 @@ namespace LiveWireRemake
 		MeshRenderer();
 		~MeshRenderer() noexcept override = default;
 
-		private:
-			std::unique_ptr<BaghdadCore::Material> _pMaterial = nullptr;
-			std::unique_ptr<BaghdadCore::Mesh> _pMesh = nullptr;
+	private:
+		void OnPreRender(std::weak_ptr<Entity>& pEntity) override;
+
+	private:
+		std::unique_ptr<BaghdadCore::Material> _pMaterial = nullptr;
+		std::unique_ptr<BaghdadCore::Mesh> _pMesh = nullptr;
+		std::unique_ptr<BaghdadCore::ConstantBuffer> _pBuffer;
 	};
 }
 
