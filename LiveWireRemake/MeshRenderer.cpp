@@ -72,8 +72,8 @@ MeshRenderer::MeshRenderer()
 		.PrimitiveTriangle()
 		.Load();
 	auto material = renderer.GetMaterialBuilder()
-		.VS("Raw.vert")
-		.PS("Raw.pix")
+		.VS("Basic_goroud.vert")
+		.PS("Basic_goroud.pix")
 		.Build();
 
 	_pMesh = std::move(std::make_unique<Mesh>(std::move(mesh)));

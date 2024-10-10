@@ -130,7 +130,7 @@ void Material::SetPSTexture(const std::string& name, const Texture2D texture)
 void Material::SetPSCBuffer(const std::string& name, const ConstantBuffer buffer)
 {
 	unsigned int index = -1;
-	for (auto i = 0; i < _vertexReflectionDB.ConstantBufferNames.size(); ++i)
+	for (auto i = 0; i < _pixelReflectionDB.ConstantBufferNames.size(); ++i)
 	{
 		if (_pixelReflectionDB.ConstantBufferNames[i] != name)
 			continue;

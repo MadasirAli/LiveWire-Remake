@@ -63,6 +63,9 @@
     <ClCompile Include="Movement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -110,24 +113,33 @@
     <ClInclude Include="Movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightCBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Raw.vert">
+    <CopyFileToFolders Include="Basic_goroud.vert">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="VertexInput.hlsli">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="PixelInput.hlsli">
+    <CopyFileToFolders Include="PixelInput_goroud.hlsli">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Raw.pix">
+    <CopyFileToFolders Include="Basic_goroud.pix">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="CameraCBuffer.hlsli">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="TransformCBuffer.hlsli">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="LightCBuffer.hlsli">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>

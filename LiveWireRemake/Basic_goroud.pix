@@ -1,0 +1,6 @@
+#include "PixelInput_goroud.hlsli"
+
+float4 main(PixelInput pixel) : SV_Target
+{
+    return pixel.color;
+}

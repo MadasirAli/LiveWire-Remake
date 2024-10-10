@@ -90,8 +90,8 @@ namespace LiveWireRemake
 
 		std::weak_ptr<Transform> _pTransform;
 
-		bool _lastActiveState = false;
-		bool _active = false;
+		bool _lastActiveState = true;
+		bool _active = true;
 
 		unsigned int _id;
 	};

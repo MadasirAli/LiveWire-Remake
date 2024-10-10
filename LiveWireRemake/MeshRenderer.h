@@ -25,6 +25,10 @@ namespace LiveWireRemake
 	private:
 		void OnPreRender(std::weak_ptr<Entity>& pEntity) override;
 
+	public:
+		bool useLights = true;
+		bool goroudShading = true;
+
 	private:
 		std::unique_ptr<BaghdadCore::Material> _pMaterial = nullptr;
 		std::unique_ptr<BaghdadCore::Mesh> _pMesh = nullptr;

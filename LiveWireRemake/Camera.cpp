@@ -5,6 +5,7 @@
 #include "CameraCBuffer.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
+#include "Light.h"
 
 using namespace LiveWireRemake;
 
@@ -43,8 +44,22 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	auto& worldManager = globals.GetWorldManager();
 	auto& renderer = globals.GetRenderer();
 
-	// iterating all entities
-	worldManager.GetActiveWorld().ForEach([this, &renderer](std::weak_ptr<Entity> pEntity)
+	// gathering lights
+	std::vector<std::weak_ptr<Light>> pLights{};
+	worldManager.GetActiveWorld().ForEach([&renderer, &pLights](std::weak_ptr<Entity> pEntity)
+		{
+			// getting mesh renderer
+			std::weak_ptr<Light> pLight{};
+			bool result = pEntity.lock()->TryGetComponent<Light>(pLight);
+
+			if (false == result)
+				return;
+
+			pLights.emplace_back(std::move(pLight));
+		});
+
+	// iterating all entities to render
+	worldManager.GetActiveWorld().ForEach([this, &renderer, &pLights](std::weak_ptr<Entity> pEntity)
 		{
 			// getting mesh renderer
 			std::weak_ptr<MeshRenderer> pMeshRenderer{};
@@ -53,17 +68,31 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 			if (false == result)
 				return;
 
-			// obtaining mesh and material and buffers
-			auto& mesh = pMeshRenderer.lock()->GetMesh();
-			auto& material = pMeshRenderer.lock()->GetMaterial();
-			auto& transformCBuffer = pMeshRenderer.lock()->GetTransformCBuffer();
+			const bool useLights = pMeshRenderer.lock()->useLights;
+			const auto passCount = (!useLights || pLights.size() == 0) ? 1u : pLights.size();
+			// for each light
+			for (auto i = 0; i < passCount; ++i)
+			{
+				// obtaining mesh and material and buffers
+				auto& mesh = pMeshRenderer.lock()->GetMesh();
+				auto& material = pMeshRenderer.lock()->GetMaterial();
+				auto& transformCBuffer = pMeshRenderer.lock()->GetTransformCBuffer();
 
-			// binding constant buffers
-			material.SetVSCBuffer("TransformCBuffer", transformCBuffer);
-			material.SetVSCBuffer("CameraCBuffer", *_pBuffer);
+				// binding constant buffers
+				material.SetVSCBuffer("TransformCBuffer", transformCBuffer);
+				material.SetVSCBuffer("CameraCBuffer", *_pBuffer);
 
-			// drawing
-			renderer.DrawMesh(mesh, material);
+				if (useLights && pLights.size() > 0)
+				{
+					if (pMeshRenderer.lock()->goroudShading)
+						material.SetVSCBuffer("LightCBuffer", pLights[i].lock()->GetLightCBuffer());
+					else
+						material.SetPSCBuffer("LightCBuffer", pLights[i].lock()->GetLightCBuffer());
+				}
+
+				// drawing
+				renderer.DrawMesh(mesh, material);
+			}
 		});
 }
 

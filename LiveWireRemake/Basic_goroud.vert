@@ -1,7 +1,8 @@
-#include "PixelInput.hlsli"
+#include "PixelInput_goroud.hlsli"
 #include "VertexInput.hlsli"
 #include "CameraCBuffer.hlsli"
 #include "TransformCBuffer.hlsli"
+#include "LightCBuffer.hlsli"
 
 PixelInput main(VertexInput vertex)
 {
@@ -12,7 +13,9 @@ PixelInput main(VertexInput vertex)
     output.position = mul(output.position, ViewMatrix);
     output.position = mul(output.position, ProjectionMatrix);
     
-    output.normal = vertex.normal;
+    float4 color = float4(AmbientLightColor * AmbientLightIntensity, 0);
+    color += cos(float4(LightColor * LightIntensity, 0));
+
     output.uv = vertex.uv;
     
     return output;

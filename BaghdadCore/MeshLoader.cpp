@@ -17,28 +17,22 @@ Mesh MeshLoader::Load()
 		auto vertex = Mesh::vertex{};
 
 		vertex.position = DirectX::XMFLOAT3(-1, 1, 0);
-		vertex.normal = DirectX::XMFLOAT3(-1, 0, 0);
-		vertex.uv = DirectX::XMFLOAT2(0, 0);
+		vertex.normal = DirectX::XMFLOAT3(0, 0, -1);
 		mesh.push_back(vertex);
 
 		vertex.position = DirectX::XMFLOAT3(1, 1, 0);
-		vertex.uv = DirectX::XMFLOAT2(1, 0);
 		mesh.push_back(vertex);
 
 		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
-		vertex.uv = DirectX::XMFLOAT2(1, 1);
 		mesh.push_back(vertex);
 
 		vertex.position = DirectX::XMFLOAT3(-1, 1, 0);
-		vertex.uv = DirectX::XMFLOAT2(0, 0);
 		mesh.push_back(vertex);
 
 		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
-		vertex.uv = DirectX::XMFLOAT2(0, 0);
 		mesh.push_back(vertex);
 
 		vertex.position = DirectX::XMFLOAT3(-1, -1, 0);
-		vertex.uv = DirectX::XMFLOAT2(0, 0);
 		mesh.push_back(vertex);
 	}
 	else if (_primitiveTriangle)
@@ -46,6 +40,7 @@ Mesh MeshLoader::Load()
 		auto vertex = Mesh::vertex{};
 
 		vertex.position = DirectX::XMFLOAT3(-1, -1, 0);
+		vertex.normal = DirectX::XMFLOAT3(0, 0, -1);
 		mesh.push_back(vertex);
 
 		vertex.position = DirectX::XMFLOAT3(0, 1, 0);
