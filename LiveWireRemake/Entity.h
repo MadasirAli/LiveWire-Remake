@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "IComponent.h"
+#include "Transform.h"
 
 namespace LiveWireRemake
 {
@@ -20,7 +21,9 @@ namespace LiveWireRemake
 
 		void RaiseActiveEvents(std::weak_ptr<Entity>& pEntity);
 		void RaiseDestroyEvent(std::weak_ptr<Entity>& pEntity);
+
 	public:
+		Transform& GetTransform() const noexcept;
 		bool SetActive(bool value);
 
 		template<typename T>
@@ -79,6 +82,8 @@ namespace LiveWireRemake
 	private:
 		std::vector<std::pair<std::shared_ptr<IComponent>, bool>> _pComponents;
 		std::vector<std::shared_ptr<IComponent>> _toAdd_pComponents;
+
+		std::weak_ptr<Transform> _pTransform;
 
 		bool _lastActiveState = false;
 		bool _active = false;

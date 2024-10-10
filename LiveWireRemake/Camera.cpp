@@ -32,16 +32,9 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	// iterating all entities
 	worldManager.GetActiveWorld().ForEach([this, &renderer](std::weak_ptr<Entity> pEntity)
 		{
-			// getting transform
-			std::weak_ptr<Transform> pTransform{};
-			bool result = pEntity.lock()->TryGetComponent<Transform>(pTransform);
-
-			if (false == result)
-				return;
-
 			// getting mesh renderer
 			std::weak_ptr<MeshRenderer> pMeshRenderer{};
-			result = pEntity.lock()->TryGetComponent<MeshRenderer>(pMeshRenderer);
+			bool result = pEntity.lock()->TryGetComponent<MeshRenderer>(pMeshRenderer);
 			
 			if (false == result)
 				return;
@@ -49,7 +42,7 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 			// obtaining mesh and material and buffers
 			auto& mesh = pMeshRenderer.lock()->GetMesh();
 			auto& material = pMeshRenderer.lock()->GetMaterial();
-			auto& transformCBuffer = pTransform.lock()->GetTransformCBuffer();
+			auto& transformCBuffer = pEntity.lock()->GetTransform().GetTransformCBuffer();
 
 			// binding constant buffers
 			material.SetVSCBuffer("TransformCBuffer", transformCBuffer);

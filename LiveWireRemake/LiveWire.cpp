@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Camera.h"
+#include "Movement.h"
 
 using namespace LiveWireRemake;
 
@@ -35,11 +36,9 @@ void LiveWire::Update()
 		pTriangleEntity.lock()->SetActive(true);
 
 		// adding components
-		pCameraEntity.lock()->AddComponent<Transform>();
 		auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
-
-		pTriangleEntity.lock()->AddComponent<Transform>();
 		auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
+		pTriangleEntity.lock()->AddComponent<Movement>();
 	}
 
 	// -------------------------------------------- //

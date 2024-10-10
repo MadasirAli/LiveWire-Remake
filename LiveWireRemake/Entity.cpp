@@ -78,6 +78,11 @@ void Entity::RaiseDestroyEvent(std::weak_ptr<Entity>& pEntity)
 	}
 }
 
+Transform& Entity::GetTransform() const noexcept
+{
+	return *_pTransform.lock();
+}
+
 bool Entity::SetActive(bool value)
 {
 	bool lastState = _lastActiveState;

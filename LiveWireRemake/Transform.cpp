@@ -43,4 +43,6 @@ Transform::Transform() :
 		.InitialData((char*)&pData, sizeof(pData))
 		.BuildCBuffer()
 	));
+	
+	scale = DirectX::XMVectorSet(1, 1, 1, 1);
 }

@@ -7,9 +7,12 @@ PixelInput main(VertexInput vertex)
 {
     PixelInput output;
     
-    output.position = mul(mul(float4(vertex.position.xzy, 1.0f), WorldTransformMatrix), ProjectionMatrix);
+    matrix mvp = ProjectionMatrix * WorldTransformMatrix;
+    output.normal = (float3)mul(mvp, float4(vertex.position.xyz, 1));
     
-    output.normal = vertex.normal;
+    output.position = float4(vertex.position.xyz, 1);
+    
+    //output.normal = vertex.normal;
     output.uv = vertex.uv;
     
     return output;

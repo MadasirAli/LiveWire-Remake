@@ -109,7 +109,7 @@ int App::Run()
 
 		// presenting
 		renderer.Blit(renderer.GetRenderTexture(), swapchain.GetBackTexture(), 0u);
-		swapchain.Present(0u, 0u);
+		swapchain.Present(1u, 0u);
 
 		//// resizing render texture
 		//swapchain.ResizeBuffers();

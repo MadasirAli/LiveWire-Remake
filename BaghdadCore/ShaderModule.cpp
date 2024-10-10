@@ -23,6 +23,7 @@ const Blob& ShaderModule::Compile()
 
 #if _DEBUG
     flags |= D3DCOMPILE_DEBUG;
+    flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
     // compiling

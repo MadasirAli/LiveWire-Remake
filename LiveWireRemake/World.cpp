@@ -1,5 +1,7 @@
 #include "World.h"
 
+#include "Transform.h"
+
 using namespace LiveWireRemake;
 
 void LiveWireRemake::World::Update()
@@ -23,7 +25,7 @@ void LiveWireRemake::World::Update()
 	{
 		_pEntities.insert(
 			std::pair<unsigned int, std::pair<std::shared_ptr<Entity>, bool>>(
-				GenerateId(), std::pair<std::shared_ptr<Entity>, bool>(pEntity, false)));
+				pEntity->_id, std::pair<std::shared_ptr<Entity>, bool>(pEntity, false)));
 	}
 	_toAdd_pEntities.clear();
 
@@ -122,6 +124,9 @@ void World::ForEach(std::function<void(std::weak_ptr<Entity>)> action)
 std::weak_ptr<Entity> World::CreateEntity() noexcept
 {
 	_toAdd_pEntities.emplace_back(std::move(std::make_shared<Entity>(GenerateId())));
+
+	auto ptr = _toAdd_pEntities.back();
+	ptr->_pTransform = ptr->AddComponent<Transform>();
 
 	return _toAdd_pEntities.back();
 }
