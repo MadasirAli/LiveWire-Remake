@@ -10,44 +10,6 @@ namespace BaghdadCore
 {
 	class TextureBuilder final
 	{
-	private:
-		class PPMLoader final
-		{
-		private:
-			struct Header final
-			{
-				wchar_t magic;
-				unsigned short width;
-				unsigned short height;
-				char depth;
-			};
-		public:
-			class PPMFile final
-			{
-			public:
-				const Header& GetHeader() const noexcept;
-				const char* GetBufferpPtr() const noexcept;
-
-				PPMFile() = default;
-				PPMFile(
-					const Header& header, std::unique_ptr<char[]>&& pFile,
-					const unsigned int pixelOffset);
-
-			private:
-				Header _header;
-				char* _pPixels;
-				std::unique_ptr<char[]> _pFile;
-			};
-		public:
-			/// <summary>
-			/// Loads the tgs specified tga file
-			/// </summary>
-			/// <param name="name">file name</param>
-			/// <exception cref="BaghdadError">On Failture.</exception>
-			/// <returns>PPM File</returns>
-			PPMFile Load(const std::string& name) const;
-		};
-
 	public:
 		/// <summary>
 		/// Creates the specified texture.
@@ -82,8 +44,6 @@ namespace BaghdadCore
 		DXGI_FORMAT _format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 
 		unsigned int _viewFlags = 0u;
-
-		PPMLoader _ppmLoader;
 		const Logger& _logger;
 	};
 }

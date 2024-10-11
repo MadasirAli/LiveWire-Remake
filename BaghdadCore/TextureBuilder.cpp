@@ -10,6 +10,8 @@
 #include "GraphicsError.h"
 #include "ComUtility.h"
 
+#include "BitmapPlusPlus.hpp"
+
 using namespace BaghdadCore;
 
 Texture2D BaghdadCore::TextureBuilder::Build()
@@ -36,21 +38,40 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	{
 		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
 	}
-	
-	PPMLoader::PPMFile file{};
+
+	std::unique_ptr<float[]> pImageData{};
+
 	if (_fromFile)
 	{
-		file = std::move(_ppmLoader.Load(_name));
-		const auto header = file.GetHeader();
+		bmp::Bitmap image{};
+		image.load(_name);
 
-		format = header.depth == 1 ?
-			DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM :
-			DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM;
+		if (!image)
+		{
+			THROW_BERROR("Failed to load image: " + _name);
+		}
 
-		width = header.width;
-		height = header.height;
+		format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-		pData = file.GetBufferpPtr();
+		width = image.width();
+		height = image.height();
+
+		pImageData = std::make_unique<float[]>(width * height * 4);	// 32 bits
+
+		// 24 bits to 32 bit conversion
+		for (auto y = 0; y < height; ++y)
+		{
+			for (auto x = 0; x < width; ++x)
+			{
+				auto pixel = image.get(x, y);
+				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[0] = pixel.r;
+				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[1] = pixel.g;
+				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[2] = pixel.b;
+				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[3] = 1;
+			}
+		}
+
+		pData = (char*)(pImageData.get());
 	}
 
 	unsigned int sliceSize = ((unsigned int)DirectXUtil::BitsPerPixel(format) / 8) * width;
@@ -106,10 +127,10 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		D3D11_SAMPLER_DESC samplerDesc = { };
 		ZeroMemory(&samplerDesc, sizeof(samplerDesc));
 
-		samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_ANISOTROPIC;
-		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_POINT;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
 		samplerDesc.MaxAnisotropy = 2u;
 
 		D3D_CALL(
@@ -221,125 +242,4 @@ TextureBuilder& TextureBuilder::FromFile(const std::string& name) noexcept
 TextureBuilder::TextureBuilder(const Device& device) :
 	_device(device),
 	_logger(Globals::GetLogger())
-{}
-
-TextureBuilder::PPMLoader::PPMFile 
-TextureBuilder::PPMLoader::Load(const std::string& name) const
-{
-	std::ifstream stream{ name, std::ios::binary};
-
-	if (stream.is_open() == false)
-	{
-		THROW_BERROR("Failed to Open File.\n\n" + name)
-	}
-
-	// loading whole file in memory
-	stream.seekg(0, std::ios::end);
-	const auto size = stream.tellg();
-	stream.seekg(0, std::ios::beg);
-
-	std::unique_ptr<char[]> pFile{};
-	try
-	{
-		pFile = std::make_unique<char[]>(size);
-	}
-	catch(...)
-	{
-		stream.close();
-		THROW_BERROR("Failed to allocate memory");
-	}
-
-	stream.read(pFile.get(), size);
-	stream.close();
-
-	// reading header
-	// magic
-	const auto magic = ((wchar_t*)pFile.get())[0];
-
-	if (pFile[0] != 80 && pFile[1] != 54)	// P6
-	{
-		THROW_BERROR("Given file is not a PPM File or is corrupted.");
-	}
-
-	std::vector<char> buffer{};
-	auto counter = 3;
-
-	// width
-	while (pFile[counter] != 32)	// SPACE
-	{
-		buffer.push_back(pFile[counter]);
-		++counter;
-	}
-
-	auto width = 0;
-	for (auto i = 0; i < buffer.size(); i++)
-	{
-		width += (buffer[i] - 48) * std::pow<int, int>(10, ((int)buffer.size() - (i + 1)));
-	}
-	buffer.clear();
-
-	// height
-	counter += 1;
-	while (pFile[counter] != 10)	// NEW LINE
-	{
-		buffer.push_back(pFile[counter]);
-		++counter;
-	}
-
-	auto height = 0;
-	for (auto i = 0; i < buffer.size(); i++)
-	{
-		height += (buffer[i] - 48) * std::pow<int, int>(10, ((int)buffer.size() - (i + 1)));
-	}
-	buffer.clear();
-
-	// depth
-	counter += 1;
-	while (pFile[counter] != 10)	// NEW LINE
-	{
-		buffer.push_back(pFile[counter]);
-		++counter;
-	}
-
-	auto depth = 0;
-	for (auto i = 0; i < buffer.size(); i++)
-	{
-		depth += (buffer[i] - 48) * std::pow<int, int>(10, ((int)buffer.size() - (i + 1)));
-	}
-	buffer.clear();
-
-	if (depth < 256)
-		depth = 1;
-	else
-		depth = 2;
-
-	Header header = { 0 };
-	header.magic = magic;
-	header.width = width;
-	header.height = height;
-	header.depth = depth;
-
-	// reading pixels
-	counter += 1;
-
-	return PPMFile(header, std::move(pFile), counter);
-}
-
-const TextureBuilder::PPMLoader::Header& 
-TextureBuilder::PPMLoader::PPMFile::GetHeader() const noexcept
-{
-	return _header;
-}
-
-const char*
-TextureBuilder::PPMLoader::PPMFile::GetBufferpPtr() const noexcept
-{
-	return _pPixels;
-}
-
-TextureBuilder::PPMLoader::PPMFile::PPMFile(
-	const Header& header, std::unique_ptr<char[]>&& pFile, const unsigned int pixelOffset) :
-	_header(header),
-	_pPixels(pFile.get() + pixelOffset),
-	_pFile(std::move(pFile))
 {}

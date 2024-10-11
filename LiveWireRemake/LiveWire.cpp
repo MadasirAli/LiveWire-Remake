@@ -33,21 +33,15 @@ void LiveWire::Start()
 
 	// creating entities
 	auto pCameraEntity = world.CreateEntity();
-	auto pCameraEntity2 = world.CreateEntity();
 	auto pTriangleEntity = world.CreateEntity();
 	auto pLightEntity = world.CreateEntity();
 
 	// adding components
 	auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
-	auto pCamera2 = pCameraEntity2.lock()->AddComponent<Camera>();
 	auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
 	pLightEntity.lock()->AddComponent<Light>();
 
-	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -20);
+	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -10);
 
-	pCameraEntity.lock()->AddComponent<Movement>();
-
-	pCamera.lock()->viewportWidth = 0.5f;
-	pCamera2.lock()->viewportWidth = 0.5f;
-	pCamera2.lock()->viewportOffsetX = 0.5f;
+	pTriangleEntity.lock()->AddComponent<Movement>();
 }
