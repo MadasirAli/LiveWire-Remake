@@ -27,13 +27,15 @@ namespace BaghdadCore
 	private:
 		void Bind(const Device& device, const DeviceContext& context) const NOEXCEPT;
 
-		Mesh(VertexBuffer&& vertexBuffer,
-			unsigned int vertexCount);
+		Mesh(VertexBuffer&& vertexBuffer, unsigned int vertexCount,
+			IndexBuffer&& indexBuffer, unsigned int indexCount);
 
 	public:
 		VertexBuffer _vertexBuffer;
+		IndexBuffer _indexBuffer;
 
 		unsigned int _vertexCount = 0u;
+		unsigned int _indexCount = 0u;
 	};
 }
 

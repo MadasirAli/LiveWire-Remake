@@ -69,7 +69,7 @@ MeshRenderer::MeshRenderer()
 	// creating mesh and material
 	auto mesh = renderer.GetMeshLoader()
 		.Clear()
-		.FromFile("Resources\\Models\\cube.stl")
+		.FromFile("Resources\\Models\\cube.obj")
 		.Load();
 	auto material = renderer.GetMaterialBuilder()
 		.VS("Basic_goroud.vert")

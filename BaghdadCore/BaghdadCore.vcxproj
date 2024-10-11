@@ -178,7 +178,6 @@
     <ClInclude Include="ShaderModule.h" />
     <ClInclude Include="ShaderReflectionDB.h" />
     <ClInclude Include="StartupFlags.h" />
-    <ClInclude Include="stlloader.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture2D.h" />

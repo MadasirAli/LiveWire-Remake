@@ -153,9 +153,6 @@
     <ClInclude Include="BufferBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stlloader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OBJ_Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>

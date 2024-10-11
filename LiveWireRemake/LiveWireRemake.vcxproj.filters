@@ -16,12 +16,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{4669084d-5f8b-460c-a0d8-736b8a1750f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Textures">
-      <UniqueIdentifier>{1faa9c24-652d-464d-bf8e-a8205cd365e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Models">
-      <UniqueIdentifier>{0a56c9f0-8f0f-441b-87cc-4d33678ab39f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -142,10 +136,5 @@
     <CopyFileToFolders Include="LightCBuffer.hlsli">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Modals\Dragon.stl">
-      <Filter>Resource Files\Models</Filter>
-    </None>
   </ItemGroup>
 </Project>

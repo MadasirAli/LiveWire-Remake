@@ -16,9 +16,16 @@ void Mesh::Bind(const Device& device, const DeviceContext& context) const NOEXCE
 		pContext->IASetVertexBuffers(0u, 1u, _vertexBuffer.GetComPtr().GetAddressOf(),
 			&pStride, &pOffset)
 	);
+
+	D3D_CHECK_CALL(
+		pContext->IASetIndexBuffer(_indexBuffer.GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0u)
+	);
 }
 
-Mesh::Mesh(VertexBuffer&& vertexBuffer, unsigned int vertexCount) :
+Mesh::Mesh(VertexBuffer&& vertexBuffer, unsigned int vertexCount,
+	IndexBuffer&& indexBuffer, unsigned int indexCount) :
 	_vertexBuffer(std::move(vertexBuffer)),
-	_vertexCount(vertexCount)
+	_vertexCount(vertexCount),
+	_indexBuffer(std::move(indexBuffer)),
+	_indexCount(indexCount)
 {}

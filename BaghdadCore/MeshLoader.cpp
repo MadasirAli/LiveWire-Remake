@@ -5,8 +5,7 @@
 #include "Globals.h"
 #include "GraphicsError.h"
 
-#define STLLOADER_IMPLEMENTATION
-#include "stlloader.h"
+#include "OBJ_Loader.h"
 
 using namespace BaghdadCore;
 
@@ -15,151 +14,68 @@ Mesh MeshLoader::Load()
 	using namespace Microsoft::WRL;
 
 	std::vector<Mesh::vertex> mesh{};
-	if (_primitiveQuad)
+	std::vector<unsigned int> indices{};
+
+	// TODO: LOADING MESH AND INDCIEs 
+	objl::Loader loader{};
+	bool result = loader.LoadFile(_name);
+	if (result == false)
 	{
-		auto vertex = Mesh::vertex{};
-
-		vertex.position = DirectX::XMFLOAT3(-1, 1, 0);
-		vertex.normal = DirectX::XMFLOAT3(0, 0, -1);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(1, 1, 0);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-1, 1, 0);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-1, -1, 0);
-		mesh.push_back(vertex);
+		THROW_BERROR("Model did not found or unable to load modal.");
 	}
-	else if (_primitiveTriangle)
+
+	for (const auto& v : loader.LoadedVertices)
 	{
-		auto vertex = Mesh::vertex{};
+		Mesh::vertex vertex{};
+		vertex.normal = DirectX::XMFLOAT3(v.Normal.X, v.Normal.Y, v.Normal.Z);
+		vertex.position = DirectX::XMFLOAT3(v.Position.X, v.Position.Y, v.Position.Z);
 
-		vertex.position = DirectX::XMFLOAT3(-1, -1, 0);
-		vertex.normal = DirectX::XMFLOAT3(0, 0, -1);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(0, 1, 0);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(1, -1, 0);
-		mesh.push_back(vertex);
+		mesh.emplace_back(std::move(vertex));
 	}
-	else if (_primitiveCube)
-	{
-        auto vertex = Mesh::vertex{};
+	indices = std::move(loader.LoadedIndices);
 
-        vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f);
-        mesh.push_back(vertex);
-
-        vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f);
-        mesh.push_back(vertex);
-
-        vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f);
-        mesh.push_back(vertex);
-
-        vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f);
-        mesh.push_back(vertex);
-
-
-        vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f);
-        mesh.push_back(vertex);
-
-        vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
-        mesh.push_back(vertex);
-
-        vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f);
-        mesh.push_back(vertex);
-
-        vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f);
-        mesh.push_back(vertex);
-
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f);
-		mesh.push_back(vertex);
-
-
-		vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-
-		vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f);
-		mesh.push_back(vertex);
-
-		vertex.position = DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f);
-		mesh.push_back(vertex);
-	}
-	else
-	{
-		mesh = _stlLoader.Load(_name);
-	}
+	_logger.WriteLine("Mesh Loader: " + _name);
+	//
 	
+	// creating vertex buffer
 	D3D11_BUFFER_DESC desc = { 0 };
 	desc.ByteWidth = sizeof(Mesh::vertex) * (UINT)mesh.size();
 	desc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = 0u;
-	desc.StructureByteStride = sizeof(Mesh::vertex);
 
 	D3D11_SUBRESOURCE_DATA data = { 0 };
 	data.pSysMem = (void*)mesh.data();
 
-	ComPtr<ID3D11Buffer> pBuffer{};
+	ComPtr<ID3D11Buffer> pVertexBuffer{};
 	D3D_CALL(
 	_device.GetComPtr()->CreateBuffer(
-		&desc, &data, pBuffer.ReleaseAndGetAddressOf()));
+		&desc, &data, pVertexBuffer.ReleaseAndGetAddressOf()));
 
 	_logger.WriteLine("Buffer Created." + 
+		std::string("\nWidth: ") + std::to_string(desc.ByteWidth));
+
+	// creating index buffer
+	desc.ByteWidth = sizeof(unsigned int) * (UINT)indices.size();
+	desc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_INDEX_BUFFER;
+
+	data.pSysMem = (void*)indices.data();
+
+	ComPtr<ID3D11Buffer> pIndexBuffer{};
+	D3D_CALL(
+		_device.GetComPtr()->CreateBuffer(
+			&desc, &data, pIndexBuffer.ReleaseAndGetAddressOf()));
+
+	_logger.WriteLine("Buffer Created." +
 		std::string("\nWidth: ") + std::to_string(desc.ByteWidth));
 
 	return Mesh(
 		std::move(VertexBuffer(
 			std::move(Buffer(
-				std::move(pBuffer), Resource::View())))), (unsigned int)mesh.size());
+				std::move(pVertexBuffer), Resource::View())))), (unsigned int)mesh.size(),
+		std::move(IndexBuffer(
+			std::move(Buffer(
+				std::move(pIndexBuffer), Resource::View())))), (unsigned int)indices.size());
 }
 
 MeshLoader& MeshLoader::Clear() noexcept
@@ -204,95 +120,3 @@ MeshLoader::MeshLoader(const Device& device) :
 	_device(device),
 	_logger(Globals::GetLogger())
 {}
-
-std::vector<Mesh::vertex> 
-MeshLoader::STLLoader::Load(const std::string& name) const
-{
-	// ** OLD IMPLEMENTATION ** //
-	//// loading in memory
-	//std::ifstream stream{name, std::ios::binary};
-
-	//if (stream.is_open() == false)
-	//{
-	//	THROW_BERROR("Failed to open file: " + name);
-	//}
-
-	//stream.seekg(0, std::ios::end);
-	//const auto size = stream.tellg();
-	//stream.seekg(0, std::ios::beg);
-
-	//std::unique_ptr<char[]> pFile{};
-	//try
-	//{
-	//	pFile = std::make_unique<char[]>(size);
-	//}
-	//catch(...)
-	//{
-	//	stream.close();
-	//	THROW_BERROR("Failed to allocate memory");
-	//}
-
-	//stream.read(pFile.get(), size);
-	//stream.close();
-
-	//// parsing
-	//
-	//auto count = 80;					// header offset can be ignored
-	//// number of faces or triangles
-	//const auto length = ((unsigned long*)(pFile.get() + count))[0];
-	//count += sizeof(unsigned long);		// 4
-
-	//auto vertices = std::vector<Mesh::vertex>();
-	//vertices.reserve(length);
-
-	//// opening facets
-	//for (auto i = 0u; i < length; ++i)
-	//{
-	//	const auto* const pData = ((float*)(pFile.get() + count));
-
-	//	// reading current face normal
-	//	DirectX::XMFLOAT3 normal = 
-	//		DirectX::XMFLOAT3(pData[0], pData[1], pData[2]);
-
-	//	count += sizeof(float) * 3;
-
-	//	// reading face vertices
-	//	for (auto v = 0; v < 3; v++)
-	//	{
-	//		Mesh::vertex vertex{};
-	//		vertex.normal = normal;
-	//		vertex.position = DirectX::XMFLOAT3(
-	//			pData[0], pData[1], pData[2]);
-
-	//		count += sizeof(float) * 3;
-
-	//		vertices.emplace_back(std::move(vertex));
-	//	}
-
-	//	// padding
-	//	count += sizeof(wchar_t);
-	//}
-
-	// ** ______________ ** //
-
-	auto vertices = std::vector<Mesh::vertex>();
-
-	stlloader::Mesh mesh{};
-	stlloader::parse_file(name.c_str(), mesh);
-
-	for (const auto& facet : mesh.facets)
-	{
-		Mesh::vertex vertex{};
-
-		vertex.normal = DirectX::XMFLOAT3(facet.normal.x, facet.normal.y, facet.normal.z);
-
-		for (auto i = 0; i < 3; i++)
-		{
-			vertex.position = DirectX::XMFLOAT3(facet.vertices[i].x, facet.vertices[i].y, facet.vertices[i].z);
-
-			vertices.push_back(vertex);
-		}
-	}
-
-	return vertices;
-}

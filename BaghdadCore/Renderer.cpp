@@ -59,7 +59,7 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCE
 
 	// issuing draw call
 	D3D_CHECK_CALL(
-		context.GetComPtr()->Draw(mesh._vertexCount, 0u)
+		context.GetComPtr()->DrawIndexed(mesh._indexCount, 0u, 0);
 	);
 }
 
