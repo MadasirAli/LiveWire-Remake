@@ -13,10 +13,10 @@ void MeshRenderer::OnPreRender(std::weak_ptr<Entity>& pEntity)
 	auto& transform = pEntity.lock()->GetTransform();
 
 	// updating transform c buffer
-	auto quaternion = XMQuaternionRotationRollPitchYawFromVector(transform.rotation);
-
 	TransformCBuffer data = {};
-	data.WorldMatrix = XMMatrixTransformation(XMVectorZero(), XMVectorSet(1, 1, 1, 1), transform.scale, XMVectorZero(), quaternion, transform.position);
+	data.WorldMatrix = XMMatrixTransformation(XMVectorZero(), XMQuaternionIdentity(),
+		XMVectorSet(transform.scale.x, transform.scale.y, transform.scale.z, 1), XMVectorZero(), transform.Quaternion(),
+		XMVectorSet(transform.position.x, transform.position.y, transform.position.z, 1));
 	data.WorldMatrix = XMMatrixTranspose(data.WorldMatrix);
 
 	const auto ptr = (TransformCBuffer*)_pBuffer->Map(D3D11_MAP_WRITE_DISCARD);

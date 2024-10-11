@@ -15,8 +15,8 @@ void Light::OnPreRender(std::weak_ptr<Entity>& pEntity)
 	LightCBuffer data = {};
 	data.ambient = XMFLOAT4(ambientColor.x, ambientColor.y, ambientColor.z, ambientIntensity);
 	data.color = XMFLOAT4(color.x, color.y, color.z, intensity);
-	data.position = transform.position;
-	data.rotation = transform.rotation;
+	data.position = XMFLOAT4(transform.position.x, transform.position.y, transform.position.z, 1);
+	data.rotation = XMFLOAT4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 1);
 
 	const auto ptr = (LightCBuffer*)_pBuffer->Map(D3D11_MAP_WRITE_DISCARD);
 	ptr[0] = data;

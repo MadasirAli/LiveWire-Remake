@@ -37,59 +37,65 @@ void Movement::OnUpdate(std::weak_ptr<Entity>& pEntity)
 	const auto yRotNKey = InputManager::Key::A;
 	const auto zRotNKey = InputManager::Key::Z;
 
-	XMVECTOR position = transform.position;
-	XMVECTOR rotation = transform.rotation;
+	XMFLOAT3 position = transform.position;
+	XMFLOAT3 rotation = transform.rotation;
 
 	if (input.GetKey(rightKey))
 	{
-		position.m128_f32[0] += delta;
+		auto dir = transform.Right();
+		position = XMFLOAT3(position.x + dir.x * delta, position.y + dir.y * delta, position.z + dir.z * delta);
 	}
 	if (input.GetKey(leftKey))
 	{
-		position.m128_f32[0] -= delta;
+		auto dir = transform.Right();
+		position = XMFLOAT3(position.x - dir.x * delta, position.y - dir.y * delta, position.z - dir.z * delta);
 	}
 	if (input.GetKey(upKey))
 	{
-		position.m128_f32[1] += delta;
+		auto dir = transform.Up();
+		position = XMFLOAT3(position.x + dir.x * delta, position.y + dir.y * delta, position.z + dir.z * delta);
 	}
 	if (input.GetKey(downKey))
 	{
-		position.m128_f32[1] -= delta;
+		auto dir = transform.Up();
+		position = XMFLOAT3(position.x - dir.x * delta, position.y - dir.y * delta, position.z - dir.z * delta);
 	}
 	if (input.GetKey(forwardKey))
 	{
-		position.m128_f32[2] += delta;
+		auto dir = transform.Forward();
+		position = XMFLOAT3(position.x + dir.x * delta, position.y + dir.y * delta, position.z + dir.z * delta);
 	}
 	if (input.GetKey(backwardKey))
 	{
-		position.m128_f32[2] -= delta;
+		auto dir = transform.Forward();
+		position = XMFLOAT3(position.x - dir.x * delta, position.y - dir.y * delta, position.z - dir.z * delta);
 	}
 
 	if (input.GetKey(xRotPKey))
 	{
-		rotation.m128_f32[0] += rotDelta;
+		rotation.x += rotDelta;
 	}
 	if (input.GetKey(xRotNKey))
 	{
-		rotation.m128_f32[0] -= rotDelta;
+		rotation.x -= rotDelta;
 	}
 
 	if (input.GetKey(yRotPKey))
 	{
-		rotation.m128_f32[1] += rotDelta;
+		rotation.y += rotDelta;
 	}
 	if (input.GetKey(yRotNKey))
 	{
-		rotation.m128_f32[1] -= rotDelta;
+		rotation.y -= rotDelta;
 	}
 
 	if (input.GetKey(zRotPKey))
 	{
-		rotation.m128_f32[2] += rotDelta;
+		rotation.z += rotDelta;
 	}
 	if (input.GetKey(zRotNKey))
 	{
-		rotation.m128_f32[2] -= rotDelta;
+		rotation.z -= rotDelta;
 	}
 
 	transform.position = position;
@@ -101,17 +107,17 @@ void Movement::OnRender(std::weak_ptr<Entity>& pEntity)
 	auto& transform = pEntity.lock()->GetTransform();
 
 	std::stringstream ss{};
-	ss << "Position: " << std::to_string(transform.position.m128_f32[0]);
-	ss << "  " << std::to_string(transform.position.m128_f32[1]);
-	ss << "  " << std::to_string(transform.position.m128_f32[2]) << std::endl;
+	ss << "Position: " << std::to_string(transform.position.x);
+	ss << "  " << std::to_string(transform.position.y);
+	ss << "  " << std::to_string(transform.position.z) << std::endl;
 
-	ss << "Rotation: " << std::to_string(transform.rotation.m128_f32[0]);
-	ss << "  " << std::to_string(transform.rotation.m128_f32[1]);
-	ss << "  " << std::to_string(transform.rotation.m128_f32[2]) << std::endl;
+	ss << "Rotation: " << std::to_string(transform.rotation.x);
+	ss << "  " << std::to_string(transform.rotation.y);
+	ss << "  " << std::to_string(transform.rotation.z) << std::endl;
 
-	ss << "Scale: " << std::to_string(transform.scale.m128_f32[0]);
-	ss << "  " << std::to_string(transform.scale.m128_f32[1]);
-	ss << "  " << std::to_string(transform.scale.m128_f32[2]) << std::endl;
+	ss << "Scale: " << std::to_string(transform.scale.x);
+	ss << "  " << std::to_string(transform.scale.y);
+	ss << "  " << std::to_string(transform.scale.z) << std::endl;
 
 	// imgui 
 	{
@@ -133,11 +139,11 @@ void Movement::OnRender(std::weak_ptr<Entity>& pEntity)
 		ImGui::SliderFloat("Rotation Speed", &_rotateSpeed, 1, 1000);
 
 		ImGui::PushItemWidth(50);
-		ImGui::SliderFloat("Scale: X", &(transform.scale.m128_f32[0]), 0, 1);
+		ImGui::SliderFloat("Scale: X", &(transform.scale.x), 0, 1);
 		ImGui::SameLine(200);
-		ImGui::SliderFloat("Scale: Y", &(transform.scale.m128_f32[1]), 0, 1);
+		ImGui::SliderFloat("Scale: Y", &(transform.scale.y), 0, 1);
 		ImGui::SameLine(400);
-		ImGui::SliderFloat("Scale: Z", &(transform.scale.m128_f32[2]), 0, 1);
+		ImGui::SliderFloat("Scale: Z", &(transform.scale.z), 0, 1);
 		ImGui::PopItemWidth();
 
 		ImGui::End();

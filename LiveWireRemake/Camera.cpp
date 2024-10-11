@@ -15,12 +15,13 @@ void Camera::OnPreRender(std::weak_ptr<Entity>& pEntity)
 
 	auto& transform = pEntity.lock()->GetTransform();
 
-	auto quaternion = XMQuaternionRotationRollPitchYawFromVector(transform.rotation);
+	// updating transform c buffer
+	auto quaternion = transform.Quaternion();
 
 	auto forward = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), quaternion);
 	auto up = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), quaternion);
 
-	auto viewMatrix = XMMatrixLookToLH(transform.position, forward, up);
+	auto viewMatrix = XMMatrixLookToLH(XMVectorSet(transform.position.x , transform.position.y, transform.position.z, 1), forward, up);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 
 	auto projectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), Globals::GetInstance().GetScreenAspectRatio(), nearPlane, farPlane);
