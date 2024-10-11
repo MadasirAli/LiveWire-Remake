@@ -36,6 +36,8 @@ namespace BaghdadCore
 		void Blit(const Texture2D& source, const Texture2D& destination) const NOEXCEPT;
 		void Blit(const Texture2D& source, const Texture2D& destination, unsigned int subResourceIndex) const NOEXCEPT;
 
+		void SetViewport(const D3D11_VIEWPORT& viewport) noexcept;
+
 		/// <summary>
 		/// Sets the reneder texture on which to output.
 		/// </summary>

@@ -21,6 +21,11 @@ namespace LiveWireRemake
 		float nearPlane = 0.03f;
 		float farPlane = 100000;
 
+		float viewportOffsetX = 0;
+		float viewportOffsetY = 0;
+		float viewportWidth = 1;
+		float viewportHeight = 1;
+
 	private:
 		std::unique_ptr<BaghdadCore::ConstantBuffer> _pBuffer;
 	};

@@ -119,6 +119,11 @@ void Renderer::Blit(const Texture2D& source, const Texture2D& destination, unsig
 	);
 }
 
+void Renderer::SetViewport(const D3D11_VIEWPORT& viewport) noexcept
+{
+	_viewport = viewport;
+}
+
 void Renderer::SetRenderTexture(std::unique_ptr<Texture2D>&& pRenderTexture)
 {
 	// accuring descriptor for width and height

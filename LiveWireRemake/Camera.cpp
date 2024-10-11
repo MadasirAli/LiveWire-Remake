@@ -13,7 +13,11 @@ void Camera::OnPreRender(std::weak_ptr<Entity>& pEntity)
 {
 	using namespace DirectX;
 
+	auto& globals = Globals::GetInstance();
 	auto& transform = pEntity.lock()->GetTransform();
+
+	const auto width = globals.GetScreenWidth() * viewportWidth;
+	const auto height = globals.GetScreenHeight() * viewportHeight;
 
 	// updating transform c buffer
 	auto quaternion = transform.Quaternion();
@@ -24,7 +28,7 @@ void Camera::OnPreRender(std::weak_ptr<Entity>& pEntity)
 	auto viewMatrix = XMMatrixLookToLH(XMVectorSet(transform.position.x , transform.position.y, transform.position.z, 1), forward, up);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 
-	auto projectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), Globals::GetInstance().GetScreenAspectRatio(), nearPlane, farPlane);
+	auto projectionMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(fov), width / height, nearPlane, farPlane);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
 	// updating camera c buffer
@@ -44,6 +48,20 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	auto& globals = Globals::GetInstance();
 	auto& worldManager = globals.GetWorldManager();
 	auto& renderer = globals.GetRenderer();
+
+	// setting viewport
+	{
+		const auto width = globals.GetScreenWidth();
+		const auto height = globals.GetScreenHeight();
+
+		D3D11_VIEWPORT viewport = { 0 };
+		viewport.TopLeftX = width * viewportOffsetX;
+		viewport.TopLeftY = height * viewportOffsetY;
+		viewport.Width = width * viewportWidth;
+		viewport.Height = height * viewportHeight;
+		viewport.MaxDepth = 1;
+		renderer.SetViewport(viewport);
+	}
 
 	// gathering lights
 	std::vector<std::weak_ptr<Light>> pLights{};
@@ -110,4 +128,6 @@ Camera::Camera()
 		.InitialData((char*)&pData, sizeof(pData))
 		.BuildCBuffer()
 	));
+
+	auto& globals = Globals::GetInstance();
 }
