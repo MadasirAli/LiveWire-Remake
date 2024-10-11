@@ -19,6 +19,8 @@ namespace BaghdadCore
 		/// <exception cref="Baghdad Error">On Shaders compilation failed.</exception>
 		Material Build();
 
+		MaterialBuilder& Clear() noexcept;
+
 		MaterialBuilder& VS(const std::string& name) noexcept;
 		MaterialBuilder& PS(const std::string& name) noexcept;
 

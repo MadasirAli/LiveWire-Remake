@@ -55,6 +55,11 @@ void Material::Bind(const Device& device, const DeviceContext& context) const NO
 	);
 }
 
+void Material::SetCullMode(D3D11_CULL_MODE mode) noexcept
+{
+	_cullMode = mode;
+}
+
 void Material::SetVSTexture(const std::string& name, const Texture2D& texture)
 {
 	unsigned int index;

@@ -23,6 +23,8 @@ namespace BaghdadCore
 		friend class Renderer;
 
 	public:
+		void SetCullMode(D3D11_CULL_MODE mode) noexcept;
+
 		/// <summary>
 		/// Binds texture to material or shader.
 		/// </summary>
@@ -65,6 +67,8 @@ namespace BaghdadCore
 		ShaderModule _vertexModule;
 		ShaderReflectionDB _pixelReflectionDB;
 		ShaderReflectionDB _vertexReflectionDB;
+
+		D3D11_CULL_MODE _cullMode = D3D11_CULL_BACK;
 
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> _pInputLayout;
 

@@ -11,6 +11,14 @@
 
 using namespace BaghdadCore;
 
+MaterialBuilder& MaterialBuilder::Clear() noexcept
+{
+	_vertexShaderName = "";
+	_pixelShaderName = "";
+
+	return *this;
+}
+
 Material BaghdadCore::MaterialBuilder::Build()
 {
 	using namespace Microsoft::WRL;

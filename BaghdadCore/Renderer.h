@@ -82,7 +82,10 @@ namespace BaghdadCore
 
 		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState;
-		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState;
+
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_Back;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_Front;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_None;
 		D3D11_VIEWPORT _viewport = { 0 };
 
 		std::unique_ptr<ImGuiRenderer> _pUIRenderer;

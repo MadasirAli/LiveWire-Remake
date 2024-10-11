@@ -53,9 +53,24 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCE
 	);
 
 	// binding rasterizer
-	D3D_CHECK_CALL(
-		pContext->RSSetState(_pRasterizerState.Get())
-	);
+	switch (material._cullMode)
+	{
+	case D3D11_CULL_BACK:
+		D3D_CHECK_CALL(
+			pContext->RSSetState(_pRasterizerState_Cull_Back.Get())
+		);
+		break;
+	case D3D11_CULL_FRONT:
+		D3D_CHECK_CALL(
+			pContext->RSSetState(_pRasterizerState_Cull_Front.Get())
+		);
+		break;
+	default:
+		D3D_CHECK_CALL(
+			pContext->RSSetState(_pRasterizerState_Cull_None.Get())
+		);
+		break;
+	}
 
 	// issuing draw call
 	D3D_CHECK_CALL(
@@ -293,11 +308,26 @@ Renderer::Renderer()
 		desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
 		desc.DepthClipEnable = true;
 		
+		//back cull state
 		ComPtr<ID3D11RasterizerState> pRastState{};
 		D3D_CALL(
 			pDevice->CreateRasterizerState(&desc, pRastState.ReleaseAndGetAddressOf())
 		);
-		_pRasterizerState = std::move(pRastState);
+		_pRasterizerState_Cull_Back = std::move(pRastState);
+
+		// front cull state
+		desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
+		D3D_CALL(
+			pDevice->CreateRasterizerState(&desc, pRastState.ReleaseAndGetAddressOf())
+		);
+		_pRasterizerState_Cull_Front = std::move(pRastState);
+
+		// no face cull state
+		desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+		D3D_CALL(
+			pDevice->CreateRasterizerState(&desc, pRastState.ReleaseAndGetAddressOf())
+		);
+		_pRasterizerState_Cull_None = std::move(pRastState);
 	}
 
 	// constructing initial viewport
