@@ -72,9 +72,19 @@ MeshRenderer::MeshRenderer()
 		.FromFile("Resources\\Models\\cube.obj")
 		.Load();
 	auto material = renderer.GetMaterialBuilder()
+		.Clear()
 		.VS("Basic_goroud.vert")
 		.PS("Basic_goroud.pix")
 		.Build();
+
+	// binding default texture
+	auto defaultTexture = renderer.GetTextureBuilder()
+		.Clear()
+		.FromFile("Resources\\Textures\\landscape.ppm")
+		.ViewFlag(BaghdadCore::Resource::View::Type::SRV)
+		.Build();
+
+	material.SetPSTexture("albedo", defaultTexture);
 
 	_pMesh = std::move(std::make_unique<Mesh>(std::move(mesh)));
 	_pMaterial = std::move(std::make_unique<Material>(std::move(material)));

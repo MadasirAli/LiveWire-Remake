@@ -30,6 +30,8 @@ Mesh MeshLoader::Load()
 		vertex.normal = DirectX::XMFLOAT3(v.Normal.X, v.Normal.Y, v.Normal.Z);
 		vertex.position = DirectX::XMFLOAT3(v.Position.X, v.Position.Y, v.Position.Z);
 
+		vertex.uv = DirectX::XMFLOAT2(v.TextureCoordinate.X, v.TextureCoordinate.Y);
+
 		mesh.emplace_back(std::move(vertex));
 	}
 	indices = std::move(loader.LoadedIndices);

@@ -1,6 +1,10 @@
 #include "PixelInput_goroud.hlsli"
 
+Texture2D albedo;
+SamplerState albedoSampler;
+
 float4 main(PixelInput pixel) : SV_Target
 {
-    return float4(pixel.color.xyz, 1);
+    float4 color = albedo.Sample(albedoSampler, pixel.uv);
+    return float4(pixel.color.xyz, 1) * color;
 }

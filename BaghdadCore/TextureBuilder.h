@@ -26,7 +26,7 @@ namespace BaghdadCore
 			{
 			public:
 				const Header& GetHeader() const noexcept;
-				const std::unique_ptr<char[]>& GetBufferpPtr() const noexcept;
+				const char* GetBufferpPtr() const noexcept;
 
 				PPMFile() = default;
 				PPMFile(
@@ -35,7 +35,7 @@ namespace BaghdadCore
 
 			private:
 				Header _header;
-				std::unique_ptr<char[]> _pPixels;
+				char* _pPixels;
 				std::unique_ptr<char[]> _pFile;
 			};
 		public:

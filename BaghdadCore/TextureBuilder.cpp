@@ -1,5 +1,6 @@
 #include "TextureBuilder.h"
 
+#include <numeric>
 #include <vector>
 #include <fstream>
 #include <wrl/client.h>
@@ -35,21 +36,24 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	{
 		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
 	}
-		 
+	
+	PPMLoader::PPMFile file{};
 	if (_fromFile)
 	{
-		const auto file = _ppmLoader.Load(_name);
+		file = std::move(_ppmLoader.Load(_name));
 		const auto header = file.GetHeader();
 
 		format = header.depth == 1 ?
-			DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UINT :
-			DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UINT;
+			DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM :
+			DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM;
 
 		width = header.width;
 		height = header.height;
+
+		pData = file.GetBufferpPtr();
 	}
 
-	unsigned int sliceSize = (unsigned int)DirectXUtil::BitsPerPixel(format) / 8;
+	unsigned int sliceSize = ((unsigned int)DirectXUtil::BitsPerPixel(format) / 8) * width;
 
 	// creating texture
 	D3D11_TEXTURE2D_DESC desc = { 0 };
@@ -62,18 +66,20 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		pData == nullptr? D3D11_USAGE_DEFAULT : D3D11_USAGE_IMMUTABLE;
 	desc.ArraySize = 1u;
 	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
 	desc.Width = width;
 	desc.Height = height;
+	desc.MipLevels = 1u;
 
 	D3D11_SUBRESOURCE_DATA data = { 0 };
 	data.pSysMem = pData;
 	data.SysMemPitch = sliceSize;
 
+	D3D11_SUBRESOURCE_DATA* pSubResourceData = pData == nullptr ? nullptr : &data;
+
 	ComPtr<ID3D11Texture2D> pTexture{};
 	D3D_CALL(
 	_device.GetComPtr()->CreateTexture2D(
-		&desc, pData == nullptr? nullptr : &data, pTexture.ReleaseAndGetAddressOf()));
+		&desc, pSubResourceData, pTexture.ReleaseAndGetAddressOf()));
 
 	// creating views
 	const auto pResource = ComUtility::As<ID3D11Texture2D, ID3D11Resource>(pTexture);
@@ -89,7 +95,7 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		desc.Format = format;
 		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		desc.Texture2D.MipLevels = -1;
-		desc.Texture2D.MostDetailedMip = -1;
+		desc.Texture2D.MostDetailedMip = 0;
 
 		D3D_CALL(
 		_device.GetComPtr()->CreateShaderResourceView(pResource.Get(),
@@ -100,11 +106,11 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		D3D11_SAMPLER_DESC samplerDesc = { };
 		ZeroMemory(&samplerDesc, sizeof(samplerDesc));
 
-		samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_MAXIMUM_ANISOTROPIC;
+		samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_ANISOTROPIC;
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.MaxAnisotropy = D3D11_MAX_MAXANISOTROPY;
+		samplerDesc.MaxAnisotropy = 2u;
 
 		D3D_CALL(
 			_device.GetComPtr()->CreateSamplerState(&samplerDesc, pSampler.ReleaseAndGetAddressOf())
@@ -250,13 +256,13 @@ TextureBuilder::PPMLoader::Load(const std::string& name) const
 	// magic
 	const auto magic = ((wchar_t*)pFile.get())[0];
 
-	if (magic != 8054)	// P6
+	if (pFile[0] != 80 && pFile[1] != 54)	// P6
 	{
 		THROW_BERROR("Given file is not a PPM File or is corrupted.");
 	}
 
 	std::vector<char> buffer{};
-	auto counter = 4;
+	auto counter = 3;
 
 	// width
 	while (pFile[counter] != 32)	// SPACE
@@ -268,7 +274,7 @@ TextureBuilder::PPMLoader::Load(const std::string& name) const
 	auto width = 0;
 	for (auto i = 0; i < buffer.size(); i++)
 	{
-		width += (buffer[i] - 48)* i;
+		width += (buffer[i] - 48) * std::pow<int, int>(10, ((int)buffer.size() - (i + 1)));
 	}
 	buffer.clear();
 
@@ -283,7 +289,7 @@ TextureBuilder::PPMLoader::Load(const std::string& name) const
 	auto height = 0;
 	for (auto i = 0; i < buffer.size(); i++)
 	{
-		width += (buffer[i] - 48) * i;
+		height += (buffer[i] - 48) * std::pow<int, int>(10, ((int)buffer.size() - (i + 1)));
 	}
 	buffer.clear();
 
@@ -298,7 +304,7 @@ TextureBuilder::PPMLoader::Load(const std::string& name) const
 	auto depth = 0;
 	for (auto i = 0; i < buffer.size(); i++)
 	{
-		width += (buffer[i] - 48) * i;
+		depth += (buffer[i] - 48) * std::pow<int, int>(10, ((int)buffer.size() - (i + 1)));
 	}
 	buffer.clear();
 
@@ -325,7 +331,7 @@ TextureBuilder::PPMLoader::PPMFile::GetHeader() const noexcept
 	return _header;
 }
 
-const std::unique_ptr<char[]>& 
+const char*
 TextureBuilder::PPMLoader::PPMFile::GetBufferpPtr() const noexcept
 {
 	return _pPixels;
