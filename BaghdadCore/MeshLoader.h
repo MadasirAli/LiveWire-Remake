@@ -21,9 +21,6 @@ namespace BaghdadCore
 		MeshLoader& Clear() noexcept;
 
 		MeshLoader& FromFile(const std::string& name) noexcept;
-		MeshLoader& PrimitiveQuad() noexcept;
-		MeshLoader& PrimitiveTriangle() noexcept;
-		MeshLoader& PrimitiveCube() noexcept;
 
 		MeshLoader(const Device& device);
 
@@ -31,9 +28,6 @@ namespace BaghdadCore
 		const Device& _device;
 
 		std::string _name;
-		bool _primitiveQuad = false;
-		bool _primitiveTriangle = false;
-		bool _primitiveCube = false;
 
 		const Logger& _logger;
 	};

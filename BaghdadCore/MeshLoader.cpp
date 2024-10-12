@@ -83,9 +83,6 @@ Mesh MeshLoader::Load()
 MeshLoader& MeshLoader::Clear() noexcept
 {
 	_name = "";
-	_primitiveQuad = false;
-	_primitiveTriangle = false;
-	_primitiveCube = false;
 
 	return *this;
 }
@@ -93,27 +90,6 @@ MeshLoader& MeshLoader::Clear() noexcept
 MeshLoader& MeshLoader::FromFile(const std::string& name) noexcept
 {
 	_name = std::string(name);
-
-	return *this;
-}
-
-MeshLoader& MeshLoader::PrimitiveQuad() noexcept
-{
-	_primitiveQuad = true;
-
-	return *this;
-}
-
-MeshLoader& MeshLoader::PrimitiveTriangle() noexcept
-{
-	_primitiveTriangle = true;
-
-	return *this;
-}
-
-MeshLoader& MeshLoader::PrimitiveCube() noexcept
-{
-	_primitiveCube = true;
 
 	return *this;
 }
