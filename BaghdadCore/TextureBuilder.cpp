@@ -39,7 +39,7 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
 	}
 
-	std::unique_ptr<float[]> pImageData{};
+	std::unique_ptr<unsigned int[]> pImageData{};
 
 	if (_fromFile)
 	{
@@ -51,12 +51,12 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 			THROW_BERROR("Failed to load image: " + _name);
 		}
 
-		format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		width = image.width();
 		height = image.height();
 
-		pImageData = std::make_unique<float[]>(width * height * 4);	// 32 bits
+		pImageData = std::make_unique<unsigned int[]>(width * height);	// 32 bits
 
 		// 24 bits to 32 bit conversion
 		for (auto y = 0; y < height; ++y)
@@ -64,10 +64,10 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 			for (auto x = 0; x < width; ++x)
 			{
 				auto pixel = image.get(x, y);
-				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[0] = pixel.r;
-				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[1] = pixel.g;
-				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[2] = pixel.b;
-				((float*)(pImageData.get() + (y * 4 * width) + (x * 4)))[3] = 1;
+				((char*)(pImageData.get() + (y * width) + (x)))[0] = pixel.r;
+				((char*)(pImageData.get() + (y * width) + (x)))[1] = pixel.g;
+				((char*)(pImageData.get() + (y * width) + (x)))[2] = pixel.b;
+				((char*)(pImageData.get() + (y * width) + (x)))[3] = 255;
 			}
 		}
 
