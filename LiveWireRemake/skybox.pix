@@ -1,0 +1,7 @@
+TextureCube skybox;
+SamplerState skyboxSampler;
+
+float4 main(float4 position : SV_Position) : SV_Target
+{
+    return skybox.Sample(skyboxSampler, (float3)position);
+}

@@ -42,9 +42,18 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCE
 	);
 
 	// binding depth stencil state
-	D3D_CHECK_CALL(
-		pContext->OMSetDepthStencilState(_pDepthState.Get(), 0u)
-	);
+	if (material._depthEnabled)
+	{
+		D3D_CHECK_CALL(
+			pContext->OMSetDepthStencilState(_pDepthState_On.Get(), 0u)
+		);
+	}
+	else
+	{
+		D3D_CHECK_CALL(
+			pContext->OMSetDepthStencilState(_pDepthState_Off.Get(), 0u)
+		);
+	}
 
 	// binding blend state
 	constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -276,12 +285,21 @@ Renderer::Renderer()
 		desc.DepthFunc = D3D11_COMPARISON_LESS;
 		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 
-		ComPtr<ID3D11DepthStencilState> pDepthState{ };
+		ComPtr<ID3D11DepthStencilState> pDepthStateOn{ };
 		D3D_CALL(
-			pDevice->CreateDepthStencilState(&desc, pDepthState.ReleaseAndGetAddressOf())
+			pDevice->CreateDepthStencilState(&desc, pDepthStateOn.ReleaseAndGetAddressOf())
 		);
 
-		_pDepthState = std::move(pDepthState);
+		_pDepthState_On = std::move(pDepthStateOn);
+
+		desc.DepthEnable = false;
+
+		ComPtr<ID3D11DepthStencilState> pDepthStateOff{ };
+		D3D_CALL(
+			pDevice->CreateDepthStencilState(&desc, pDepthStateOff.ReleaseAndGetAddressOf())
+		);
+
+		_pDepthState_Off = std::move(pDepthStateOff);
 	}
 
 	// creating blend state

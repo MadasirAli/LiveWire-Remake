@@ -83,7 +83,8 @@ namespace BaghdadCore
 		std::unique_ptr<Texture2D> _pDepthTexture;
 
 		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState;
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState_On;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState_Off;
 
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_Back;
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_Front;

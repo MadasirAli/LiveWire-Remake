@@ -24,6 +24,7 @@ namespace BaghdadCore
 
 	public:
 		void SetCullMode(D3D11_CULL_MODE mode) noexcept;
+		bool ToggleDepth(bool value) noexcept;
 
 		/// <summary>
 		/// Binds texture to material or shader.
@@ -69,6 +70,7 @@ namespace BaghdadCore
 		ShaderReflectionDB _vertexReflectionDB;
 
 		D3D11_CULL_MODE _cullMode = D3D11_CULL_BACK;
+		bool _depthEnabled = true;
 
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> _pInputLayout;
 

@@ -55,6 +55,15 @@ void Material::Bind(const Device& device, const DeviceContext& context) const NO
 	);
 }
 
+bool Material::ToggleDepth(bool value) noexcept
+{
+	bool lastState = _depthEnabled;
+
+	_depthEnabled = value;
+
+	return lastState;
+}
+
 void Material::SetCullMode(D3D11_CULL_MODE mode) noexcept
 {
 	_cullMode = mode;
