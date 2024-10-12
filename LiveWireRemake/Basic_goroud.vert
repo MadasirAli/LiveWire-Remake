@@ -20,7 +20,7 @@ PixelInput main(VertexInput vertex)
     normal = normalize(normal);
     
     float4 eyePos = ViewMatrix[3];
-    float3 eyeDir = normalize((eyePos - output.position).xyz);
+    float3 eyeDir = normalize((eyePos - worldPos).xyz);
     
     float3 lightDir = 0;
     lightDir.x = cos(radians(LightRotation.x)) * sin(radians(LightRotation.y));
