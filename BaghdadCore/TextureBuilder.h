@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Device.h"
 #include "Texture2D.h"
@@ -26,16 +27,19 @@ namespace BaghdadCore
 		TextureBuilder& Format(const DXGI_FORMAT format);
 		TextureBuilder& ReadWrite() noexcept;
 		TextureBuilder& FromFile(const std::string& name) noexcept;
+		TextureBuilder& CubeMap() noexcept;
 
 		TextureBuilder(const Device& device);
 
 	private:
 		const Device& _device;
 
-		std::string _name;
+		std::vector<std::string> _names;
 
 		bool _fromFile = false;
 		bool _readWrite = false;
+
+		bool _cubeMap = false;
 
 		unsigned int _width = 0u;
 		unsigned int _height = 0u;

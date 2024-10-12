@@ -22,7 +22,18 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	unsigned int height = _height;
 	DXGI_FORMAT format = _format;
 
-	const char* pData = _pData;
+	unsigned int miscFlags = 0u;
+	unsigned int arraySize = _fromFile ? _names.size() : 1u;
+
+	std::vector<const char*> pDatas{};
+	pDatas.reserve(arraySize);
+
+	if(_fromFile == false)
+		pDatas.push_back(_pData);
+
+	if (_cubeMap)
+		miscFlags |= D3D11_RESOURCE_MISC_FLAG::D3D11_RESOURCE_MISC_TEXTURECUBE;
+
 	const unsigned int viewFlags = _viewFlags;
 
 	unsigned int bindFlags = 0u;
@@ -39,39 +50,43 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		bindFlags |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
 	}
 
-	std::unique_ptr<unsigned int[]> pImageData{};
+	std::vector<std::unique_ptr<unsigned int[]>> pImageDatas{};
+	pImageDatas.reserve(arraySize);
 
 	if (_fromFile)
 	{
-		bmp::Bitmap image{};
-		image.load(_name);
-
-		if (!image)
+		for (const auto& name : _names)
 		{
-			THROW_BERROR("Failed to load image: " + _name);
-		}
+			bmp::Bitmap image{};
+			image.load(name);
 
-		format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-		width = image.width();
-		height = image.height();
-
-		pImageData = std::make_unique<unsigned int[]>(width * height);	// 32 bits
-
-		// 24 bits to 32 bit conversion
-		for (auto y = 0; y < height; ++y)
-		{
-			for (auto x = 0; x < width; ++x)
+			if (!image)
 			{
-				auto pixel = image.get(x, y);
-				((char*)(pImageData.get() + (y * width) + (x)))[0] = pixel.r;
-				((char*)(pImageData.get() + (y * width) + (x)))[1] = pixel.g;
-				((char*)(pImageData.get() + (y * width) + (x)))[2] = pixel.b;
-				((char*)(pImageData.get() + (y * width) + (x)))[3] = 255;
+				THROW_BERROR("Failed to load image: " + name);
 			}
-		}
 
-		pData = (char*)(pImageData.get());
+			format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+			width = image.width();
+			height = image.height();
+
+			pImageDatas.emplace_back(std::make_unique<unsigned int[]>(width * height));	// 32 bits
+
+			// 24 bits to 32 bit conversion
+			for (auto y = 0; y < height; ++y)
+			{
+				for (auto x = 0; x < width; ++x)
+				{
+					auto pixel = image.get(x, y);
+					((char*)(pImageDatas.back().get() + (y * width) + (x)))[0] = pixel.r;
+					((char*)(pImageDatas.back().get() + (y * width) + (x)))[1] = pixel.g;
+					((char*)(pImageDatas.back().get() + (y * width) + (x)))[2] = pixel.b;
+					((char*)(pImageDatas.back().get() + (y * width) + (x)))[3] = 255;
+				}
+			}
+
+			pDatas.push_back((char*)(pImageDatas.back().get()));
+		}
 	}
 
 	unsigned int sliceSize = ((unsigned int)DirectXUtil::BitsPerPixel(format) / 8) * width;
@@ -83,45 +98,62 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 	desc.CPUAccessFlags = _readWrite ?
 		D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE : 0u;
 	desc.Usage = _readWrite ?
-		D3D11_USAGE::D3D11_USAGE_DYNAMIC : 
-		pData == nullptr? D3D11_USAGE_DEFAULT : D3D11_USAGE_IMMUTABLE;
-	desc.ArraySize = 1u;
+		D3D11_USAGE::D3D11_USAGE_DYNAMIC :
+		pDatas[0] == nullptr ? D3D11_USAGE_DEFAULT : D3D11_USAGE_IMMUTABLE;
+	desc.ArraySize = arraySize;
 	desc.SampleDesc.Count = 1;
 	desc.Width = width;
 	desc.Height = height;
 	desc.MipLevels = 1u;
+	desc.MiscFlags = miscFlags;
 
-	D3D11_SUBRESOURCE_DATA data = { 0 };
-	data.pSysMem = pData;
-	data.SysMemPitch = sliceSize;
+	std::vector<D3D11_SUBRESOURCE_DATA> datas{};
+	datas.reserve(arraySize);
+	for (auto i = 0; i < arraySize; i++)
+	{
+		D3D11_SUBRESOURCE_DATA data = { 0 };
 
-	D3D11_SUBRESOURCE_DATA* pSubResourceData = pData == nullptr ? nullptr : &data;
+		data.pSysMem = pDatas[i];
+		data.SysMemPitch = sliceSize;
+
+		datas.emplace_back(data);
+	}
+
+	D3D11_SUBRESOURCE_DATA* pSubResourceData = pDatas[0] == nullptr ? nullptr : datas.data();
 
 	ComPtr<ID3D11Texture2D> pTexture{};
 	D3D_CALL(
-	_device.GetComPtr()->CreateTexture2D(
-		&desc, pSubResourceData, pTexture.ReleaseAndGetAddressOf()));
+		_device.GetComPtr()->CreateTexture2D(
+			&desc, pSubResourceData, pTexture.ReleaseAndGetAddressOf()));
 
 	// creating views
 	const auto pResource = ComUtility::As<ID3D11Texture2D, ID3D11Resource>(pTexture);
 
 	// shader resource view
-	ComPtr<ID3D11ShaderResourceView> pSRV {};
+	ComPtr<ID3D11ShaderResourceView> pSRV{};
 	ComPtr<ID3D11SamplerState> pSampler{};
 	if ((viewFlags & (unsigned int)Resource::View::Type::SRV) != 0)
 	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
 		ZeroMemory(&desc, sizeof(desc));
 
+		D3D11_SRV_DIMENSION type = D3D11_SRV_DIMENSION_UNKNOWN;
+		if (_cubeMap)
+			type = D3D11_SRV_DIMENSION_TEXTURECUBE;
+		else if (arraySize > 1)
+			type = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		else
+			type = D3D11_SRV_DIMENSION_TEXTURE2D;
+
 		desc.Format = format;
-		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		desc.ViewDimension = type;
 		desc.Texture2D.MipLevels = -1;
 		desc.Texture2D.MostDetailedMip = 0;
 
 		D3D_CALL(
-		_device.GetComPtr()->CreateShaderResourceView(pResource.Get(),
-			&desc,
-			pSRV.ReleaseAndGetAddressOf())
+			_device.GetComPtr()->CreateShaderResourceView(pResource.Get(),
+				&desc,
+				pSRV.ReleaseAndGetAddressOf())
 		);
 
 		D3D11_SAMPLER_DESC samplerDesc = { };
@@ -144,8 +176,16 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		D3D11_RENDER_TARGET_VIEW_DESC desc = {};
 		ZeroMemory(&desc, sizeof(desc));
 
+		D3D11_RTV_DIMENSION type = D3D11_RTV_DIMENSION_UNKNOWN;
+		if (_cubeMap)
+			assert(false);
+		else if (arraySize > 1)
+			type = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+		else
+			type = D3D11_RTV_DIMENSION_TEXTURE2D;
+
 		desc.Format = format;
-		desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		desc.ViewDimension = type;
 
 		D3D_CALL(
 			_device.GetComPtr()->CreateRenderTargetView(pResource.Get(),
@@ -160,8 +200,16 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc = { };
 		ZeroMemory(&desc, sizeof(desc));
 
+		D3D11_DSV_DIMENSION type = D3D11_DSV_DIMENSION_UNKNOWN;
+		if (_cubeMap)
+			assert(false);
+		else if (arraySize > 1)
+			type = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+		else
+			type = D3D11_DSV_DIMENSION_TEXTURE2D;
+
 		desc.Format = format;
-		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		desc.ViewDimension = type;
 
 		D3D_CALL(
 			_device.GetComPtr()->CreateDepthStencilView(pResource.Get(),
@@ -171,20 +219,24 @@ Texture2D BaghdadCore::TextureBuilder::Build()
 
 	Resource::View view{ _viewFlags,
 	std::move(pSRV), std::move(pRTV), std::move(pDSV),
-	std::move(pSampler)};
+	std::move(pSampler) };
 
-	_logger.WriteLine("Texture Created: " + _name +
-		"\nWidth: " + std::to_string(width) +
-		"\nHeight: " + std::to_string(height));
+	for (const auto& name : _names)
+	{
+		_logger.WriteLine("Texture Created: " + name +
+			"\nWidth: " + std::to_string(width) +
+			"\nHeight: " + std::to_string(height));
+	}
 
 	return Texture2D(std::move(pTexture), std::move(view));
 }
 
 TextureBuilder& TextureBuilder::Clear() noexcept
 {
-	_name = "";
+	_names.clear();
 	_readWrite = false;
 	_fromFile = false;
+	_cubeMap = false;
 	_width = 0u;
 	_height = 0u;
 	_pData = nullptr;
@@ -232,8 +284,15 @@ TextureBuilder& TextureBuilder::ReadWrite() noexcept
 
 TextureBuilder& TextureBuilder::FromFile(const std::string& name) noexcept
 {
-	_name = std::string(name);
+	_names.emplace_back(name);
 	_fromFile = true;
+
+	return *this;
+}
+
+TextureBuilder& TextureBuilder::CubeMap() noexcept
+{
+	_cubeMap = true;
 
 	return *this;
 }
