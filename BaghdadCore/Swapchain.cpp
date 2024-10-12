@@ -4,7 +4,7 @@
 
 using namespace BaghdadCore;
 
-bool Swapchain::Present(unsigned int syncInverval, unsigned int flags) const
+bool Swapchain::Present(unsigned int syncInverval, unsigned int flags) const NOEXCEPT
 {
 #if _DEBUG
 	DXGIInfoQueue::GetInstance().SetInfoQueue();

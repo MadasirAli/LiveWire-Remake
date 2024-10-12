@@ -52,7 +52,7 @@ namespace BaghdadCore
 		};
 
 	public:
-		void* Map(D3D11_MAP type) const NOEXCEPT;
+		void* Map(D3D11_MAP type) const;
 		void UnMap() const NOEXCEPT;
 
 		const View& GetView() const noexcept;

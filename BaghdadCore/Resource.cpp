@@ -6,7 +6,7 @@
 
 using namespace BaghdadCore;
 
-void* Resource::Map(D3D11_MAP type) const NOEXCEPT
+void* Resource::Map(D3D11_MAP type) const
 {
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice{};
 	_ptr->GetDevice(pDevice.ReleaseAndGetAddressOf());

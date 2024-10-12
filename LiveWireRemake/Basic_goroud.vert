@@ -30,7 +30,7 @@ PixelInput main(VertexInput vertex)
     lightDir = normalize(lightDir);
     
     float4 color = saturate(mul(dot(-lightDir, (float3)normal), LightIntensity));
-    color += saturate(pow(dot(eyeDir, reflect(lightDir, normal)), 128));
+    color += saturate(pow(saturate(dot(eyeDir, reflect(lightDir, normal))), 128));
     
     color += float4(AmbientLightColor * AmbientLightIntensity, 0);
 
