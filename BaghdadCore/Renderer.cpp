@@ -55,11 +55,11 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCE
 		);
 	}
 
-	// binding blend state
-	constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	D3D_CHECK_CALL(
-		pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
-	);
+	//// binding blend state
+	//constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//D3D_CHECK_CALL(
+	//	pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
+	//);
 
 	// binding rasterizer
 	switch (material._cullMode)
@@ -285,6 +285,7 @@ Renderer::Renderer()
 		desc.DepthFunc = D3D11_COMPARISON_LESS;
 		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 
+		// on state
 		ComPtr<ID3D11DepthStencilState> pDepthStateOn{ };
 		D3D_CALL(
 			pDevice->CreateDepthStencilState(&desc, pDepthStateOn.ReleaseAndGetAddressOf())
@@ -292,6 +293,7 @@ Renderer::Renderer()
 
 		_pDepthState_On = std::move(pDepthStateOn);
 
+		// off state
 		desc.DepthEnable = false;
 
 		ComPtr<ID3D11DepthStencilState> pDepthStateOff{ };

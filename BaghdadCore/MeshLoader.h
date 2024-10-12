@@ -19,6 +19,7 @@ namespace BaghdadCore
 		/// <exception cref="GraphicsError">On Creating buffers failed></exception>
 		Mesh Load();
 		MeshLoader& Clear() noexcept;
+		MeshLoader& PrimitiveCube() noexcept;
 
 		MeshLoader& FromFile(const std::string& name) noexcept;
 
@@ -28,6 +29,8 @@ namespace BaghdadCore
 		const Device& _device;
 
 		std::string _name;
+
+		bool _primitiveCube = false;
 
 		const Logger& _logger;
 	};

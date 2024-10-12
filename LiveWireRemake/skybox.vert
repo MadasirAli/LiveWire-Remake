@@ -1,10 +1,21 @@
 #include "CameraCBuffer.hlsli"
 #include "VertexInput.hlsli"
 
-float4 main(VertexInput input) : SV_Position
+struct PixelInput
 {
-    float4 position = float4(input.position, 1);
-    position = float4(mul((float3)position, (float3x3)ViewMatrix), 1);
+    float4 position : SV_Position;
+    float4 texCoords : TEXCOORD;
+};
+
+PixelInput main(VertexInput input)
+{
+    PixelInput output;
     
-    return position.xyww;
+    output.texCoords = float4(input.position, 1);
+    
+    output.position = float4(input.position, 1);
+    output.position = float4(mul((float3)output.position, (float3x3)ViewMatrix), 1);
+    output.position = mul(output.position, ProjectionMatrix);
+    
+    return output;
 }

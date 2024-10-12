@@ -18,8 +18,8 @@ namespace LiveWireRemake
 
 	public:
 		float fov = 60;
-		float nearPlane = 0.03f;
-		float farPlane = 100000;
+		float nearPlane = 0.01f;
+		float farPlane = 1000;
 
 		float viewportOffsetX = 0;
 		float viewportOffsetY = 0;

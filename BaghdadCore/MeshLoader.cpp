@@ -16,27 +16,135 @@ Mesh MeshLoader::Load()
 	std::vector<Mesh::vertex> mesh{};
 	std::vector<unsigned int> indices{};
 
-	// TODO: LOADING MESH AND INDCIEs 
-	objl::Loader loader{};
-	bool result = loader.LoadFile(_name);
-	if (result == false)
-	{
-		THROW_BERROR("Model did not found or unable to load modal.");
-	}
-
-	for (const auto& v : loader.LoadedVertices)
+	// loading vertices and indices
+	if(_primitiveCube)
 	{
 		Mesh::vertex vertex{};
-		vertex.normal = DirectX::XMFLOAT3(v.Normal.X, v.Normal.Y, v.Normal.Z);
-		vertex.position = DirectX::XMFLOAT3(v.Position.X, v.Position.Y, v.Position.Z);
+		// Vertex positions, normals, and UV coordinates for a cube
 
-		vertex.uv = DirectX::XMFLOAT2(v.TextureCoordinate.X, v.TextureCoordinate.Y);
+		// Vertex 0
+		vertex.position = DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f); // Front Bottom Right
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);     // Normal pointing to the front
+		vertex.uv = DirectX::XMFLOAT2(1.0f, 0.0f);                // UV
+		mesh.push_back(vertex);
 
-		mesh.emplace_back(std::move(vertex));
+		// Vertex 1
+		vertex.position = DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f); // Front Bottom Left
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);     // Normal pointing to the front
+		vertex.uv = DirectX::XMFLOAT2(0.0f, 0.0f);                // UV
+		mesh.push_back(vertex);
+
+		// Vertex 2
+		vertex.position = DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f);   // Front Top Right
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);     // Normal pointing to the front
+		vertex.uv = DirectX::XMFLOAT2(1.0f, 1.0f);                // UV
+		mesh.push_back(vertex);
+
+		// Vertex 3
+		vertex.position = DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f);  // Front Top Left
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);     // Normal pointing to the front
+		vertex.uv = DirectX::XMFLOAT2(0.0f, 1.0f);                // UV
+		mesh.push_back(vertex);
+
+		// Vertex 4
+		vertex.position = DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f);   // Back Bottom Right
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);      // Normal pointing to the back
+		vertex.uv = DirectX::XMFLOAT2(1.0f, 0.0f);                // UV
+		mesh.push_back(vertex);
+
+		// Vertex 5
+		vertex.position = DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f);  // Back Bottom Left
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);      // Normal pointing to the back
+		vertex.uv = DirectX::XMFLOAT2(0.0f, 0.0f);                // UV
+		mesh.push_back(vertex);
+
+		// Vertex 6
+		vertex.position = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);    // Back Top Right
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);      // Normal pointing to the back
+		vertex.uv = DirectX::XMFLOAT2(1.0f, 1.0f);                // UV
+		mesh.push_back(vertex);
+
+		// Vertex 7
+		vertex.position = DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f);   // Back Top Left
+		vertex.normal = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);      // Normal pointing to the back
+		vertex.uv = DirectX::XMFLOAT2(0.0f, 1.0f);                // UV
+		mesh.push_back(vertex);
+
+		// adding indices
+
+// Indices for the cube with corrected winding order
+		indices.push_back(0); // Triangle 1
+		indices.push_back(1);
+		indices.push_back(2);
+
+		indices.push_back(2); // Triangle 2
+		indices.push_back(1);
+		indices.push_back(3);
+
+		indices.push_back(4); // Triangle 3
+		indices.push_back(6);
+		indices.push_back(5);
+
+		indices.push_back(5); // Triangle 4
+		indices.push_back(6);
+		indices.push_back(7);
+
+		indices.push_back(0); // Triangle 5
+		indices.push_back(4);
+		indices.push_back(1);
+
+		indices.push_back(1); // Triangle 6
+		indices.push_back(4);
+		indices.push_back(5);
+
+		indices.push_back(2); // Triangle 7
+		indices.push_back(3);
+		indices.push_back(6);
+
+		indices.push_back(6); // Triangle 8
+		indices.push_back(3);
+		indices.push_back(7);
+
+		indices.push_back(0); // Triangle 9
+		indices.push_back(2);
+		indices.push_back(4);
+
+		indices.push_back(4); // Triangle 10
+		indices.push_back(2);
+		indices.push_back(6);
+
+		indices.push_back(1); // Triangle 11
+		indices.push_back(5);
+		indices.push_back(3);
+
+		indices.push_back(3); // Triangle 12
+		indices.push_back(5);
+		indices.push_back(7);
+
 	}
-	indices = std::move(loader.LoadedIndices);
+	else
+	{
+		objl::Loader loader{};
+		bool result = loader.LoadFile(_name);
+		if (result == false)
+		{
+			THROW_BERROR("Model did not found or unable to load modal.");
+		}
 
-	_logger.WriteLine("Mesh Loader: " + _name);
+		for (const auto& v : loader.LoadedVertices)
+		{
+			Mesh::vertex vertex{};
+			vertex.normal = DirectX::XMFLOAT3(v.Normal.X, v.Normal.Y, v.Normal.Z);
+			vertex.position = DirectX::XMFLOAT3(v.Position.X, v.Position.Y, v.Position.Z);
+
+			vertex.uv = DirectX::XMFLOAT2(v.TextureCoordinate.X, v.TextureCoordinate.Y);
+
+			mesh.emplace_back(std::move(vertex));
+		}
+		indices = std::move(loader.LoadedIndices);
+
+		_logger.WriteLine("Mesh Loader: " + _name);
+	}
 	//
 	
 	// creating vertex buffer
@@ -80,9 +188,17 @@ Mesh MeshLoader::Load()
 				std::move(pIndexBuffer), Resource::View())))), (unsigned int)indices.size());
 }
 
+MeshLoader& MeshLoader::PrimitiveCube() noexcept
+{
+	_primitiveCube = true;
+
+	return *this;
+}
+
 MeshLoader& MeshLoader::Clear() noexcept
 {
 	_name = "";
+	_primitiveCube = false;
 
 	return *this;
 }

@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Movement.h"
 #include "Light.h"
+#include "SkyboxRenderer.h"
 
 using namespace LiveWireRemake;
 
@@ -35,13 +36,15 @@ void LiveWire::Start()
 	auto pCameraEntity = world.CreateEntity();
 	auto pTriangleEntity = world.CreateEntity();
 	auto pLightEntity = world.CreateEntity();
+	auto pSkyboxEntity = world.CreateEntity();
 
 	// adding components
 	auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
 	auto pMeshRenderer = pTriangleEntity.lock()->AddComponent<MeshRenderer>();
 	pLightEntity.lock()->AddComponent<Light>();
+	pSkyboxEntity.lock()->AddComponent<SkyboxRenderer>();
 
-	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -10);
+	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, 0);
 
-	pTriangleEntity.lock()->AddComponent<Movement>();
+	pCameraEntity.lock()->AddComponent<Movement>();
 }

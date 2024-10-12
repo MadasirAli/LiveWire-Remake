@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Light.h"
+#include "SkyboxRenderer.h"
 
 using namespace LiveWireRemake;
 
@@ -63,19 +64,41 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 		renderer.SetViewport(viewport);
 	}
 
-	// gathering lights
+	// gathering items
 	std::vector<std::weak_ptr<Light>> pLights{};
-	worldManager.GetActiveWorld().ForEach([&renderer, &pLights](std::weak_ptr<Entity> pEntity)
+	std::vector<std::weak_ptr<SkyboxRenderer>> pSkyboxes{};
+	worldManager.GetActiveWorld().ForEach([&renderer, &pLights, &pSkyboxes](std::weak_ptr<Entity> pEntity)
 		{
-			// getting mesh renderer
+			// getting light if
 			std::weak_ptr<Light> pLight{};
 			bool result = pEntity.lock()->TryGetComponent<Light>(pLight);
+			if (result)
+			{
+				pLights.emplace_back(std::move(pLight));
+			}
 
-			if (false == result)
-				return;
-
-			pLights.emplace_back(std::move(pLight));
+			// getting skybox if
+			std::weak_ptr<SkyboxRenderer> pSkybox{};
+			result = pEntity.lock()->TryGetComponent<SkyboxRenderer>(pSkybox);
+			if (result)
+			{
+				pSkyboxes.emplace_back(std::move(pSkybox));
+			}
 		});
+
+	// rendering skybox
+	for(const auto& pSkybox : pSkyboxes)
+	{
+		// obtaining mesh and materials
+		auto& mesh = pSkybox.lock()->GetMesh();
+		auto& material = pSkybox.lock()->GetMaterial();
+
+		// setting c buffers
+		material.SetVSCBuffer("CameraCBuffer", *_pBuffer);
+
+		// drawing
+		renderer.DrawMesh(mesh, material);
+	}
 
 	// iterating all entities to render
 	worldManager.GetActiveWorld().ForEach([this, &renderer, &pLights](std::weak_ptr<Entity> pEntity)
