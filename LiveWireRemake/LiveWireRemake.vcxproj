@@ -137,6 +137,8 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CircleCollider.cpp" />
+    <ClCompile Include="CollisionEngine.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="IComponent.cpp" />
@@ -155,6 +157,8 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraCBuffer.h" />
+    <ClInclude Include="CircleCollider.h" />
+    <ClInclude Include="CollisionEngine.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="IComponent.h" />
