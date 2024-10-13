@@ -129,6 +129,38 @@ unsigned int World::GenerateId() noexcept
 	return lastAssignedId;
 }
 
+std::vector<std::weak_ptr<Entity>> World::FindWithName(const std::string& name) noexcept
+{
+	std::vector<std::weak_ptr<Entity>> entities{};
+
+	for (auto& pair : _pEntities)
+	{
+		// id: (entity, bool dead)
+		if (pair.second.first->name.compare(name) != 0)
+			continue;
+
+		entities.emplace_back(std::move(std::weak_ptr<Entity>(pair.second.first)));
+	}
+
+	return entities;
+}
+
+std::vector<std::weak_ptr<Entity>> World::FindWithTag(const std::string& tag)
+{
+	std::vector<std::weak_ptr<Entity>> entities{};
+
+	for (auto& pair : _pEntities)
+	{
+		// id: (entity, bool dead)
+		if (pair.second.first->tag.compare(tag) != 0)
+			continue;
+
+		entities.emplace_back(std::move(std::weak_ptr<Entity>(pair.second.first)));
+	}
+
+	return entities;
+}
+
 void World::ForEach(std::function<void(std::weak_ptr<Entity>)> action)
 {
 	for (auto& pair : _pEntities)

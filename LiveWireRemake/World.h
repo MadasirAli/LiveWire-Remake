@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "Entity.h"
+#include "BaghdadCore\BaghdadError.h"
 
 namespace LiveWireRemake
 {
@@ -15,6 +16,8 @@ namespace LiveWireRemake
 		friend class WorldManager;
 
 	public:
+		std::vector<std::weak_ptr<Entity>> FindWithName(const std::string& name) noexcept;
+		std::vector<std::weak_ptr<Entity>> FindWithTag(const std::string& tag) noexcept;
 		void ForEach(std::function<void(std::weak_ptr<Entity>)> action);
 
 		std::weak_ptr<Entity> CreateEntity() noexcept;
