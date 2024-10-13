@@ -5,7 +5,13 @@ using namespace LiveWireRemake;
 void IComponent::OnStart(std::weak_ptr<Entity>& pEntity)
 {}
 
+void IComponent::OnPreUpdate(std::weak_ptr<Entity>&pEntity)
+{}
+
 void IComponent::OnUpdate(std::weak_ptr<Entity>& pEntity)
+{}
+
+void IComponent::OnLateUpdate(std::weak_ptr<Entity>&pEntity)
 {}
 
 void IComponent::OnPreRender(std::weak_ptr<Entity>&pEntity)

@@ -14,7 +14,9 @@ namespace LiveWireRemake
 
 	protected:
 		virtual void OnStart(std::weak_ptr<Entity>& pEntity);
+		virtual void OnPreUpdate(std::weak_ptr<Entity>& pEntity);
 		virtual void OnUpdate(std::weak_ptr<Entity>& pEntity);
+		virtual void OnLateUpdate(std::weak_ptr<Entity>& pEntity);
 		virtual void OnPreRender(std::weak_ptr<Entity>& pEntity);
 		virtual void OnRender(std::weak_ptr<Entity>& pEntity);
 		virtual void OnDestroy(std::weak_ptr<Entity>& pEntity);

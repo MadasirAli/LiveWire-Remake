@@ -28,11 +28,25 @@ void Entity::ClearPendings(std::weak_ptr<Entity>& pEntity)
 	_toAdd_pComponents.clear();
 }
 
+void Entity::PreUpdate(std::weak_ptr<Entity>& pEntity)
+{
+	for (const auto& pComponent : _pComponents)
+	{
+		pComponent.first->OnPreUpdate(pEntity);
+	}
+}
 void Entity::Update(std::weak_ptr<Entity>& pEntity)
 {
 	for (const auto& pComponent : _pComponents)
 	{
 		pComponent.first->OnUpdate(pEntity);
+	}
+}
+void Entity::LateUpdate(std::weak_ptr<Entity>& pEntity)
+{
+	for (const auto& pComponent : _pComponents)
+	{
+		pComponent.first->OnLateUpdate(pEntity);
 	}
 }
 

@@ -80,12 +80,29 @@ void LiveWireRemake::World::Update()
 		pBegin = _unactive_pEntities.erase(pBegin);
 	}
 
+	// pre updating
+	for (auto& pEntity : _pEntities)
+	{
+		// id: pair(pEntity, bool dead)
+		std::weak_ptr<Entity> ptr = pEntity.second.first;
+		pEntity.second.first->PreUpdate(ptr);
+	}
+
 	// updating
 	for (auto& pEntity : _pEntities)
 	{
 		// id: pair(pEntity, bool dead)
 		std::weak_ptr<Entity> ptr = pEntity.second.first;
 		pEntity.second.first->Update(ptr);
+	}
+
+	// post updating
+		// updating
+	for (auto& pEntity : _pEntities)
+	{
+		// id: pair(pEntity, bool dead)
+		std::weak_ptr<Entity> ptr = pEntity.second.first;
+		pEntity.second.first->LateUpdate(ptr);
 	}
 
 	// pre render

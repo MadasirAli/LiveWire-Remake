@@ -16,7 +16,9 @@ namespace LiveWireRemake
 
 	private:
 		void ClearPendings(std::weak_ptr<Entity>& pEntity);
+		void PreUpdate(std::weak_ptr<Entity>& pEntity);
 		void Update(std::weak_ptr<Entity>& pEntity);
+		void LateUpdate(std::weak_ptr<Entity>& pEntity);
 		void PreRender(std::weak_ptr<Entity>& pEntity);
 		void Render(std::weak_ptr<Entity>& pEntity);
 
