@@ -1,16 +1,16 @@
 #include "CircleCollider.h"
 
+#include "Entity.h"
+
 using namespace LiveWireRemake;
 
-void CircleCollider::TriggerCollider(const CollisionData& data) const
+void CircleCollider::OnPreUpdate(std::weak_ptr<Entity>& pEntity)
 {
-	if (data.collider_trigger == false && data.colludee_trigger == false)
-	{
-		// TODO: clamp the position
+	_prePosition = pEntity.lock()->GetTransform().position;
+}
 
-
-	}
-
+void CircleCollider::TriggerCollision(const CollisionData& data) const
+{
 	// firing events
 	for (const auto& event : onCollision)
 	{

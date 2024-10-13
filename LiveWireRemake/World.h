@@ -16,6 +16,24 @@ namespace LiveWireRemake
 		friend class WorldManager;
 
 	public:
+		template<typename T>
+		std::vector<std::weak_ptr<T>> GetComponentsOfType() noexcept
+		{
+			std::vector<std::weak_ptr<T>> components{};
+
+			for (auto& pair : _pEntities)
+			{
+				std::weak_ptr<T> ptr{};
+
+				// id: (entity, bool dead)
+				if (pair.second.first->TryGetComponent(ptr) == false)
+					continue;
+
+				components.emplace_back(std::move(ptr));
+			}
+
+			return components;
+		}
 		std::vector<std::weak_ptr<Entity>> FindWithName(const std::string& name) noexcept;
 		std::vector<std::weak_ptr<Entity>> FindWithTag(const std::string& tag) noexcept;
 		void ForEach(std::function<void(std::weak_ptr<Entity>)> action);
