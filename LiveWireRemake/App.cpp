@@ -55,6 +55,14 @@ int App::Run()
 	globals._pWorldManager = &worldManager;
 	globals._pInputManager = &inputManager;
 	globals._pLogger = &logger;
+
+	{
+		RECT rect = { 0 };
+		GetClientRect(liveWire.GetHwnd(), &rect);
+
+		globals._screenWidth = (float)(rect.right - rect.left);
+		globals._screenHeight = (float)(rect.bottom - rect.top);
+	}
 	// _________________________________________________________ //
 
 	liveWire.Start();
@@ -111,7 +119,11 @@ int App::Run()
 
 		// presenting
 		renderer.Blit(renderer.GetRenderTexture(), swapchain.GetBackTexture(), 0u);
+#ifdef _DEBUG
 		swapchain.Present(1u, 0u);
+#else
+		swapchain.Present(0u, 0u);
+#endif
 
 		//// resizing render texture
 		//swapchain.ResizeBuffers();
