@@ -10,6 +10,8 @@ namespace LiveWireRemake
 		friend class Entity;
 
 	public:
+		std::weak_ptr<Entity>& GetParent() noexcept;
+
 		virtual ~IComponent() noexcept = default;
 
 	protected:
@@ -25,6 +27,9 @@ namespace LiveWireRemake
 		virtual void OnDisable(std::weak_ptr<Entity>& pEntity);
 
 		IComponent() = default;
+
+	private:
+		std::weak_ptr<Entity> _parent;
 	};
 }
 

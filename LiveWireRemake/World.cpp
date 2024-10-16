@@ -145,7 +145,7 @@ std::vector<std::weak_ptr<Entity>> World::FindWithName(const std::string& name) 
 	return entities;
 }
 
-std::vector<std::weak_ptr<Entity>> World::FindWithTag(const std::string& tag)
+std::vector<std::weak_ptr<Entity>> World::FindWithTag(const std::string& tag) noexcept
 {
 	std::vector<std::weak_ptr<Entity>> entities{};
 
@@ -176,6 +176,7 @@ std::weak_ptr<Entity> World::CreateEntity() noexcept
 
 	auto ptr = _toAdd_pEntities.back();
 	ptr->_pTransform = ptr->AddComponent<Transform>();
+	ptr->_pSelf = ptr;
 
 	return _toAdd_pEntities.back();
 }

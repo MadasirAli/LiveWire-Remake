@@ -16,11 +16,8 @@ namespace LiveWireRemake
 		class CollisionData final
 		{
 		public:
-			std::weak_ptr<Entity> colludee;
-			std::weak_ptr<Entity> collider;
-
-			bool colludee_trigger;
-			bool collider_trigger;
+			std::weak_ptr<CircleCollider> colludee;
+			std::weak_ptr<CircleCollider> collider;
 		};
 
 	public:

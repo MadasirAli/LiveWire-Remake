@@ -2,6 +2,11 @@
 
 using namespace LiveWireRemake;
 
+std::weak_ptr<Entity>& IComponent::GetParent() noexcept
+{
+    return _parent;
+}
+
 void IComponent::OnStart(std::weak_ptr<Entity>& pEntity)
 {}
 

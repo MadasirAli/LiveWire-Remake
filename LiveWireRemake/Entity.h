@@ -77,7 +77,10 @@ namespace LiveWireRemake
 		std::weak_ptr<T> AddComponent()
 		{
 			_toAdd_pComponents.emplace_back(std::static_pointer_cast<IComponent, T>(std::make_shared<T>()));
-			return std::static_pointer_cast<T, IComponent>(_toAdd_pComponents.back());
+			auto& pComponent = _toAdd_pComponents.back();
+			pComponent->_parent = _pSelf;
+
+			return std::static_pointer_cast<T, IComponent>(pComponent);
 		}
 
 		Entity(unsigned int id);
@@ -96,5 +99,7 @@ namespace LiveWireRemake
 		bool _active = true;
 
 		unsigned int _id;
+
+		std::weak_ptr<Entity> _pSelf;
 	};
 }
