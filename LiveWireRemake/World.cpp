@@ -175,8 +175,9 @@ std::weak_ptr<Entity> World::CreateEntity() noexcept
 	_toAdd_pEntities.emplace_back(std::move(std::make_shared<Entity>(GenerateId())));
 
 	auto ptr = _toAdd_pEntities.back();
-	ptr->_pTransform = ptr->AddComponent<Transform>();
 	ptr->_pSelf = ptr;
+
+	ptr->_pTransform = ptr->AddComponent<Transform>();
 
 	return _toAdd_pEntities.back();
 }

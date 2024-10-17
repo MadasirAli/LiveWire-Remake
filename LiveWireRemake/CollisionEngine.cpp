@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Globals.h"
-#include "CircleCollider.h"
+#include "SphereCollider.h"
 
 using namespace LiveWireRemake;
 
@@ -13,13 +13,13 @@ void CollisionEngine::OnLateUpdate(std::weak_ptr<Entity>& pEntity)
 	auto& world = globals.GetWorldManager().GetActiveWorld();
 
 	// circle collision algorith
-	auto colliders = world.GetComponentsOfType<CircleCollider>();
-	std::vector<std::vector<std::weak_ptr<CircleCollider>>> collisionsList{};
+	auto colliders = world.GetComponentsOfType<SphereCollider>();
+	std::vector<std::vector<std::weak_ptr<SphereCollider>>> collisionsList{};
 
 	// getting all collisions and triggering event
 	for (auto& pCollider : colliders)
 	{
-		std::vector<std::weak_ptr<CircleCollider>> pCollisions{};
+		std::vector<std::weak_ptr<SphereCollider>> pCollisions{};
 
 		pCollisions.push_back(pCollider);
 
@@ -49,7 +49,7 @@ void CollisionEngine::OnLateUpdate(std::weak_ptr<Entity>& pEntity)
 			pCollisions.push_back(pOtherCollider);
 
 			// triggering events
-			CircleCollider::CollisionData myData{};
+			SphereCollider::CollisionData myData{};
 			myData.collider = pCollider;
 			myData.colludee = pOtherCollider;
 

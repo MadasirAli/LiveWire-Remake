@@ -8,7 +8,7 @@
 
 namespace LiveWireRemake
 {
-	class CircleCollider final : public IComponent
+	class SphereCollider final : public IComponent
 	{
 		friend class CollisionEngine;
 
@@ -16,13 +16,13 @@ namespace LiveWireRemake
 		class CollisionData final
 		{
 		public:
-			std::weak_ptr<CircleCollider> colludee;
-			std::weak_ptr<CircleCollider> collider;
+			std::weak_ptr<SphereCollider> colludee;
+			std::weak_ptr<SphereCollider> collider;
 		};
 
 	public:
-		CircleCollider() = default;
-		~CircleCollider() noexcept override = default;
+		SphereCollider();
+		~SphereCollider() noexcept override = default;
 
 	private:
 		void OnPreUpdate(std::weak_ptr<Entity>& pEntity) override;
