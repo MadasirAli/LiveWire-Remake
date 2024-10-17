@@ -62,8 +62,8 @@ void CollisionEngine::OnLateUpdate(std::weak_ptr<Entity>& pEntity)
 	// handling overlapp of collisions
 	for (auto& pCollisions : collisionsList)
 	{
-		const auto collisionCount = pCollisions.size() - 1;
-		if (collisionCount == 0)
+		const auto collisionCount = pCollisions.size();
+		if (collisionCount == 1)
 			continue;	// no collisions with this entity
 
 		auto pMe = pCollisions[0].lock();
@@ -75,9 +75,9 @@ void CollisionEngine::OnLateUpdate(std::weak_ptr<Entity>& pEntity)
 		// counter displacing overlap
 		using namespace DirectX;
 
-		auto pMyTransform = pMe->GetParent().lock()->GetTransform();
+		auto& pMyTransform = pMe->GetParent().lock()->GetTransform();
 
-		unsigned int overlapAccumulation = 0u;
+		float overlapAccumulation = 0u;
 		unsigned int overlapPartioners = 0u;
 		// getting overlap arthimetic accumulation
 		for (auto i = 1; i < collisionCount; ++i)
@@ -130,12 +130,15 @@ void CollisionEngine::OnLateUpdate(std::weak_ptr<Entity>& pEntity)
 		// getting contributed magnitude
 		const auto contribution = overlapAccumulation / (float)overlapPartioners;
 
-		auto antiOverlap = XMVectorMultiply(-frameDir, XMVectorSet(contribution, contribution, contribution, contribution));
+		auto antiOverlap = XMVectorMultiply(frameDir, XMVectorSet(contribution, contribution, contribution, contribution));
 		
 		// applying anti overlap
 		auto newPosition = XMVectorAdd(
 			XMVectorSet(pMyTransform.position.x, pMyTransform.position.y, pMyTransform.position.z, 0),
 			antiOverlap);
+
+		if (XMVectorGetX(XMVectorIsNaN(newPosition)) != 0)
+			continue;
 
 		pMyTransform.position = XMFLOAT3(XMVectorGetX(newPosition), XMVectorGetY(newPosition), XMVectorGetZ(newPosition));
 	}

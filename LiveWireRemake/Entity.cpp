@@ -85,6 +85,11 @@ void Entity::RaiseDestroyEvent(std::weak_ptr<Entity>& pEntity)
 	}
 }
 
+
+// -----------------------------------------------------------------------------
+// Known Issue: 
+// It need to return weak_ptr instead of dereferencing it.
+// -----------------------------------------------------------------------------
 Transform& Entity::GetTransform() const noexcept
 {
 	return *_pTransform.lock();

@@ -9,6 +9,7 @@
 #include "Light.h"
 #include "SkyboxRenderer.h"
 #include "SphereCollider.h"
+#include "CollisionEngine.h"
 
 using namespace LiveWireRemake;
 
@@ -39,6 +40,7 @@ void LiveWire::Start()
 	auto pTriangleEntity2 = world.CreateEntity();
 	auto pLightEntity = world.CreateEntity();
 	auto pSkyboxEntity = world.CreateEntity();
+	auto pCollisionEngineEntity = world.CreateEntity();
 
 	// adding components
 	auto pCamera = pCameraEntity.lock()->AddComponent<Camera>();
@@ -47,10 +49,11 @@ void LiveWire::Start()
 	pLightEntity.lock()->AddComponent<Light>();
 	pSkyboxEntity.lock()->AddComponent<SkyboxRenderer>();
 
-	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -10);
-	pTriangleEntity2.lock()->GetTransform().position = DirectX::XMFLOAT3(5, 0, 0);
+	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -20);
+	pTriangleEntity2.lock()->GetTransform().position = DirectX::XMFLOAT3(10, 0, 0);
 	pTriangleEntity.lock()->AddComponent<SphereCollider>();
 	pTriangleEntity2.lock()->AddComponent<SphereCollider>();
+	pCollisionEngineEntity.lock()->AddComponent<CollisionEngine>();
 
 	pTriangleEntity.lock()->AddComponent<Movement>();
 }
