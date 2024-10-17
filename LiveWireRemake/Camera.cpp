@@ -7,6 +7,7 @@
 #include "MeshRenderer.h"
 #include "Light.h"
 #include "SkyboxRenderer.h"
+#include "SphereCollider.h"
 
 using namespace LiveWireRemake;
 
@@ -49,6 +50,9 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	auto& globals = Globals::GetInstance();
 	auto& worldManager = globals.GetWorldManager();
 	auto& renderer = globals.GetRenderer();
+	auto& data = globals.GetData();
+	const bool gizmosEnabled = globals.IsGizmosEnabled();
+	const bool graphicsEnabled = globals.IsRenderGraphicsEnabled();
 
 	// setting viewport
 	{
@@ -101,8 +105,28 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	}
 
 	// iterating all entities to render
-	worldManager.GetActiveWorld().ForEach([this, &renderer, &pLights](std::weak_ptr<Entity> pEntity)
+	worldManager.GetActiveWorld().ForEach([this, &renderer, &pLights, &data, &gizmosEnabled, &graphicsEnabled](std::weak_ptr<Entity> pEntity)
 		{
+			// getting gizmo holder components
+			if (gizmosEnabled)
+			{
+				const auto& sphereMesh = data.GetSphereMesh();
+				auto& material = data.GetGizmosMaterial();
+
+				std::weak_ptr<SphereCollider> pSphereCollider{};
+				if (pEntity.lock()->TryGetComponent<SphereCollider>(pSphereCollider))
+				{
+					auto& cBuffer = pSphereCollider.lock()->GetTransformCBuffer();
+					material.SetVSCBuffer("TransformCBuffer", cBuffer);
+					material.SetVSCBuffer("CameraCBuffer", *_pBuffer);
+					renderer.DrawMesh(sphereMesh, material);
+				}
+			}
+
+			if (graphicsEnabled == false)
+				return;
+
+			// drawing all other entities
 			// getting mesh renderer
 			std::weak_ptr<MeshRenderer> pMeshRenderer{};
 			bool result = pEntity.lock()->TryGetComponent<MeshRenderer>(pMeshRenderer);

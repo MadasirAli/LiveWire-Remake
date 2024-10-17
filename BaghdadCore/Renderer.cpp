@@ -55,30 +55,49 @@ void Renderer::DrawMesh(const Mesh& mesh, const Material& material) const NOEXCE
 		);
 	}
 
-	//// binding blend state
-	//constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//D3D_CHECK_CALL(
-	//	pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
-	//);
+	// binding blend state
+	if (material._blend)
+	{
+		constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		D3D_CHECK_CALL(
+			pContext->OMSetBlendState(_pBlendState_On.Get(), blendFactor, ~0u)
+		);
+	}
+	else
+	{
+		constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		D3D_CHECK_CALL(
+			pContext->OMSetBlendState(_pBlendState_Off.Get(), blendFactor, ~0u)
+		);
+	}
 
 	// binding rasterizer
-	switch (material._cullMode)
+	if (material._wireFrame)
 	{
-	case D3D11_CULL_BACK:
 		D3D_CHECK_CALL(
-			pContext->RSSetState(_pRasterizerState_Cull_Back.Get())
+			pContext->RSSetState(_pRasterizerState_Wireframe.Get())
 		);
-		break;
-	case D3D11_CULL_FRONT:
-		D3D_CHECK_CALL(
-			pContext->RSSetState(_pRasterizerState_Cull_Front.Get())
-		);
-		break;
-	default:
-		D3D_CHECK_CALL(
-			pContext->RSSetState(_pRasterizerState_Cull_None.Get())
-		);
-		break;
+	}
+	else
+	{
+		switch (material._cullMode)
+		{
+		case D3D11_CULL_BACK:
+			D3D_CHECK_CALL(
+				pContext->RSSetState(_pRasterizerState_Cull_Back.Get())
+			);
+			break;
+		case D3D11_CULL_FRONT:
+			D3D_CHECK_CALL(
+				pContext->RSSetState(_pRasterizerState_Cull_Front.Get())
+			);
+			break;
+		default:
+			D3D_CHECK_CALL(
+				pContext->RSSetState(_pRasterizerState_Cull_None.Get())
+			);
+			break;
+		}
 	}
 
 	// issuing draw call
@@ -214,7 +233,7 @@ void Renderer::ImGUI_Render() const
 	// binding blend state
 	constexpr float blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	D3D_CHECK_CALL(
-		pContext->OMSetBlendState(_pBlendState.Get(), blendFactor, ~0u)
+		pContext->OMSetBlendState(_pBlendState_On.Get(), blendFactor, ~0u)
 	);
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -316,12 +335,21 @@ Renderer::Renderer()
 		desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 		desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
+		// with on blend
 		ComPtr<ID3D11BlendState> pBlendState{};
 		D3D_CALL(
 			pDevice->CreateBlendState(&desc, pBlendState.ReleaseAndGetAddressOf())
 		);
 
-		_pBlendState = std::move(pBlendState);
+		_pBlendState_On = std::move(pBlendState);
+
+		// with off blend
+		desc.RenderTarget[0].BlendEnable = false;
+		D3D_CALL(
+			pDevice->CreateBlendState(&desc, pBlendState.ReleaseAndGetAddressOf())
+		);
+
+		_pBlendState_Off = std::move(pBlendState);
 	}
 
 	// creating rasterizer state
@@ -353,6 +381,13 @@ Renderer::Renderer()
 			pDevice->CreateRasterizerState(&desc, pRastState.ReleaseAndGetAddressOf())
 		);
 		_pRasterizerState_Cull_None = std::move(pRastState);
+
+		// wire frame, i.e for gizmos
+		desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+		D3D_CALL(
+			pDevice->CreateRasterizerState(&desc, pRastState.ReleaseAndGetAddressOf())
+		);
+		_pRasterizerState_Wireframe = std::move(pRastState);
 	}
 
 	// constructing initial viewport

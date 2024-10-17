@@ -2,8 +2,10 @@
 
 #include <functional>
 #include <vector>
+#include <memory>
 
 #include "IComponent.h"
+#include "BaghdadCore\ConstantBuffer.h"
 #include "BaghdadCore\D3D11.h"
 
 namespace LiveWireRemake
@@ -21,11 +23,14 @@ namespace LiveWireRemake
 		};
 
 	public:
+		BaghdadCore::ConstantBuffer& GetTransformCBuffer() noexcept;
+
 		SphereCollider();
 		~SphereCollider() noexcept override = default;
 
 	private:
 		void OnPreUpdate(std::weak_ptr<Entity>& pEntity) override;
+		void OnPreRender(std::weak_ptr<Entity>& pEntity) override;
 
 		void TriggerCollision(const CollisionData& data) const;
 
@@ -35,8 +40,9 @@ namespace LiveWireRemake
 		float radius = 1;
 		bool trigger = false;
 
+		std::unique_ptr<BaghdadCore::ConstantBuffer> _pBuffer;
+
 	private:
 		DirectX::XMFLOAT3 _prePosition;
 	};
 }
-

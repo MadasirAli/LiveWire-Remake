@@ -64,6 +64,21 @@ bool Material::ToggleDepth(bool value) noexcept
 	return lastState;
 }
 
+bool Material::ToggleWireframe(bool value) noexcept
+{
+	bool lastState = _wireFrame;
+	_wireFrame = value;
+	return lastState;
+}
+
+bool Material::ToggleBlend(bool value) noexcept
+{
+	bool lastState = _blend;
+	_blend = value;
+
+	return lastState;
+}
+
 void Material::SetCullMode(D3D11_CULL_MODE mode) noexcept
 {
 	_cullMode = mode;
@@ -82,11 +97,19 @@ void Material::SetVSTexture(const std::string& name, const Texture2D& texture)
 		THROW_BERROR("No Texture decelaration found to bind in shader.");
 	}
 	
-	// if already obtained
-	for (const auto& texture : _vertexBindedTextures)
+	//// if already obtained
+	//for (const auto& texture : _vertexBindedTextures)
+	//{
+	//	if (texture.first == index)
+	//		return;
+	//}
+
+	auto it = _vertexBindedTextures.find(index);
+	if (it != _vertexBindedTextures.end())
 	{
-		if (texture.first == index)
-			return;
+		it->second = texture;
+
+		return;
 	}
 
 	_vertexBindedTextures.insert(std::move(std::pair<unsigned int, Texture2D>(index, texture)));
@@ -108,11 +131,21 @@ void Material::SetVSCBuffer(const std::string& name, const ConstantBuffer& buffe
 		THROW_BERROR("Unable to bind CBuffer");
 	}
 
-	// if already obtained
-	for (const auto& buffer : _vertexBindedCBuffers)
+	//// if already obtained
+	//for (const auto& buffer : _vertexBindedCBuffers)
+	//{
+	//	if (buffer.first == index)
+	//	{
+	//		return;
+	//	}
+	//}
+
+	auto it = _vertexBindedCBuffers.find(index);
+	if (it != _vertexBindedCBuffers.end())
 	{
-		if (buffer.first == index)
-			return;
+		it->second = buffer;
+
+		return;
 	}
 
 	_vertexBindedCBuffers.insert(std::move(std::pair<unsigned int, ConstantBuffer>(index, buffer)));
@@ -131,11 +164,19 @@ void Material::SetPSTexture(const std::string& name, const Texture2D texture)
 		THROW_BERROR("No Texture decelaration found to bind in shader.");
 	}
 
-	// if already obtained
-	for (const auto& texture : _pixelBindedTextures)
+	//// if already obtained
+	//for (const auto& texture : _pixelBindedTextures)
+	//{
+	//	if (texture.first == index)
+	//		return;
+	//}
+
+	auto it = _pixelBindedTextures.find(index);
+	if (it != _pixelBindedTextures.end())
 	{
-		if (texture.first == index)
-			return;
+		it->second = texture;
+
+		return;
 	}
 
 	_pixelBindedTextures.insert(std::move(std::pair<unsigned int, Texture2D>(index, texture)));
@@ -158,10 +199,18 @@ void Material::SetPSCBuffer(const std::string& name, const ConstantBuffer buffer
 	}
 
 	// if already obtained
-	for (const auto& buffer : _pixelBindedCBuffers)
+	//for (const auto& buffer : _pixelBindedCBuffers)
+	//{
+	//	if (buffer.first == index)
+	//		return;
+	//}
+
+	auto it = _pixelBindedCBuffers.find(index);
+	if (it != _pixelBindedCBuffers.end())
 	{
-		if (buffer.first == index)
-			return;
+		it->second = buffer;
+
+		return;
 	}
 
 	_pixelBindedCBuffers.insert(std::move(std::pair<unsigned int, ConstantBuffer>(index, buffer)));

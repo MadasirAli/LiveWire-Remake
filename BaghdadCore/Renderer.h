@@ -82,13 +82,15 @@ namespace BaghdadCore
 		std::unique_ptr<Texture2D> _pRenderTexture;
 		std::unique_ptr<Texture2D> _pDepthTexture;
 
-		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState;
+		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState_On;
+		Microsoft::WRL::ComPtr<ID3D11BlendState> _pBlendState_Off;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState_On;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _pDepthState_Off;
 
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_Back;
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_Front;
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Cull_None;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> _pRasterizerState_Wireframe;
 		D3D11_VIEWPORT _viewport = { 0 };
 
 		std::unique_ptr<ImGuiRenderer> _pUIRenderer;

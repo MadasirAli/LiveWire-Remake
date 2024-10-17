@@ -50,7 +50,7 @@ void LiveWire::Start()
 	pSkyboxEntity.lock()->AddComponent<SkyboxRenderer>();
 
 	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -20);
-	pTriangleEntity2.lock()->GetTransform().position = DirectX::XMFLOAT3(10, 0, 0);
+	pTriangleEntity2.lock()->GetTransform().position = DirectX::XMFLOAT3(5, 0, 0);
 	pTriangleEntity.lock()->AddComponent<SphereCollider>();
 	pTriangleEntity2.lock()->AddComponent<SphereCollider>();
 	pCollisionEngineEntity.lock()->AddComponent<CollisionEngine>();

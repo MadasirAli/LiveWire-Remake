@@ -49,12 +49,15 @@ int App::Run()
 	// creating logger
 	BaghdadCore::Logger logger{};
 
+	Globals::Data data{renderer};
+
 	// setting up globals
 	auto& globals = Globals::GetInstance();
 	globals._pRenderer = &renderer;
 	globals._pWorldManager = &worldManager;
 	globals._pInputManager = &inputManager;
 	globals._pLogger = &logger;
+	globals._pData = &data;
 
 	{
 		RECT rect = { 0 };
@@ -103,6 +106,27 @@ int App::Run()
 		renderer.ClearRenderTexture(clearColor);
 
 		renderer.ImGUI_NewFrame();
+
+		// DEBUG SWITCHES 
+		if (inputManager.GetKeyDown(InputManager::Key::F1))
+		{
+			globals._gizmosEnabled = !globals._gizmosEnabled;
+		}
+		if (inputManager.GetKeyDown(InputManager::Key::F2))
+		{
+			globals._renderGraphics = !globals._renderGraphics;
+		}
+
+		if (globals._gizmosEnabled)
+			ImGui::Text("Gizmos: True");
+		else
+			ImGui::Text("Gizmos: False");
+
+		if (globals._renderGraphics)
+			ImGui::Text("Graphics: True");
+		else
+			ImGui::Text("Graphics: False");
+		//				//
 
 		//---------------------------//
 		// Now Code and execute here //

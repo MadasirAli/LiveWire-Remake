@@ -25,6 +25,8 @@ namespace BaghdadCore
 	public:
 		void SetCullMode(D3D11_CULL_MODE mode) noexcept;
 		bool ToggleDepth(bool value) noexcept;
+		bool ToggleWireframe(bool value) noexcept;
+		bool ToggleBlend(bool value) noexcept;
 
 		/// <summary>
 		/// Binds texture to material or shader.
@@ -71,6 +73,8 @@ namespace BaghdadCore
 
 		D3D11_CULL_MODE _cullMode = D3D11_CULL_BACK;
 		bool _depthEnabled = true;
+		bool _wireFrame = false;
+		bool _blend = false;
 
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> _pInputLayout;
 
