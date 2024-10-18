@@ -117,6 +117,8 @@ int App::Run()
 			globals._renderGraphics = !globals._renderGraphics;
 		}
 
+		ImGui::Text(std::to_string(1.0f / globals._deltaTime).c_str());
+
 		if (globals._gizmosEnabled)
 			ImGui::Text("Gizmos: True");
 		else
