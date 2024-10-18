@@ -163,9 +163,11 @@
     <CopyFileToFolders Include="gizmo.pix">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="gizmo.vert">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="gizmo.vert" />
   </ItemGroup>
 </Project>
