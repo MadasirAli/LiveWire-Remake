@@ -16,8 +16,8 @@ namespace LiveWireRemake
 		std::weak_ptr<Transform> pFollow;
 		float followSpeed = 10;
 		float lookSpeed = 10;
-		float distance = 10;
-		float sideLook = 1;
+		float distance = 15;
+		float sideLook = 0;
 		float height = 5;
 	};
 }

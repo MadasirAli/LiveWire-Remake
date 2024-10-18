@@ -71,7 +71,8 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	// gathering items
 	std::vector<std::weak_ptr<Light>> pLights{};
 	std::vector<std::weak_ptr<SkyboxRenderer>> pSkyboxes{};
-	worldManager.GetActiveWorld().ForEach([&renderer, &pLights, &pSkyboxes](std::weak_ptr<Entity> pEntity)
+	std::vector<std::weak_ptr<SphereCollider>> pSphereColliders{};
+	worldManager.GetActiveWorld().ForEach([&renderer, &pLights, &pSkyboxes, &gizmosEnabled, &pSphereColliders](std::weak_ptr<Entity> pEntity)
 		{
 			// getting light if
 			std::weak_ptr<Light> pLight{};
@@ -87,6 +88,16 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 			if (result)
 			{
 				pSkyboxes.emplace_back(std::move(pSkybox));
+			}
+
+			// getting gizmo holder components
+			if (gizmosEnabled)
+			{
+				std::weak_ptr<SphereCollider> pSphereCollider{};
+				if (pEntity.lock()->TryGetComponent<SphereCollider>(pSphereCollider))
+				{
+					pSphereColliders.emplace_back(std::move(pSphereCollider));
+				}
 			}
 		});
 
@@ -107,22 +118,6 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 	// iterating all entities to render
 	worldManager.GetActiveWorld().ForEach([this, &renderer, &pLights, &data, &gizmosEnabled, &graphicsEnabled](std::weak_ptr<Entity> pEntity)
 		{
-			// getting gizmo holder components
-			if (gizmosEnabled)
-			{
-				const auto& sphereMesh = data.GetSphereMesh();
-				auto& material = data.GetGizmosMaterial();
-
-				std::weak_ptr<SphereCollider> pSphereCollider{};
-				if (pEntity.lock()->TryGetComponent<SphereCollider>(pSphereCollider))
-				{
-					auto& cBuffer = pSphereCollider.lock()->GetTransformCBuffer();
-					material.SetVSCBuffer("TransformCBuffer", cBuffer);
-					material.SetVSCBuffer("CameraCBuffer", *_pBuffer);
-					renderer.DrawMesh(sphereMesh, material);
-				}
-			}
-
 			if (graphicsEnabled == false)
 				return;
 
@@ -160,6 +155,18 @@ void Camera::OnRender(std::weak_ptr<Entity>& pEntity)
 				renderer.DrawMesh(mesh, material);
 			}
 		});
+
+	// rendering gizmos
+	for (const auto& gizmo : pSphereColliders)
+	{
+		const auto& sphereMesh = data.GetSphereMesh();
+		auto& material = data.GetGizmosMaterial();
+
+		auto& cBuffer = gizmo.lock()->GetTransformCBuffer();
+		material.SetVSCBuffer("TransformCBuffer", cBuffer);
+		material.SetVSCBuffer("CameraCBuffer", *_pBuffer);
+		renderer.DrawMesh(sphereMesh, material);
+	}
 }
 
 Camera::Camera()
