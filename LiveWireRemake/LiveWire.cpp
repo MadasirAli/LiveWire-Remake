@@ -10,6 +10,7 @@
 #include "SkyboxRenderer.h"
 #include "SphereCollider.h"
 #include "CollisionEngine.h"
+#include "CameraController.h"
 
 using namespace LiveWireRemake;
 
@@ -50,10 +51,14 @@ void LiveWire::Start()
 	pSkyboxEntity.lock()->AddComponent<SkyboxRenderer>();
 
 	pCameraEntity.lock()->GetTransform().position = DirectX::XMFLOAT3(0, 0, -20);
+	auto pCameraController = pCameraEntity.lock()->AddComponent<CameraController>();
+
 	pTriangleEntity2.lock()->GetTransform().position = DirectX::XMFLOAT3(5, 0, 0);
 	pTriangleEntity.lock()->AddComponent<SphereCollider>();
 	pTriangleEntity2.lock()->AddComponent<SphereCollider>();
 	pCollisionEngineEntity.lock()->AddComponent<CollisionEngine>();
 
 	pTriangleEntity.lock()->AddComponent<Movement>();
+
+	pCameraController.lock()->pFollow = pTriangleEntity.lock()->GetComponent<Transform>();
 }

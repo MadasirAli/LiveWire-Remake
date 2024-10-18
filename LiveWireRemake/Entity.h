@@ -44,6 +44,18 @@ namespace LiveWireRemake
 				return true;
 			}
 
+			for (const auto& pComp : _toAdd_pComponents)
+			{
+				T* pTarget = dynamic_cast<T*>(pComp.get());
+				if (pTarget == nullptr)
+					continue;
+
+				auto ptr = std::static_pointer_cast<T, IComponent>(std::shared_ptr<IComponent>(pComp));
+				pComponent = ptr;
+
+				return true;
+			}
+
 			return false;
 		}
 
