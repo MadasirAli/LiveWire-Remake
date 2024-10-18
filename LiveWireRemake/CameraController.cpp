@@ -40,8 +40,15 @@ void CameraController::OnUpdate(std::weak_ptr<Entity>& pEntity)
 		float angleY = (std::atan2(XMVectorGetZ(dir), XMVectorGetX(dir)) * 180.0f) / (22.0f / 7.0f);
 		float angleX = (std::atan2(XMVectorGetY(dir), XMVectorGetZ(dir)) * 180.0f) / (22.0f / 7.0f);
 
-		transform.rotation.y = std::lerp(transform.rotation.y, - (angleY - 90), lookSpeed * deltaTime);
-		transform.rotation.x = std::lerp(transform.rotation.x, - (angleX), lookSpeed * deltaTime);
+		if (angleY < 0)
+			angleY += 360;
+
+		ImGui::Text(std::to_string(angleY).c_str());
+
+		//transform.rotation.y = std::lerp(transform.rotation.y, - (angleY - 90), lookSpeed * deltaTime);
+		//transform.rotation.x = std::lerp(transform.rotation.x, - (angleX), lookSpeed * deltaTime);
+		transform.rotation.y = -(angleY - 90);
+		//transform.rotation.x = -angleX;
 	}
 
 	ImGui::SliderFloat("ZDistance: ", &distance, 0, 100);
