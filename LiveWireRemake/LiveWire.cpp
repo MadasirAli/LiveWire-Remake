@@ -11,6 +11,7 @@
 #include "SphereCollider.h"
 #include "CollisionEngine.h"
 #include "CameraController.h"
+#include "PlayerController.h"
 
 using namespace LiveWireRemake;
 
@@ -58,6 +59,7 @@ void LiveWire::Start()
 	pTriangleEntity2.lock()->AddComponent<SphereCollider>();
 	pCollisionEngineEntity.lock()->AddComponent<CollisionEngine>();
 
+	pTriangleEntity.lock()->AddComponent<PlayerController>();
 	pTriangleEntity.lock()->AddComponent<Movement>();
 
 	pCameraController.lock()->pFollow = pTriangleEntity.lock()->GetComponent<Transform>();

@@ -69,7 +69,7 @@ MeshRenderer::MeshRenderer()
 	// creating mesh and material
 	auto mesh = renderer.GetMeshLoader()
 		.Clear()
-		.FromFile("Resources\\Models\\cube.obj")
+		.FromFile("Resources\\Models\\teapot.obj")
 		.Load();
 	auto material = renderer.GetMaterialBuilder()
 		.Clear()
