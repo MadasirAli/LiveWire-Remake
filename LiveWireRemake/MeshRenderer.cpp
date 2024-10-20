@@ -80,7 +80,7 @@ MeshRenderer::MeshRenderer()
 	// binding default texture
 	auto defaultTexture = renderer.GetTextureBuilder()
 		.Clear()
-		.FromFile("Resources\\Textures\\landscape.bmp")
+		.FromFile("Resources\\Textures\\tile.bmp")
 		.ViewFlag(BaghdadCore::Resource::View::Type::SRV)
 		.Build();
 
