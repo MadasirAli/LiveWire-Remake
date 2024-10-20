@@ -63,4 +63,23 @@ void LiveWire::Start()
 	pTriangleEntity.lock()->AddComponent<Movement>();
 
 	pCameraController.lock()->pFollow = pTriangleEntity.lock()->GetComponent<Transform>();
+
+	// generating level
+	for (auto y = 0; y < 10; ++y)
+	{
+		for (auto x = 0; x < 10; ++x)
+		{
+			auto pEntity = world.CreateEntity();
+			auto& transform = pEntity.lock()->GetTransform();
+
+			transform.scale.y = 0.1f;
+			transform.scale.x = 6;
+			transform.scale.z = 6;
+			
+			transform.position.x = (x * 12) + (x * 0.25f);
+			transform.position.z = (y * 12) + (y * 0.25f);
+
+			pEntity.lock()->AddComponent<MeshRenderer>();
+		}
+	}
 }
